@@ -7,8 +7,10 @@ import { useRouter } from "vue-router";
 const router = useRouter();
 
 const taskName = ref('');
-const startDateTime = ref(''); // Initialize as empty string
-const endDateTime = ref(''); // Initialize as empty string
+const startDateTime = ref('');
+const endDateTime = ref('');
+const location = ref('');
+const requirements = ref('');
 
 function processData() {
     const fDateCheck = new Date(startDateTime.value);
@@ -21,22 +23,27 @@ function processData() {
             const dataUpload = {
             task_name: taskName.value,
             start_date_time: Timestamp.fromDate(fDateCheck),
-            end_date_time: Timestamp.fromDate(tDateCheck)
+            end_date_time: Timestamp.fromDate(tDateCheck),
+            location: location.value,
+            requirements: requirements.value.split(",").map(command => command.trim())
         };
 
         addDoc(collection(db, "task"), dataUpload)
             .then(() => {
                 router.replace('/ViewTasks');
-                // Reset values correctly
                 taskName.value = '';
                 startDateTime.value = '';
                 endDateTime.value = '';
+                location.value = '';
+                requirements.value = '';
             })
             .catch((error) => {
                 alert(error.message);
                 taskName.value = '';
                 startDateTime.value = '';
                 endDateTime.value = '';
+                location.value = '';
+                requirements.value = '';
             });
     }
         }
@@ -52,6 +59,10 @@ function processData() {
     <input v-model="startDateTime" type="datetime-local" id="startDateTime" required>
     <label for="endDateTime">End Date & Time</label>
     <input v-model="endDateTime" type="datetime-local" id="endDateTime" required>
+    <label for="location">Location</label>
+    <textarea v-model="location" id="location" required></textarea>
+    <label for="requirements">Requirements</label>
+    <input v-model="requirements" id="requirements" placeholder="Separate by commas">
     <input type="submit" @click.prevent="processData" value = "Save task!">
 </form>
 </template>

@@ -53,14 +53,16 @@ const removeTask = (key) => {
             <td>Start Date & Time</td>
             <td>Actions</td>
         </thead>
-        <tbody v-for="(entry, key) in dataList" :key="key">
-            <td>{{entry.taskName}}</td>
-            <td>{{entry.startDateTime}}</td>
-            <td>
-                <button @click="removeTask(key)">Delete?</button>
-                <button>Manage Volunteers!</button>
-                <button>View task!</button>
-            </td>
+        <tbody>
+            <tr v-for="(entry, key) in dataList" :key="key">
+                <td>{{entry.taskName}}</td>
+                <td>{{entry.startDateTime}}</td>
+                <td>
+                    <button @click="removeTask(key)">Delete?</button>
+                    <button>Manage Volunteers!</button>
+                    <button>View task!</button>
+                </td>
+            </tr>
         </tbody>
     </table>
 </template>
