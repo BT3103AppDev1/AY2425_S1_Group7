@@ -17,7 +17,8 @@ function processData() {
     if (fDateCheck >= tDateCheck) {
         alert('Your start date and time must be before the end date and time!');
     } else {
-        const dataUpload = {
+        if (confirm(`You are about to add ${taskName.value}, are you sure?`) == true) {
+            const dataUpload = {
             task_name: taskName.value,
             start_date_time: Timestamp.fromDate(fDateCheck),
             end_date_time: Timestamp.fromDate(tDateCheck)
@@ -38,6 +39,8 @@ function processData() {
                 endDateTime.value = '';
             });
     }
+        }
+
 }
 </script>
 
@@ -49,7 +52,7 @@ function processData() {
     <input v-model="startDateTime" type="datetime-local" id="startDateTime" required>
     <label for="endDateTime">End Date & Time</label>
     <input v-model="endDateTime" type="datetime-local" id="endDateTime" required>
-    <input type="submit" @click.prevent="processData">
+    <input type="submit" @click.prevent="processData" value = "Save task!">
 </form>
 </template>
 
