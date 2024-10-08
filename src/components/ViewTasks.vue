@@ -11,7 +11,7 @@
 
     querySnapshot.forEach((doc) => {
         const data = doc.data();
-        const startDateTime = new Date(data.start_date_time.seconds * 1000); // Convert to Date
+        const startDateTime = data.start_date_time.toDate(); // Convert to Date
 
         // Format the date and time without timezone
         const options = { 
@@ -43,7 +43,6 @@ const removeTask = (key) => {
 </script>
 
 <template>
-    <h1>This is a test to make sure all works</h1>
     <table>
         <thead>
             <td>Upcoming Tasks</td>
