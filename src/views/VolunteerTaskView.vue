@@ -1,6 +1,7 @@
 <script setup>
 import { db } from "../firebase_setup.js";
-import { getDoc, doc } from "firebase/firestore";
+import { getDoc, doc, query, where, getDocs, collection, addDoc, Timestamp } from "firebase/firestore";
+import { auth } from '../firebase_setup';
 import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
 
@@ -12,6 +13,7 @@ const startDateTime = ref('');
 const endDateTime = ref('');
 const location = ref('');
 const requirements = ref([]);
+const alreadySignedUp = ref(false);
 
 async function fetchTaskDetails() {
     try {
@@ -31,12 +33,48 @@ async function fetchTaskDetails() {
     }
 }
 
+// check if the user has already signed up for the task
+async function checkIfSignedUp() {
+    const currentUser = auth.currentUser;
+
+    if (currentUser) {
+        const userId = currentUser.uid;
+        const taskReservationsRef = collection(db, "task_reservations");
+        const q = query(taskReservationsRef, where("task_id", "==", taskID), where("volunteer_id", "==", userId));
+
+        const querySnapshot = await getDocs(q);
+        if (!querySnapshot.empty) {
+            alreadySignedUp.value = true;
+        }
+    }
+}
+
 async function joinTask() {
-    // will add in the function later when we create the volunteers
+    const currentUser = auth.currentUser;
+
+    if (currentUser && !alreadySignedUp.value) {  
+        const userId = currentUser.uid;
+
+        try {
+            const taskRef = collection(db, "task_reservations");
+            await addDoc(taskRef, {
+                task_id: taskID,
+                volunteer_id: userId,
+                reservation_date: Timestamp.now()
+            });
+            alreadySignedUp.value = true;
+            alert('Successfully signed up for the task!');
+        } catch (error) {
+            alert(`Error joining task: ${error.message}`);
+        }
+    } else if (!currentUser) {
+        alert("You need to be logged in to sign up for the task.");
+    }
 }
 
 onMounted(() => {
     fetchTaskDetails();
+    checkIfSignedUp();
 });
 </script>
 
@@ -45,8 +83,11 @@ onMounted(() => {
         <div class="volunteerViewTaskHeader">
             <h1>{{ taskName }}</h1>
             <div class="joinTaskButton">
-                <button @click="joinTask">
+                <button v-if="!alreadySignedUp" @click="joinTask">
                     Sign Up
+                </button>
+                <button v-else disabled>
+                    Pending
                 </button>
             </div>
         </div>
