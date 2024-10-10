@@ -22,38 +22,44 @@
     </div>
   </template>
   
-  <script>
+  <script setup>
   import { ref } from 'vue';
   import { signInWithEmailAndPassword } from 'firebase/auth';
   import { auth } from '../firebase_setup';
   
-  export default {
-    name: 'Login',
-    setup() {
-      const email = ref('');
-      const password = ref('');
-      const message = ref('');
+  const email = ref('');
+  const password = ref('');
+  const message = ref('');
+  const loading = ref(false);
   
-      const login = async () => {
-        try {
-          const userCredential = await signInWithEmailAndPassword(
-            auth,
-            email.value,
-            password.value
-          );
-          message.value = `User Logged In: ${userCredential.user.email}`;
-        } catch (error) {
-          message.value = `Error: ${error.message}`;
-        }
-      };
+  const displayMessage = (msg) => {
+    message.value = msg;
+  };
   
-      return {
-        email,
-        password,
-        message,
-        login,
-      };
-    },
+  const validateInputs = () => {
+    if (!email.value || !password.value) {
+      displayMessage('Please enter both email and password.');
+      return false;
+    }
+    return true;
+  };
+  
+  const login = async () => {
+    if (!validateInputs()) return;
+  
+    loading.value = true;
+    try {
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email.value,
+        password.value
+      );
+      displayMessage(`User Logged In: ${userCredential.user.email}`);
+    } catch (error) {
+      displayMessage(`Error: ${error.message}`);
+    } finally {
+      loading.value = false;
+    }
   };
   </script>
   
