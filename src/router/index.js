@@ -2,20 +2,20 @@ import { createRouter, createWebHistory } from 'vue-router'
 import TaskHomepage from '@/views/TaskHomepage.vue'
 import TaskAdd from '@/views/TaskAdd.vue'
 import LogIn from '../components/LogIn.vue';
-import Register from '../components/RegisterUser.vue';
+import RegisterUser from '../components/RegisterUser.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/LogIn',
-      name: 'Log in here!',
+      path: '/login',
+      name: 'Login',
       component: LogIn
     },
     {
-      path: '/Register',
-      name: 'Register here',
-      component: Register
+      path: '/register',
+      name: 'Register',
+      component: RegisterUser
     },
     {
       path: '/ViewTasks',

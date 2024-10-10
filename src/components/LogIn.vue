@@ -171,4 +171,3 @@
     text-align: center;
   }
   </style>
-  
