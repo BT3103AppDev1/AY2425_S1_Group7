@@ -92,12 +92,29 @@ onMounted(() => {
             </div>
         </div>
         
-        <h2>Start Date: {{ startDateTime }}</h2>
-        <h2>End Date: {{ endDateTime }}</h2>
-        <h3 v-if="location">Location: {{ location }}</h3>
-        <h4 v-if="requirements[0] != ''">Requirements: {{ requirements.join(', ') }}</h4>
+        <div class="taskDetails">
+            <h2>Start Date: {{ startDateTime }}</h2>
+            <h2>End Date: {{ endDateTime }}</h2>
+            <h3 v-if="location">Location: {{ location }}</h3>
+            <h4 v-if="requirements[0] != ''">Requirements: {{ requirements.join(', ') }}</h4>
+        </div>
     </div>
 </template>
 
 <style>
+.volunteerViewTaskHeader {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+
+    h1 {
+        margin: 0;
+    }
+}
+
+.taskDetails {
+    padding: 1rem;
+}
 </style>
