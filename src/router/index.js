@@ -1,12 +1,15 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import TaskHomepage from '@/views/TaskHomepage.vue'
 import TaskAdd from '@/views/TaskAdd.vue'
-import LogIn from '../components/LogIn.vue';
-import RegisterUser from '../components/RegisterUser.vue';
+import LogIn from '@/components/LogIn.vue';
+import RegisterUser from '@/components/RegisterUser.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    { path: '/',
+      redirect: '/login'
+    },
     {
       path: '/login',
       name: 'Login',
