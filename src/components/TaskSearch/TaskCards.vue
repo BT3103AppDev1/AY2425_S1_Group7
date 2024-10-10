@@ -2,6 +2,7 @@
 import { db } from "../../firebase_setup.js";
 import { getDoc, doc } from "firebase/firestore";
 import { ref, onMounted, toRefs } from "vue";
+import { useRouter } from "vue-router";
 
 const props = defineProps({
   taskID: {
@@ -16,6 +17,8 @@ const startDateTime = ref('');
 const endDateTime = ref('');
 const location = ref('');
 const requirements = ref([]);
+
+const router = useRouter();
 
 // fetch data for each task and add it to an individual task card
 async function fetchTaskData(taskID) {
@@ -40,11 +43,16 @@ async function fetchTaskData(taskID) {
 onMounted(() => {
     fetchTaskData(taskID.value);
 });
+
+// navigation 
+function viewTaskDetails() {
+    router.push(`/ViewTask/${taskID.value}`);
+}
 </script>
 
 <template>
     <div class="taskCard">
-        <h3>{{ taskName }}</h3>
+        <h3 @click="viewTaskDetails">{{ taskName }}</h3>
         <h4>Start Date: {{ startDateTime }}</h4>
         <h4>End Date: {{ endDateTime }}</h4>
         <h4 v-if="location">Location: {{ location }}</h4>
