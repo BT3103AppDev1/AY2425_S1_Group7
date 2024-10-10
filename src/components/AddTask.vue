@@ -11,6 +11,7 @@ const startDateTime = ref('');
 const endDateTime = ref('');
 const location = ref('');
 const requirements = ref('');
+const description = ref('');
 
 function processData() {
     const fDateCheck = new Date(startDateTime.value);
@@ -25,7 +26,8 @@ function processData() {
             start_date_time: Timestamp.fromDate(fDateCheck),
             end_date_time: Timestamp.fromDate(tDateCheck),
             location: location.value,
-            requirements: requirements.value.split(",").map(command => command.trim())
+            requirements: requirements.value.split(",").map(command => command.trim()),
+            description: description.value
         };
 
         addDoc(collection(db, "task"), dataUpload)
@@ -36,6 +38,7 @@ function processData() {
                 endDateTime.value = '';
                 location.value = '';
                 requirements.value = '';
+                description.value = '';
             })
             .catch((error) => {
                 alert(error.message);
@@ -44,6 +47,7 @@ function processData() {
                 endDateTime.value = '';
                 location.value = '';
                 requirements.value = '';
+                description.value = '';
             });
     }
         }
@@ -55,6 +59,8 @@ function processData() {
 <form>
     <label for="taskName">Task Name</label>
     <input v-model="taskName" id="taskName" required>
+    <label for="description">Task Description</label>
+    <textarea v-model="description" id="description" required></textarea>
     <label for="startDateTime">Start Date & Time</label>
     <input v-model="startDateTime" type="datetime-local" id="startDateTime" required>
     <label for="endDateTime">End Date & Time</label>

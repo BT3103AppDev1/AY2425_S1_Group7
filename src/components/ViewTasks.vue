@@ -49,9 +49,11 @@ const removeTask = (key) => {
 <template>
     <table>
         <thead>
+            <tr>
             <td>Upcoming Tasks</td>
             <td>Start Date & Time</td>
             <td>Actions</td>
+        </tr>
         </thead>
         <tbody>
             <tr v-for="(entry, key) in dataList" :key="key">
