@@ -38,7 +38,6 @@ const register = async () => {
     message.value = `Error: ${error.message}`;
   }
 };
-
 </script>
 
 <style scoped>
