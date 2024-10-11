@@ -16,6 +16,7 @@
         </div>
         <button type="submit" class="register-button">Register</button>
       </form>
+      <p>Already have an account? <RouterLink to="/login">Login</RouterLink></p>
       <p>{{ message }}</p>
     </div>
   </div>
@@ -52,7 +53,7 @@ const register = async () => {
 
 .welcome {
   background-color: white;
-  padding: 30px;
+  padding: 20px; /* Adjusted padding */
   border-radius: 10px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   width: 400px;
@@ -69,7 +70,7 @@ const register = async () => {
 
 .register-form {
   background-color: rgb(228, 228, 228);
-  padding: 50px 30px;
+  padding: 45px;
   border-radius: 10px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   width: 400px;
@@ -82,19 +83,19 @@ const register = async () => {
 h2 {
   font-size: 1.5em;
   color: #333;
-  margin-bottom: 20px;
+  margin-bottom: 15px; /* Reduced margin */
   text-align: center;
 }
 
 .input-group {
   position: relative;
-  margin-bottom: 20px;
+  margin-bottom: 15px; /* Reduced margin */
   width: 100%;
 }
 
 input {
   width: calc(100% - 40px);
-  padding: 10px;
+  padding: 8px; /* Reduced padding */
   padding-right: 40px;
   border: 1px solid #ccc;
   border-radius: 5px;
@@ -111,7 +112,7 @@ input {
 
 .register-button {
   width: 100%;
-  padding: 10px;
+  padding: 8px; /* Reduced padding */
   background-color: #f8e7bc;
   border: 0;
   border-radius: 5px;
@@ -120,8 +121,16 @@ input {
   color: #333;
 }
 
+a {
+  color: #007bff;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
 p {
-  margin-top: 20px;
+  margin-top: 10px; /* Reduced margin */
   font-size: 0.9em;
   color: #666;
   text-align: center;
