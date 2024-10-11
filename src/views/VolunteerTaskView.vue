@@ -4,6 +4,7 @@ import { getDoc, doc, query, where, getDocs, collection, addDoc, Timestamp } fro
 import { auth } from '../firebase_setup';
 import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
+import Map from '../components/Map.vue';
 
 const route = useRoute();
 const taskID = route.params.taskID;
@@ -12,6 +13,8 @@ const taskName = ref('');
 const startDateTime = ref('');
 const endDateTime = ref('');
 const location = ref('');
+const location_lat = ref(null);
+const location_lng = ref(null);
 const requirements = ref([]);
 const alreadySignedUp = ref(false);
 
@@ -26,6 +29,8 @@ async function fetchTaskDetails() {
             startDateTime.value = taskData.start_date_time.toDate().toLocaleString();
             endDateTime.value = taskData.end_date_time.toDate().toLocaleString();
             location.value = taskData.location;
+            location_lat.value = taskData.location_lat;
+            location_lng.value = taskData.location_lng;
             requirements.value = taskData.requirements || [];
         }
     } catch (e) {
@@ -97,11 +102,13 @@ onMounted(() => {
             <h2>End Date: {{ endDateTime }}</h2>
             <h3 v-if="location">Location: {{ location }}</h3>
             <h4 v-if="requirements[0] != ''">Requirements: {{ requirements.join(', ') }}</h4>
+
+            <Map v-if="location_lat && location_lng" :location="{ lat: location_lat, lng: location_lng }" />
         </div>
     </div>
 </template>
 
-<style>
+<style scoped>
 .volunteerViewTaskHeader {
     display: flex;
     flex-direction: row;
@@ -116,5 +123,10 @@ onMounted(() => {
 
 .taskDetails {
     padding: 1rem;
+}
+
+#map {
+    height: 400px;
+    width: 100%;
 }
 </style>

@@ -34,7 +34,6 @@ async function fetchTaskData(taskID) {
             location.value = taskData.location;
             requirements.value = taskData.requirements || [];
         }
-        console.log(requirements)
     } catch (e) {
         alert(`Error fetching task: ${e.message}`);
     }
