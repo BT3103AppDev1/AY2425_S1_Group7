@@ -11,8 +11,8 @@ const taskName = ref('');
 const startDateTime = ref('');
 const endDateTime = ref('');
 const location = ref('');
-const locationLat = ref(null);
-const locationLng = ref(null);
+const location_lat = ref(null);
+const location_lng = ref(null);
 const requirements = ref('');
 const description = ref('');
 
@@ -29,8 +29,8 @@ function processData() {
                 start_date_time: Timestamp.fromDate(fDateCheck),
                 end_date_time: Timestamp.fromDate(tDateCheck),
                 location: location.value,
-                locationLat: locationLat.value,
-                locationLng: locationLng.value,
+                location_lat: location_lat.value,
+                location_lng: location_lng.value,
                 requirements: requirements.value.split(",").map(command => command.trim()),
                 description: description.value
             };
@@ -52,8 +52,8 @@ function resetForm() {
     startDateTime.value = '';
     endDateTime.value = '';
     location.value = '';
-    locationLat.value = null;
-    locationLng.value = null;
+    location_lat.value = null;
+    location_lng.value = null;
     requirements.value = '';
     description.value = '';
 }
@@ -71,8 +71,8 @@ function onPlaceChanged() {
     const place = autocomplete.getPlace();
     if (place.geometry) {
         location.value = place.formatted_address || place.name;
-        locationLat.value = place.geometry.location.lat();
-        locationLng.value = place.geometry.location.lng();
+        location_lat.value = place.geometry.location.lat();
+        location_lng.value = place.geometry.location.lng();
     } else {
         alert("No details available for the selected location.");
     }
