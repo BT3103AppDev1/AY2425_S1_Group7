@@ -3,6 +3,7 @@ import TaskAdd from '@/views/TaskAdd.vue';
 import LogIn from '@/components/LogIn.vue';
 import RegisterUser from '@/components/RegisterUser.vue';
 import TaskSearch from '@/views/TaskSearch.vue';
+import VolunteerTaskDetail from '@/views/VolunteerTaskDetail.vue';
 import VolunteerTaskView from '@/views/VolunteerTaskView.vue';
 
 const router = createRouter({
@@ -39,11 +40,15 @@ const router = createRouter({
     },
     {
       path: '/ViewTask/:taskID',
-      name: 'Task viewing for volunteers',
+      name: 'Task detail viewing for volunteers',
+      component: VolunteerTaskDetail
+    },
+    {
+      path: '/ViewMyTasks',
+      name: 'Viewing my tasks for volunteers',
       component: VolunteerTaskView
     }
   ]
 });
 
 export default router;
-

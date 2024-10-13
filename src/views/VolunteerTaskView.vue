@@ -26,7 +26,8 @@
           </thead>
           <tbody>
             <tr v-for="task in tasks" :key="task.id">
-              <td>{{ task.task_name }}</td>
+              <!-- added redirect to the full task details -->
+              <td @click="viewTaskDetails(task.id)">{{ task.task_name }}</td> 
               <td>{{ task.start_date_time }}</td>
               <td>{{ task.location }}</td>
               <td>
@@ -47,6 +48,8 @@
   import { db } from '../firebase_setup';
   import { collection, query, where, getDocs, deleteDoc, doc } from 'firebase/firestore'; // Importing 'doc'
   import { auth } from '../firebase_setup';
+  import { useRouter } from "vue-router";
+  const router = useRouter();
   
   const tasks = ref([]);
   
@@ -74,6 +77,10 @@
   }
   
   onMounted(fetchTasks);
+
+  function viewTaskDetails(taskID) {
+    router.push(`/ViewTask/${taskID}`);
+  }
   </script>
   
   <style scoped>
