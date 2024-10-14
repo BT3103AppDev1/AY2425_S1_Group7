@@ -10,6 +10,7 @@
           <RouterLink to="/ViewTasks">VIEW MY TASKS</RouterLink>
           <RouterLink to="/SearchTasks">SEARCH OPPORTUNITIES</RouterLink>
           <RouterLink to="/Profile">MY PROFILE ▼</RouterLink>
+          <RouterLink to="/" @click.prevent="logOut">LOG OUT</RouterLink>
         </div>
       </nav>
   
@@ -49,6 +50,7 @@
   import { collection, query, where, getDocs, deleteDoc, doc } from 'firebase/firestore'; // Importing 'doc'
   import { auth } from '../firebase_setup';
   import { useRouter } from "vue-router";
+  import { signOut } from 'firebase/auth';
   const router = useRouter();
   
   const tasks = ref([]);
@@ -80,6 +82,10 @@
 
   function viewTaskDetails(taskID) {
     router.push(`/ViewTask/${taskID}`);
+  }
+
+  async function logOut() {
+      signOut(auth).then(() => router.push({path: "/"})).catch((error) => console.log(error.message));
   }
   </script>
   
