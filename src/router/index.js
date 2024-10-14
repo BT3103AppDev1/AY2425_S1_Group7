@@ -107,7 +107,7 @@ router.beforeEach(async (to, from, next) => {
       }
     } catch (error) {
       console.error("Error fetching user document:", error);
-      next({ path: "/login" }); // Handle errors by redirecting
+      next({ path: "/ForbiddenAccess" }); // Handle errors by redirecting
     }
   } else {
     next(); // Proceed if user is not authenticated
