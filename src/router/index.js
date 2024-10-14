@@ -1,4 +1,5 @@
-import { auth } from "@/firebase_setup"
+import { auth, db } from "@/firebase_setup";
+import { getDoc, doc } from "firebase/firestore";
 import { createRouter, createWebHistory } from 'vue-router';
 import TaskAdd from '@/views/TaskAdd.vue';
 import LogIn from '@/components/LogIn.vue';
@@ -6,6 +7,7 @@ import RegisterUser from '@/components/RegisterUser.vue';
 import TaskSearch from '@/views/TaskSearch.vue';
 import VolunteerTaskDetail from '@/views/VolunteerTaskDetail.vue';
 import VolunteerTaskView from '@/views/VolunteerTaskView.vue';
+import ForbiddenAccess from "@/views/ForbiddenAccess.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -68,17 +70,48 @@ const router = createRouter({
         auth: true,
         userType: "volunteer"
       }
+    },
+    {
+      path: '/ForbiddenAccess',
+      name: "You are a trespasser!",
+      component: ForbiddenAccess
     }
   ]
 });
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   const requiresAuth = to.matched.some(record => record.meta.auth);
+  
   if (requiresAuth && !auth.currentUser) {
-    next({path: "/login"});
-  } else {
-    next(); //todo: Implement access control based on user privileges
+    console.log(auth.currentUser)
+    next({ path: "/login" });
+    return; // Exit the guard
   }
-})
+
+  if (auth.currentUser) {
+    console.log(auth.currentUser)
+    const uDoc = doc(db, "users", auth.currentUser.uid);
+
+    try {
+      const docSnap = await getDoc(uDoc);
+      if (docSnap.exists()) {
+        const userRole = docSnap.data().role;
+        const requiredUserType = to.meta.userType;
+        if (userRole !== requiredUserType && requiredUserType) {
+          next({ path: "/ViewTasks" }); // Redirect if role does not match (for now it's ViewTasks)
+        } else {
+          next(); // Proceed to the route
+        }
+      } else {
+        next({ path: "/login" }); // Redirect if the user document does not exist
+      }
+    } catch (error) {
+      console.error("Error fetching user document:", error);
+      next({ path: "/login" }); // Handle errors by redirecting
+    }
+  } else {
+    next(); // Proceed if user is not authenticated
+  }
+});
 
 export default router;
