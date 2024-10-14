@@ -24,16 +24,26 @@
 <script setup>
 import { ref } from 'vue';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../firebase_setup';
+import { auth, db } from '../firebase_setup';
+import { setDoc, doc } from 'firebase/firestore';
+import { useRouter } from 'vue-router';
 
 const email = ref('');
 const password = ref('');
 const message = ref('');
+const router = useRouter();
 
 const register = async () => {
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email.value, password.value);
     message.value = `User Registered: ${userCredential.user.email}`;
+    const docRef = doc(db, 'users', userCredential.user.uid);
+    
+    await setDoc(docRef, {
+      userID: userCredential.user.uid,
+      role: "volunteer"
+    })
+    await router.push({path: '/login'})
   } catch (error) {
     message.value = `Error: ${error.message}`;
   }
