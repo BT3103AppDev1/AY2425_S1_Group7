@@ -1,3 +1,4 @@
+import { auth } from "@/firebase_setup"
 import { createRouter, createWebHistory } from 'vue-router';
 import TaskAdd from '@/views/TaskAdd.vue';
 import LogIn from '@/components/LogIn.vue';
@@ -26,29 +27,58 @@ const router = createRouter({
     {
       path: '/ViewTasks',
       name: 'ViewTasks',
-      component: VolunteerTaskView
+      component: VolunteerTaskView,
+      meta: {
+        auth: true,
+        userType: "volunteer"
+      }
     },
     {
       path: '/AddTasks',
       name: 'Add your tasks',
-      component: TaskAdd
+      component: TaskAdd,
+      meta: {
+        auth: true,
+        userType: "admin"
+      }
     },
     {
       path: '/SearchTasks',
       name: 'Search for tasks',
-      component: TaskSearch
+      component: TaskSearch,
+      meta: {
+        auth: true,
+        userType: "volunteer"
+      }
     },
     {
       path: '/ViewTask/:taskID',
       name: 'Task detail viewing for volunteers',
-      component: VolunteerTaskDetail
+      component: VolunteerTaskDetail,
+      meta: {
+        auth: true,
+        userType: "volunteer"
+      }
     },
     {
       path: '/ViewMyTasks',
       name: 'Viewing my tasks for volunteers',
-      component: VolunteerTaskView
+      component: VolunteerTaskView,
+      meta: {
+        auth: true,
+        userType: "volunteer"
+      }
     }
   ]
 });
+
+router.beforeEach((to, from, next) => {
+  const requiresAuth = to.matched.some(record => record.meta.auth);
+  if (requiresAuth && !auth.currentUser) {
+    next({path: "/login"});
+  } else {
+    next(); //todo: Implement access control based on user privileges
+  }
+})
 
 export default router;
