@@ -72,7 +72,7 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   const auth = getAuth();
   const user = auth.currentUser;
-  const publicLinks = ['/login','register']
+  const publicLinks = ['/login','/register']
   if (!user && !publicLinks.includes(to.path)) {
     next({path: "/login"});
   } else {
