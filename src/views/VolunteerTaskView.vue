@@ -29,7 +29,7 @@
             <tr v-for="task in tasks" :key="task.id">
               <!-- added redirect to the full task details -->
               <td @click="viewTaskDetails(task.id)">{{ task.task_name }}</td> 
-              <td>{{ task.start_date_time }}</td>
+              <td>{{ task.start_date_time.toDate() }}</td>
               <td>{{ task.location }}</td>
               <td>
                 <button @click="cancelTask(task.id)" class="cancel-button">Cancel</button>
@@ -47,7 +47,7 @@
   <script setup>
   import { ref, onMounted } from 'vue';
   import { db } from '../firebase_setup';
-  import { collection, query, where, getDocs, deleteDoc, doc } from 'firebase/firestore'; // Importing 'doc'
+  import { collection, query, where, getDocs, getDoc, deleteDoc, doc } from 'firebase/firestore'; // Importing 'doc'
   import { auth } from '../firebase_setup';
   import { useRouter } from "vue-router";
   import { signOut } from 'firebase/auth';
@@ -56,27 +56,48 @@
   const tasks = ref([]);
   
   async function fetchTasks() {
-    const currentUser = auth.currentUser;
-    if (currentUser) {
+  const currentUser = auth.currentUser;
+  if (currentUser) {
+    try {
       const q = query(
         collection(db, 'task_reservations'),
         where('volunteer_id', '==', currentUser.uid)
       );
       const querySnapshot = await getDocs(q);
-      tasks.value = querySnapshot.docs.map(doc => ({
-        ...doc.data(),
-        id: doc.id,
-      }));
+      const allTaskIds = querySnapshot.docs;
+
+      // Fetch task details for each task ID
+      const tasksPromises = allTaskIds.map(async (tDoc) => {
+        const taskDoc = await getDoc(doc(db, 'task', tDoc.data().task_id));
+        return taskDoc.exists() ? { id: tDoc.id, ...taskDoc.data() } : null; // Return task data or null
+      });
+
+      // Wait for all task fetch promises to resolve
+      tasks.value = await Promise.all(tasksPromises);
+      
+      // Filter out any null values (if a task wasn't found)
+      tasks.value = tasks.value.filter(task => task !== null);
+      
+      console.log(tasks.value);
+    } catch (error) {
+      console.error("Error fetching tasks:", error);
     }
   }
+}
+
   
-  async function cancelTask(taskID) {
-    if (confirm('Are you sure you want to cancel this task?')) {
+async function cancelTask(taskID) {
+  if (confirm('Are you sure you want to cancel this task?')) {
+    try {
       await deleteDoc(doc(db, 'task_reservations', taskID)); // Using 'doc' here
       alert('Task successfully cancelled!');
-      fetchTasks(); // Refresh the task list
+      await fetchTasks(); // Refresh the task list after deletion
+    } catch (error) {
+      console.error("Error deleting task:", error);
+      alert("There was an error cancelling the task. Please try again.");
     }
   }
+}
   
   onMounted(fetchTasks);
 
