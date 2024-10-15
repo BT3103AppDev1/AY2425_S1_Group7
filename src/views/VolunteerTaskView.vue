@@ -1,18 +1,6 @@
 <template>
     <div>
-      <!-- Navigation Bar -->
-      <nav class="navbar">
-        <div class="navbar-logo">
- 
-          <span>VOLUNTRAC</span>
-        </div>
-        <div class="navbar-links">
-          <RouterLink to="/ViewTasks">VIEW MY TASKS</RouterLink>
-          <RouterLink to="/SearchTasks">SEARCH OPPORTUNITIES</RouterLink>
-          <RouterLink to="/Profile">MY PROFILE ▼</RouterLink>
-          <RouterLink to="/" @click.prevent="logOut">LOG OUT</RouterLink>
-        </div>
-      </nav>
+      <VolunteerTaskbar></VolunteerTaskbar>
   
       <div class="task-table-container">
         <h2>Here's what you signed up for</h2>
@@ -50,7 +38,7 @@
   import { collection, query, where, getDocs, getDoc, deleteDoc, doc } from 'firebase/firestore'; // Importing 'doc'
   import { auth } from '../firebase_setup';
   import { useRouter } from "vue-router";
-  import { signOut } from 'firebase/auth';
+  import VolunteerTaskbar from '../components/VolunteerTaskbar.vue';
   const router = useRouter();
   
   const tasks = ref([]);
@@ -105,51 +93,9 @@ async function cancelTask(taskID) {
     router.push(`/ViewTask/${taskID}`);
   }
 
-  async function logOut() {
-      signOut(auth).then(() => router.push({path: "/"})).catch((error) => console.log(error.message));
-  }
   </script>
   
   <style scoped>
-  .navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 20px;
-    background-color: #f8f8f8;
-    border-bottom: 1px solid #ccc;
-  }
-  
-  .navbar-logo {
-    display: flex;
-    align-items: center;
-  }
-  
-  .navbar-logo img {
-    height: 40px;
-    margin-right: 10px;
-  }
-  
-  .navbar-logo span {
-    font-size: 1.5em;
-    font-weight: bold;
-  }
-  
-  .navbar-links {
-    display: flex;
-    gap: 20px;
-  }
-  
-  .navbar-links a {
-    text-decoration: none;
-    color: #333;
-    font-size: 1.1em;
-    font-weight: 500;
-  }
-  
-  .navbar-links a:hover {
-    text-decoration: underline;
-  }
   
   .task-table-container {
     width: 80%;

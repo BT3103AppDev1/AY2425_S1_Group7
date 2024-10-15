@@ -4,6 +4,7 @@ import TaskCards from "../components/TaskSearch/TaskCards.vue";
 import TaskFilter from "../components/TaskSearch/TaskFilter.vue";
 import { getDocs, collection } from "firebase/firestore";
 import { db } from "../firebase_setup.js";
+import VolunteerTaskbar from "../components/VolunteerTaskbar.vue";
 
 const tasksList = ref([]);
 const filteredTasks = ref([]);
@@ -60,6 +61,7 @@ fetchAllTasks();
 </script>
 
 <template>
+    <VolunteerTaskbar></VolunteerTaskbar>
     <div>
         <div id="taskSearchFilter">
             <h1>Available Tasks</h1>

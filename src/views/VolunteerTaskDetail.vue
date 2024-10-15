@@ -5,6 +5,7 @@ import { auth } from '../firebase_setup';
 import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import Map from '../components/Map.vue';
+import VolunteerTaskbar from '../components/VolunteerTaskbar.vue';
 
 const route = useRoute();
 const taskID = route.params.taskID;
@@ -84,6 +85,7 @@ onMounted(() => {
 </script>
 
 <template>
+    <VolunteerTaskbar></VolunteerTaskbar>
     <div>
         <div class="volunteerViewTaskHeader">
             <h1>{{ taskName }}</h1>
