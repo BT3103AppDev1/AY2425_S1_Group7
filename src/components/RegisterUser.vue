@@ -53,7 +53,7 @@ const register = async () => {
 
 .welcome {
   background-color: white;
-  padding: 20px; /* Adjusted padding */
+  padding: 20px;
   border-radius: 10px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   width: 400px;
@@ -83,19 +83,19 @@ const register = async () => {
 h2 {
   font-size: 1.5em;
   color: #333;
-  margin-bottom: 15px; /* Reduced margin */
+  margin-bottom: 15px;
   text-align: center;
 }
 
 .input-group {
   position: relative;
-  margin-bottom: 15px; /* Reduced margin */
+  margin-bottom: 15px;
   width: 100%;
 }
 
 input {
   width: calc(100% - 40px);
-  padding: 8px; /* Reduced padding */
+  padding: 8px;
   padding-right: 40px;
   border: 1px solid #ccc;
   border-radius: 5px;
@@ -112,7 +112,7 @@ input {
 
 .register-button {
   width: 100%;
-  padding: 8px; /* Reduced padding */
+  padding: 8px;
   background-color: #f8e7bc;
   border: 0;
   border-radius: 5px;
@@ -130,7 +130,7 @@ a:hover {
 }
 
 p {
-  margin-top: 10px; /* Reduced margin */
+  margin-top: 10px;
   font-size: 0.9em;
   color: #666;
   text-align: center;
