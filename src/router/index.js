@@ -68,7 +68,7 @@ const router = createRouter({
     }
   ]
 });
-
+/*
 router.beforeEach((to, from, next) => {
   const auth = getAuth();
   const user = auth.currentUser;
@@ -79,5 +79,6 @@ router.beforeEach((to, from, next) => {
     next();
   }
 })
+*/
 
 export default router;
