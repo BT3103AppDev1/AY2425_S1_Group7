@@ -19,18 +19,24 @@
         </form>
         <p>Don’t have an account? <RouterLink to="/register">Register</RouterLink></p>
       </div>
+      <div id="Error Message">
+        {{ message }}
+      </div>
     </div>
   </template>
   
   <script setup>
   import { ref } from 'vue';
   import { signInWithEmailAndPassword } from 'firebase/auth';
-  import { auth } from '../firebase_setup';
+  import { db, auth } from '../firebase_setup';
+  import { getDoc, doc } from 'firebase/firestore';
+  import { useRouter } from 'vue-router';
   
   const email = ref('');
   const password = ref('');
   const message = ref('');
   const loading = ref(false);
+  const router = useRouter();
   
   const displayMessage = (msg) => {
     message.value = msg;
@@ -55,6 +61,17 @@
         password.value
       );
       displayMessage(`User Logged In: ${userCredential.user.email}`);
+      const userDoc = doc(db, "users", userCredential.user.uid);
+      await getDoc(userDoc).then((doc) => {
+        const permission = doc.data().role;
+        switch (permission) {
+          case "volunteer":
+            router.push({path: "/ViewTasks"});
+            break;
+          case "admin":
+            router.push({path: "/Admin/Dashboard"})
+        }
+      }).catch((error) => console.log(error.message));
     } catch (error) {
       displayMessage(`Error: ${error.message}`);
     } finally {

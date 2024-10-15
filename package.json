@@ -12,6 +12,7 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "@googlemaps/js-api-loader": "^1.16.8",
     "firebase": "^10.14.0",
     "vue": "^3.4.29",
     "vue-router": "^4.3.3"
