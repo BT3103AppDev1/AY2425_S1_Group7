@@ -19,6 +19,9 @@
         </form>
         <p>Don’t have an account? <RouterLink to="/register">Register</RouterLink></p>
       </div>
+      <div id="Error Message">
+        {{ message }}
+      </div>
     </div>
   </template>
   
