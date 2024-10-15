@@ -8,6 +8,7 @@ import TaskSearch from '@/views/TaskSearch.vue';
 import VolunteerTaskDetail from '@/views/VolunteerTaskDetail.vue';
 import VolunteerTaskView from '@/views/VolunteerTaskView.vue';
 import ForbiddenAccess from "@/views/ForbiddenAccess.vue";
+import AdministratorDashboard from "@/views/AdministratorDashboard.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -75,6 +76,14 @@ const router = createRouter({
       path: '/ForbiddenAccess',
       name: "You are a trespasser!",
       component: ForbiddenAccess
+    },
+    {
+      path: '/Admin/Dashboard',
+      component: AdministratorDashboard,
+      meta: {
+        auth: true,
+        userType: "admin"
+      }
     }
   ]
 });
@@ -98,7 +107,8 @@ router.beforeEach(async (to, from, next) => {
         const userRole = docSnap.data().role;
         const requiredUserType = to.meta.userType;
         if (userRole !== requiredUserType && requiredUserType) {
-          next({ path: "/ViewTasks" }); // Redirect if role does not match (for now it's ViewTasks)
+          next({ path: "/login" });
+          console.log("Forbidden Access Detected!")
         } else {
           next(); // Proceed to the route
         }
@@ -107,7 +117,7 @@ router.beforeEach(async (to, from, next) => {
       }
     } catch (error) {
       console.error("Error fetching user document:", error);
-      next({ path: "/ForbiddenAccess" }); // Handle errors by redirecting
+      next({ path: "/login" }); // Handle errors by redirecting
     }
   } else {
     next(); // Proceed if user is not authenticated

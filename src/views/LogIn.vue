@@ -61,10 +61,14 @@
       const userDoc = doc(db, "users", userCredential.user.uid);
       await getDoc(userDoc).then((doc) => {
         const permission = doc.data().role;
-        console.log("User signed up is a: " + permission); //change to adjust routing
-        router.push({ path: "/ViewTasks"}) //change when volunteer dashboard is ready
-        // note: When admin logs in, they should see admin page instead.
-      })
+        switch (permission) {
+          case "volunteer":
+            router.push({path: "/ViewTasks"});
+            break;
+          case "admin":
+            router.push({path: "/Admin/Dashboard"})
+        }
+      }).catch((error) => console.log(error.message));
     } catch (error) {
       displayMessage(`Error: ${error.message}`);
     } finally {
