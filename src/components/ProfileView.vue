@@ -3,22 +3,28 @@ import { getDoc, setDoc, doc } from 'firebase/firestore';
 import { db } from '@/firebase_setup';
 import { EmailAuthProvider, getAuth, reauthenticateWithCredential, updatePassword, updateEmail } from 'firebase/auth';
 import { onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
 
 const auth = getAuth();
 const user = auth.currentUser;
 const uid = user.uid;
 const name = ref();
+const contactEmail = ref();
 const email = ref(user.email);
 const password1 = ref();
 const password2 = ref();
 const dangerZoneEnabled = ref(false);
 const role = ref();
+const router = useRouter();
 
 const q = doc(db, 'users', uid);
 
 async function getData() {
     let data = (await getDoc(q)).data();
     role.value = data.role;
+    name.value = data.username;
+    contactEmail.value = data.contact_email;
+    // further fields should be included
 }
 
 onMounted(() => getData());
@@ -100,6 +106,9 @@ async function reAuth() {
             <input type="submit">
         </form>
     </div>
+</div>
+<div id="goBack">
+    <button @click="router.go(-1)">Go back!</button>
 </div>
 </template>
 

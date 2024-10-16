@@ -9,6 +9,7 @@ import VolunteerTaskView from '@/views/VolunteerTaskView.vue';
 import ForbiddenAccess from "@/views/ForbiddenAccess.vue";
 import AdministratorDashboard from "@/views/AdministratorDashboard.vue";
 import NotFound from "@/views/NotFound.vue";
+import ProfileView from '@/components/ProfileView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -65,6 +66,10 @@ const router = createRouter({
       path: '/:catchAll(.*)',
       name: 'NotFound',
       component: NotFound
+    },
+    {
+      path: '/Profile',
+      component: ProfileView
     }
   ]
 });
