@@ -46,7 +46,7 @@ const register = async () => {
 
     await setDoc(doc(db, 'users', user.uid), {
       username: username.value,
-      contact_email: email.value,
+      email: email.value,
       password: password.value
     });
 
