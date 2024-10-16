@@ -15,7 +15,7 @@
             <span class="icon">🔒</span>
           </div>
           <a href="#" class="forgot-password">Forgot username/password?</a>
-          <button type="submit" class="login-button">Login</button>
+          <RouterLink to="/ViewTasks"><button type="submit" class="login-button">Login</button></RouterLink><!-- Change path to homepage -->
         </form>
         <p>Don’t have an account? <RouterLink to="/register">Register</RouterLink></p>
       </div>

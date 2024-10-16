@@ -47,7 +47,7 @@ const register = async () => {
     await setDoc(doc(db, 'users', user.uid), {
       username: username.value,
       contact_email: email.value,
-      role: 'volunteer' //otherwise login mechanism will be lost!
+      password: password.value
     });
 
     message.value = `User Registered: ${user.email}`;
