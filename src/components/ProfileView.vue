@@ -31,11 +31,7 @@ onMounted(() => getData());
 
 async function updateFields() {
     // get the attributes there, and then...
-    setDoc(q, {
-        role: role.value,
-        username: name.value,
-        contact_email: contactEmail.value
-    }); //again, you need to upload the data there as-is.
+    setDoc(q, {}); //again, you need to upload the data there as-is.
 }
 
 async function updateLogin() {
@@ -84,10 +80,7 @@ async function reAuth() {
         <!--I advise you not to update login email here-->
         <label for="name">Your username</label>
         <input id= "name" v-model="name">
-        <label for="contactEmail">Your contact email</label>
-        <input type= "email" id="contactEmail" v-model="contactEmail">
         <!--Fill in other attributes according to what you did for registration-->
-        <input type="submit">
     </form>
     <h1>The Danger Zone</h1>
     <p>If you have the balls, go change stuff there!</p>
