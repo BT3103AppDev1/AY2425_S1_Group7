@@ -20,7 +20,7 @@
               <td>{{ task.start_date_time.toDate() }}</td>
               <td>{{ task.location }}</td>
               <td>
-                <button @click="cancelTask(task.id)" class="cancel-button">Cancel</button>
+                <button @click="cancelTask(task.id)" class="action-button">Cancel</button>
               </td>
             </tr>
             <tr v-if="tasks.length === 0">
@@ -95,19 +95,18 @@ async function cancelTask(taskID) {
 
   </script>
   
-  <style scoped>
-  
+  <style>
   .task-table-container {
     width: 80%;
     margin: 0 auto;
     padding: 20px;
-  }
-  
-  h2 {
-    text-align: center;
-    font-size: 1.8em;
-    color: #333;
-    margin-bottom: 20px;
+
+    h2 {
+      text-align: center;
+      font-size: 1.8em;
+      color: #333;
+      margin-bottom: 20px;
+    }
   }
   
   .task-table {
@@ -133,7 +132,7 @@ async function cancelTask(taskID) {
     border-bottom: none;
   }
   
-  .cancel-button {
+  .action-button {
     background-color: #f8e7bc;
     border: none;
     padding: 10px 20px;
@@ -143,7 +142,7 @@ async function cancelTask(taskID) {
     color: #333;
   }
   
-  .cancel-button:hover {
+  .action-button:hover {
     background-color: #f4c9a1;
   }
   

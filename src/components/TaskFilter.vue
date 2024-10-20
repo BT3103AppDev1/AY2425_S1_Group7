@@ -5,10 +5,11 @@ const filterDuration = ref('');
 const sortBy = ref('');
 const filterStartDate = ref('');
 const filterEndDate = ref('');
-
+const radius = ref(''); // Store selected radius
+const userLocation = ref(null);
 const dropdownVisible = ref(false);
 
-const emit = defineEmits(['filterTasks']);
+const emit = defineEmits(['filterTasks', 'locationUpdated']);
 
 function filterTasks() {
     emit('filterTasks', {
@@ -16,6 +17,8 @@ function filterTasks() {
         sortBy: sortBy.value,
         filterStartDate: filterStartDate.value,
         filterEndDate: filterEndDate.value,
+        radius: radius.value,
+        userLocation: userLocation.value,
     });
 }
 
@@ -27,6 +30,22 @@ function toggleDropdown(event) {
 function handleClickOutside(event) {
     if (!event.target.closest('#taskFilter') && !event.target.closest('#dropdownToggle')) {
         dropdownVisible.value = false;
+    }
+}
+
+function getLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((position) => {
+            userLocation.value = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude,
+            };
+            filterTasks();
+        }, () => {
+            alert("Unable to retrieve your location. Please enable location services.");
+        });
+    } else {
+        alert("Geolocation is not supported by this browser.");
     }
 }
 
@@ -73,18 +92,38 @@ onBeforeUnmount(() => {
                 <label for="filterEndDate">End Date: </label>
                 <input type="date" v-model="filterEndDate" id="filterEndDate" />
             </div>
-        
+            <div class="dropdownItem">
+                <label for="radius">Radius (km):</label>
+                <select v-model="radius" id="radius">
+                    <option value="">Select Distance</option>
+                    <option value="5">5 km</option>
+                    <option value="10">10 km</option>
+                    <option value="15">15 km</option>
+                    <option value="20">20 km</option>
+                    <option value="25">25 km</option>
+                </select>
+                <button @click="getLocation" :disabled="!radius">Get My Location</button>
+            </div>
         </div>
     </div>
 </template>
 
 <style scoped>
+#dropdownToggle {
+    border: 1px solid #ccc;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 1em;
+}
+
 .dropdown {
     position: absolute;
     top: 100%;
     right: 0;
-    background-color: white;
-    border: 1px black solid;
+    background-color: #f8f8f8;
+    border: 1px #ccc solid;
+    border-radius: 5px;
     padding: 0.5rem;
     z-index: 1000;
 }
@@ -96,5 +135,10 @@ onBeforeUnmount(() => {
 #taskFilter {
     display: flex;
     flex-direction: column;
+}
+
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 </style>
