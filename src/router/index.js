@@ -3,7 +3,7 @@ import { getAuth } from 'firebase/auth';
 import TaskAdd from '@/views/TaskAdd.vue';
 import LogIn from '@/views/LogIn.vue';
 import RegisterUser from '@/views/RegisterUser.vue';
-import TaskSearch from '@/views/TaskSearch.vue';
+import TaskSearch from '@/views/VolunteerTaskSearch.vue';
 import VolunteerTaskDetail from '@/views/VolunteerTaskDetail.vue';
 import VolunteerTaskView from '@/views/VolunteerTaskView.vue';
 import ForbiddenAccess from "@/views/ForbiddenAccess.vue";

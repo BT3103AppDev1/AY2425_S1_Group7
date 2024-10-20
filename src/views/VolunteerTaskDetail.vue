@@ -14,6 +14,7 @@ const taskName = ref('');
 const startDateTime = ref('');
 const endDateTime = ref('');
 const location = ref('');
+const description = ref('');
 const location_lat = ref(null);
 const location_lng = ref(null);
 const requirements = ref([]);
@@ -32,6 +33,7 @@ async function fetchTaskDetails() {
             location.value = taskData.location;
             location_lat.value = taskData.location_lat;
             location_lng.value = taskData.location_lng;
+            description.value = taskData.description;
             requirements.value = taskData.requirements || [];
         }
     } catch (e) {
@@ -89,22 +91,28 @@ onMounted(() => {
     <div>
         <div class="volunteerViewTaskHeader">
             <h1>{{ taskName }}</h1>
-            <div class="joinTaskButton">
-                <button v-if="!alreadySignedUp" @click="joinTask">
+            <div>
+                <button class="joinTaskButton" v-if="!alreadySignedUp" @click="joinTask">
                     Sign Up
                 </button>
-                <button v-else disabled>
+                <button class="joinTaskButton" v-else disabled>
                     Pending
                 </button>
             </div>
         </div>
         
         <div class="taskDetails">
-            <h2>Start Date: {{ startDateTime }}</h2>
-            <h2>End Date: {{ endDateTime }}</h2>
-            <h3 v-if="location">Location: {{ location }}</h3>
-            <h4 v-if="requirements[0] != ''">Requirements: {{ requirements.join(', ') }}</h4>
+            <p v-if="description">{{ description }}</p>
+            
+            <strong v-if="requirements[0] != ''">Requirements</strong>
+            <p v-if="requirements[0] != ''">Requirements: {{ requirements.join(', ') }}</p>
 
+            <strong>Task Details:</strong>
+            <p>Start Date: {{ startDateTime }}</p>
+            <p>End Date: {{ endDateTime }}</p>
+
+            <p v-if="location">Location: {{ location }}</p>
+            
             <Map v-if="location_lat && location_lng" :location="{ lat: location_lat, lng: location_lng }" />
         </div>
     </div>
@@ -116,7 +124,7 @@ onMounted(() => {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem;
+    padding: 0.5rem 1rem;
 
     h1 {
         margin: 0;
@@ -124,11 +132,19 @@ onMounted(() => {
 }
 
 .taskDetails {
-    padding: 1rem;
+    padding: 0.5rem 1rem;
+}
+
+.joinTaskButton {
+    border: 1px solid #ccc;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 1em;
 }
 
 #map {
     height: 400px;
-    width: 100%;
+    width: 80%;
 }
 </style>
