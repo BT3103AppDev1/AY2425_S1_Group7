@@ -48,12 +48,12 @@ const router = createRouter({
     {
       path: '/ViewTask/:taskID',
       name: 'Task detail viewing for volunteers',
-      component: VolunteerHomePage
+      component: VolunteerTaskDetail
     },
     {
       path: '/ViewMyTasks',
       name: 'Viewing my tasks for volunteers',
-      component: VolunteerTaskView
+      component: VolunteerHomePage
     },
     {
       path: '/ForbiddenAccess',
