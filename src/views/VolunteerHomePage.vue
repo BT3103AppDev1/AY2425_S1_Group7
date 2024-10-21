@@ -44,6 +44,10 @@
         </tbody>
       </table>
     </div>
+
+    <div class="image-container">
+      <img src="/img2.png" alt="Illustration">
+    </div>
   </div>
 </template>
 
@@ -209,6 +213,18 @@ function viewTaskDetails(taskID) {
   background-color: #f4c9a1;
 }
 
+.image-container {
+  width: 300px; 
+  height: auto;
+  float: right; 
+  margin-top: 50px; 
+  margin-right: 100px;
+}
+
+.image-container img {
+  max-width: 100%; 
+  height: auto;
+}  
 
 @media (max-width: 768px) {
   .task-table-container {
