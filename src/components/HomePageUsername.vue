@@ -1,12 +1,10 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import firebaseApp from "../firebase.js";
-import { getFirestore } from "firebase/firestore";
-import { auth } from '../firebase_setup';
+import { auth, db } from '../firebase_setup';
 import { doc, getDoc } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth'
 
-const db = getFirestore(firebaseApp);
+
 const username = ref('Loading...');
 
 const fetchUserData = async (user) => {
@@ -15,7 +13,7 @@ const fetchUserData = async (user) => {
             if (userDoc.exists()) {
                 username.value = userDoc.data().username; 
             } else {
-                console.log('No such document!');
+                console.log('No such user!');
             }
     } catch (error) {
         console.error('Error fetching user data:', error);
