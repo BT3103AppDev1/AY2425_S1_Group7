@@ -37,6 +37,7 @@ const db = getFirestore();
 const username = ref('');
 const email = ref('');
 const password = ref('');
+const role = ref('volunteer');
 const message = ref('');
 
 const register = async () => {
@@ -47,7 +48,8 @@ const register = async () => {
     await setDoc(doc(db, 'users', user.uid), {
       username: username.value,
       email: email.value,
-      password: password.value
+      password: password.value,
+      role: role.value
     });
 
     message.value = `User Registered: ${user.email}`;
