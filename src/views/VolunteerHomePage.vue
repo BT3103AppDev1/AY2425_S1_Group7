@@ -15,7 +15,10 @@
       </nav>
     </header>
 
-
+    <div class="volunteer-homepage">
+        <HomePageUsername /> <!-- Renders the username -->
+        <LastLoginDate /> <!-- Renders the last login date -->
+    </div>
 
     <div class="task-table-container">
       <h2 class="page-title">Here's what you signed up for</h2>
@@ -57,6 +60,9 @@ import { db } from '../firebase_setup';
 import { collection, query, where, getDocs, getDoc, deleteDoc, doc } from 'firebase/firestore';
 import { auth } from '../firebase_setup';
 import { useRouter } from "vue-router";
+import VolunteerTaskbar from "../components/VolunteerTaskbar.vue"
+import HomePageUsername from '@/components/HomePageUsername.vue';
+import LastLoginDate from '@/components/LastLoginDate.vue';
 const router = useRouter();
 
 const tasks = ref([]);
@@ -159,6 +165,9 @@ function viewTaskDetails(taskID) {
   color: #555;
 }
 
+.volunteer-homepage {
+    padding: 20px;
+}
 
 .task-table-container {
   width: 80%;
