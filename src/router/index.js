@@ -5,7 +5,7 @@ import LogIn from '@/views/LogIn.vue';
 import RegisterUser from '@/views/RegisterUser.vue';
 import TaskSearch from '@/views/VolunteerTaskSearch.vue';
 import VolunteerTaskDetail from '@/views/VolunteerTaskDetail.vue';
-import VolunteerTaskView from '@/views/VolunteerTaskView.vue';
+import VolunteerHomePage from '@/views/VolunteerHomePage.vue';
 import ForbiddenAccess from "@/views/ForbiddenAccess.vue";
 import AdministratorDashboard from "@/views/AdministratorDashboard.vue";
 import NotFound from "@/views/NotFound.vue";
@@ -33,7 +33,7 @@ const router = createRouter({
     {
       path: '/ViewTasks',
       name: 'ViewTasks',
-      component: VolunteerTaskView
+      component: VolunteerHomePage
     },
     {
       path: '/Admin/AddTasks',
@@ -48,7 +48,7 @@ const router = createRouter({
     {
       path: '/ViewTask/:taskID',
       name: 'Task detail viewing for volunteers',
-      component: VolunteerTaskDetail
+      component: VolunteerHomePage
     },
     {
       path: '/ViewMyTasks',
