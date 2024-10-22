@@ -15,8 +15,8 @@ const queryOfRequests = query(collOfRequests)
 const queryOfAttendance = query(collOfAttendance, where('start_date_time', '>=', Timestamp.fromDate(new Date(new Date().setHours(0,0,0,0)))), where('start_date_time', '<=', Timestamp.fromDate(new Date(new Date().setHours(23,59,59,999)))))
 
 Promise.all([getCountFromServer(queryOfRequests),getCountFromServer(queryOfAttendance)]).then((values) => {
-  requestsToManage.value = values[0];
-  tasksToTakeAttendance.value = values[1];
+  requestsToManage.value = values[0].data().count;
+  tasksToTakeAttendance.value = values[1].data().count;
 }).catch((error) => {
   alert(error.message);
   requestsToManage.value = "XX";
@@ -65,12 +65,12 @@ Promise.all([getCountFromServer(queryOfRequests),getCountFromServer(queryOfAtten
 
             <div class = "dashboard-cards">
                 <div class = "requests">
-                    <h3>XX</h3>
+                    <h3> {{ requestsToManage }}</h3>
                     <p>Requests</p>
                 </div>
 
                 <div class = "attendance">
-                    <h3>XX</h3>
+                    <h3>{{ tasksToTakeAttendance }}</h3>
                     <p>Attendance to submit</p>
                 </div>
             </div>
