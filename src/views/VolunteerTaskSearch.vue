@@ -184,4 +184,57 @@ function viewTaskDetails(taskID) {
 #taskSearchFilter h1 {
     margin: 0;
 }
+
+.task-table-container {
+  width: 80%;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.page-title {
+  text-align: center;
+  font-size: 2.4em;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.task-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 1.1em;
+  text-align: left;
+}
+
+.task-table thead th {
+  background-color: #f8f8f8;
+  padding: 15px;
+  border-bottom: 2px solid #ccc;
+  font-weight: bold;
+}
+
+.task-table tbody td {
+  padding: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.task-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.action-button {
+  background-color: #f8e7bc;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 1em;
+  color: #333;
+}
+
+.action-button:hover {
+  background-color: #f4c9a1;
+}
 </style>
