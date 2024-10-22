@@ -12,7 +12,7 @@ const tasksToTakeAttendance = ref(0);
 const collOfRequests = collection(db, 'task_reservation');
 const collOfAttendance = collection(db, 'task');
 const queryOfRequests = query(collOfRequests)
-const queryOfAttendance = query(collOfAttendance, where('start_date_time', '>=', Timestamp.fromDate(new Date().setHours(0,0,0,0))), where('start_date_time', '<=', Timestamp.fromDate(new Date().setHours(23,59,59,999))))
+const queryOfAttendance = query(collOfAttendance, where('start_date_time', '>=', Timestamp.fromDate(new Date(new Date().setHours(0,0,0,0)))), where('start_date_time', '<=', Timestamp.fromDate(new Date(new Date().setHours(23,59,59,999)))))
 
 Promise.all([getCountFromServer(queryOfRequests),getCountFromServer(queryOfAttendance)]).then((values) => {
   requestsToManage.value = values[0];
@@ -94,7 +94,7 @@ h1, h2 {
     gap: 20px;
 }
 
-.task-card1, .task-card2, .taskcard3 {
+.task-card1, .task-card2, .task-card3 {
     background-color: #f9f9f9;
     border: 1px solid #ddd;
     padding: 20px;
