@@ -17,7 +17,7 @@
           <a href="#" class="forgot-password">Forgot username/password?</a>
           <button type="submit" class="login-button">Login</button>
         </form>
-        <p>Don't have an account? <RouterLink to="/register-admin">Register</RouterLink></p>
+        <p>Don't have an account? <RouterLink to="/registerAdmin">Register</RouterLink></p>
       </div>
       <div id="Error Message">
         {{ message }}

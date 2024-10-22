@@ -20,7 +20,7 @@
           </div>
           <button type="submit" class="register-button">Register</button>
         </form>
-        <p>Already have an account? <RouterLink to="/admin-login">Login</RouterLink></p>
+        <p>Already have an account? <RouterLink to="/adminLogin">Login</RouterLink></p>
         <p>{{ message }}</p>
       </div>
     </div>
