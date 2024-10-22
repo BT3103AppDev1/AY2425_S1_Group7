@@ -20,30 +20,30 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      redirect: '/login-choice'
+      redirect: '/loginChoice'
     },
     {
-      path: '/login-choice',
+      path: '/loginChoice',
       name: 'LoginChoice',
       component: LoginChoice
     },
     {
-      path: '/volunteer-login',
+      path: '/volunteerLogin',
       name: 'VolunteerLogin',
       component: LogIn
     },
     {
-      path: '/admin-login',
+      path: '/adminLogin',
       name: 'AdminLogin',
       component: AdminLogin
     },
     {
-      path: '/register-user',
+      path: '/registerUser',
       name: 'RegisterUser',
       component: RegisterUser
     },
     {
-      path: '/register-admin',
+      path: '/registerAdmin',
       name: 'RegisterAdmin',
       component: RegisterAdmin
     },
