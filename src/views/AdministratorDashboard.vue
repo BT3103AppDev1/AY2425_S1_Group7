@@ -2,6 +2,26 @@
 import AdministratorTaskbar from "../components/AdministratorTaskbar.vue"
 import HomePageUsername from '@/components/HomePageUsername.vue'
 import LastLoginDate from '@/components/LastLoginDate.vue';
+import { db } from "@/firebase_setup.js";
+import { query, collection, where, getCountFromServer, Timestamp } from 'firebase/firestore';
+import { ref } from 'vue';
+
+const requestsToManage = ref(0);
+const tasksToTakeAttendance = ref(0);
+
+const collOfRequests = collection(db, 'task_reservation');
+const collOfAttendance = collection(db, 'task');
+const queryOfRequests = query(collOfRequests)
+const queryOfAttendance = query(collOfAttendance, where('start_date_time', '>=', Timestamp.fromDate(new Date().setHours(0,0,0,0))), where('start_date_time', '<=', Timestamp.fromDate(new Date().setHours(23,59,59,999))))
+
+Promise.all([getCountFromServer(queryOfRequests),getCountFromServer(queryOfAttendance)]).then((values) => {
+  requestsToManage.value = values[0];
+  tasksToTakeAttendance.value = values[1];
+}).catch((error) => {
+  alert(error.message);
+  requestsToManage.value = "XX";
+  tasksToTakeAttendance.value = "XX";
+})
 
 </script>
 
@@ -18,18 +38,25 @@ import LastLoginDate from '@/components/LastLoginDate.vue';
         
         <div class="task-grid">
             <div class="task-card1">
+              <RouterLink to="/Admin/AddTasks">
                 <h3>Add Tasks</h3>
                 <p>Create new tasks for volunteers to sign up</p>
+              </RouterLink>
             </div>
+          
 
             <div class="task-card2">
+              <RouterLink to="/Admin/ManageTasks"> <!-- This is a placeholder. For now this will go to a 'Page Not Found' page. Edit once the Manage Users page is complete. -->
                 <h3>Manage Users</h3>
                 <p>Add, manage and delete users here</p>
+              </RouterLink>
             </div>
 
             <div class = "task-card3">
+              <RouterLink to="/TakeAttendance">
                 <h3>Take Attendance</h3>
                 <p>Record and track attendance of volunteers at events</p>
+              </RouterLink>
             </div>
         </div>
 
