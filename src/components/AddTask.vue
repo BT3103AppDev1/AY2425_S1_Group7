@@ -37,7 +37,7 @@ function processData() {
 
             addDoc(collection(db, "task"), dataUpload)
                 .then(() => {
-                    router.replace('/ViewTasks');
+                    router.replace('/Admin/Dashboard'); // Should we also have a ViewTasks for admin too?
                     resetForm();
                 })
                 .catch((error) => {
