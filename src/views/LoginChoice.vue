@@ -2,10 +2,10 @@
     <div class="choice-container">
       <h2>Select Your Login Type</h2>
       <div class="choices">
-        <RouterLink to="/volunteer-login" class="choice-button">
+        <RouterLink to="/volunteerLogin" class="choice-button">
           Login as Volunteer
         </RouterLink>
-        <RouterLink to="/admin-login" class="choice-button">
+        <RouterLink to="/adminLogin" class="choice-button">
           Login as Admin
         </RouterLink>
       </div>
