@@ -1,8 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router';
-//import { getAuth } from 'firebase/auth';
 import TaskAdd from '@/views/TaskAdd.vue';
 import LogIn from '@/views/LogIn.vue';
 import RegisterUser from '@/views/RegisterUser.vue';
+import RegisterAdmin from '@/views/RegisterAdmin.vue';
 import TaskSearch from '@/views/VolunteerTaskSearch.vue';
 import VolunteerTaskDetail from '@/views/VolunteerTaskDetail.vue';
 import VolunteerHomePage from '@/views/VolunteerHomePage.vue';
@@ -10,25 +10,42 @@ import ForbiddenAccess from "@/views/ForbiddenAccess.vue";
 import AdministratorDashboard from "@/views/AdministratorDashboard.vue";
 import NotFound from "@/views/NotFound.vue";
 import ProfileView from '@/components/ProfileView.vue';
-import HomePageUsername from '@/components/HomePageUsername.vue'
+import HomePageUsername from '@/components/HomePageUsername.vue';
 import LastLoginDate from '@/components/LastLoginDate.vue';
+import LoginChoice from '@/views/LoginChoice.vue';
+import AdminLogin from '@/views/AdminLogin.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
-      redirect: '/login'
+      redirect: '/login-choice'
     },
     {
-      path: '/login',
-      name: 'Login',
+      path: '/login-choice',
+      name: 'LoginChoice',
+      component: LoginChoice
+    },
+    {
+      path: '/volunteer-login',
+      name: 'VolunteerLogin',
       component: LogIn
     },
     {
-      path: '/register',
-      name: 'Register',
+      path: '/admin-login',
+      name: 'AdminLogin',
+      component: AdminLogin
+    },
+    {
+      path: '/register-user',
+      name: 'RegisterUser',
       component: RegisterUser
+    },
+    {
+      path: '/register-admin',
+      name: 'RegisterAdmin',
+      component: RegisterAdmin
     },
     {
       path: '/ViewTasks',
@@ -37,27 +54,27 @@ const router = createRouter({
     },
     {
       path: '/Admin/AddTasks',
-      name: 'Add your tasks',
+      name: 'AddTasks',
       component: TaskAdd
     },
     {
       path: '/SearchTasks',
-      name: 'Search for tasks',
+      name: 'SearchTasks',
       component: TaskSearch
     },
     {
       path: '/ViewTask/:taskID',
-      name: 'Task detail viewing for volunteers',
+      name: 'VolunteerTaskDetail',
       component: VolunteerTaskDetail
     },
     {
       path: '/ViewMyTasks',
-      name: 'Viewing my tasks for volunteers',
+      name: 'ViewMyTasks',
       component: VolunteerHomePage
     },
     {
       path: '/ForbiddenAccess',
-      name: "You are a trespasser!",
+      name: 'ForbiddenAccess',
       component: ForbiddenAccess
     },
     {
@@ -75,16 +92,17 @@ const router = createRouter({
     },
     {
       path: '/HomepageUsername',
-      name: 'Username',
+      name: 'HomePageUsername',
       component: HomePageUsername
     },
     {
       path: '/LastLoginDate',
-      name: 'Last Login Date',
+      name: 'LastLoginDate',
       component: LastLoginDate
     }
   ]
 });
+
 /*
 router.beforeEach((to, from, next) => {
   const auth = getAuth();
