@@ -22,7 +22,7 @@
         <tbody>
           <tr v-for="task in tasks" :key="task.id">
             
-            <td @click="viewTaskDetails(task.id)">{{ task.task_name }}</td>
+            <td @click="viewTaskDetails(task.task_id)">{{ task.task_name }}</td>
             <td>{{ task.start_date_time.toDate() }}</td>
             <td>{{ task.location }}</td>
             <td>
@@ -69,7 +69,7 @@ async function fetchTasks() {
      
       const tasksPromises = allTaskIds.map(async (tDoc) => {
         const taskDoc = await getDoc(doc(db, 'task', tDoc.data().task_id));
-        return taskDoc.exists() ? { id: tDoc.id, ...taskDoc.data() } : null;
+        return taskDoc.exists() ? { id: tDoc.id, task_id: tDoc.data().task_id, ...taskDoc.data() } : null;
       });
 
     
