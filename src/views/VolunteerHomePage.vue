@@ -1,19 +1,7 @@
 <template>
   <div>
+    <VolunteerTaskbar></VolunteerTaskbar>
    
-    <header class="header">
-      <div class="logo-container">
-        <img src="/app logo.png" alt="Voluntrac Logo" class="logo">
-        <span class="voluntrac-text">VOLUNTRAC</span>
-      </div>
-      <nav class="navbar">
-        <ul class="navbar-links">
-          <li><router-link to="/view-tasks">VIEW MY TASKS</router-link></li>
-          <li><router-link to="/search-opportunities">SEARCH OPPORTUNITIES</router-link></li>
-          <li><router-link to="/profile">MY PROFILE</router-link></li>
-        </ul>
-      </nav>
-    </header>
 
     <div class="volunteer-homepage">
         <HomePageUsername /> <!-- Renders the username -->
