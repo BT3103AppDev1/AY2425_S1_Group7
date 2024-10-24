@@ -51,6 +51,7 @@ async function checkIfSignedUp() {
         const q = query(taskReservationsRef, where("task_id", "==", taskID), where("volunteer_id", "==", userId));
 
         const querySnapshot = await getDocs(q);
+        console.log(querySnapshot)
         if (!querySnapshot.empty) {
             alreadySignedUp.value = true;
         }

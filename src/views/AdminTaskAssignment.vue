@@ -2,7 +2,7 @@
 import AdministratorTaskbar from '@/components/AdministratorTaskbar.vue';
 import { useRoute } from "vue-router";
 import { db } from "../firebase_setup.js";
-import { query, where, getDocs, collection, doc, getDoc } from "firebase/firestore";
+import { query, where, getDocs, collection, doc, getDoc, addDoc, Timestamp } from "firebase/firestore";
 import { ref, onMounted } from "vue";
 
 const route = useRoute();
@@ -22,16 +22,32 @@ async function fetchTaskReservationDetails() {
                 const volunteerRef = doc(db, "users", resvData.volunteer_id);
                 const volunteerSnap = await getDoc(volunteerRef);
 
+                let assignmentStatus = null;
+
+                // check if the volunteer has already been accepted or rejected
+                const assignmentQuery = query(
+                    collection(db, "task_assignment"),
+                    where("task_id", "==", taskID),
+                    where("volunteer_id", "==", resvData.volunteer_id)
+                );
+                const assignmentSnap = await getDocs(assignmentQuery);
+                if (!assignmentSnap.empty) {
+                    const assignmentData = assignmentSnap.docs[0].data();
+                    assignmentStatus = assignmentData.status;
+                }
+
                 if (volunteerSnap.exists()) {
                     const volunteerData = volunteerSnap.data();
                     reservations.push({
                         ...resvData,
-                        username: volunteerData.username
+                        username: volunteerData.username,
+                        status: assignmentStatus || "pending"
                     });
                 } else {
                     reservations.push({
                         ...resvData,
-                        username: "Unknown Volunteer"
+                        username: "Unknown Volunteer",
+                        status: assignmentStatus || "pending"
                     });
                 }
             }
@@ -41,6 +57,31 @@ async function fetchTaskReservationDetails() {
     } catch (e) {
         alert(`Error fetching task reservation details: ${e.message}`);
     }
+}
+
+async function updateTaskAssignment(volunteer_id, status) {
+    try {
+        const assignmentData = {
+            task_id: taskID,
+            volunteer_id,
+            status,
+            date: Timestamp.now(),
+        };
+
+        await addDoc(collection(db, "task_assignment"), assignmentData);
+        alert(`Volunteer has been ${status}`);
+        fetchTaskReservationDetails();
+    } catch (e) {
+        alert(`Error updating task assignment: ${e.message}`);
+    }
+}
+
+function acceptVolunteer(volunteer_id) {
+    updateTaskAssignment(volunteer_id, "accepted");
+}
+
+function rejectVolunteer(volunteer_id) {
+    updateTaskAssignment(volunteer_id, "rejected");
 }
 
 onMounted(() => {
@@ -58,7 +99,7 @@ onMounted(() => {
                 <tr>
                     <th>Volunteer Name</th>
                     <th>Date</th>
-                    <th>Actions</th>
+                    <th>Actions/ Status</th>
                 </tr>
             </thead>
             <tbody v-if="taskResv.length > 0">
@@ -66,8 +107,14 @@ onMounted(() => {
                     <td>{{ resv.username }}</td>
                     <td>{{ resv.reservation_date ? resv.reservation_date.toDate().toLocaleString() : 'No Date' }}</td>
                     <td id="approve-reject-buttons">
-                        <button class="action-button edit">Approve</button> 
-                        <button class="action-button view">Reject</button>
+                        <template v-if="resv.status === 'pending'">
+                            <button class="action-button edit" @click="acceptVolunteer(resv.volunteer_id)">Approve</button> 
+                            <button class="action-button view" @click="rejectVolunteer(resv.volunteer_id)">Reject</button>
+                        </template>
+                        <template v-else>
+                            <span v-if="resv.status === 'accepted'" class="status accepted">Accepted</span>
+                            <span v-if="resv.status === 'rejected'" class="status rejected">Rejected</span>
+                        </template>
                     </td>
                 </tr>
             </tbody>
@@ -85,5 +132,8 @@ onMounted(() => {
     display: flex;
     justify-content: space-around;
     flex: 1 0 10px;
+}
+.status {
+    font-weight: bold;
 }
 </style>
