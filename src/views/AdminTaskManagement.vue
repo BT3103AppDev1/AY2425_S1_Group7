@@ -18,6 +18,10 @@ async function fetchAllTasks() {
     filteredTasks.value = [...tasksList.value];
 }
 
+function viewTaskDetails(taskID) {
+    router.push(`/Admin/ViewTask/${taskID}`);
+}
+
 onMounted(async () => {
     fetchAllTasks();
 });
@@ -30,7 +34,7 @@ onMounted(async () => {
         <div id="taskManagementHeader">
             <h1>Manage Tasks</h1>
             <div id="taskManagementHeaderButtons">
-                <RouterLink><button class="headerButton">+ Add Task</button></RouterLink>
+                <RouterLink to="/Admin/AddTasks"><button class="headerButton">+ Add Task</button></RouterLink>
                 <RouterLink><button class="headerButton">View Past Tasks</button></RouterLink>
             </div>            
         </div>
@@ -48,7 +52,7 @@ onMounted(async () => {
             <tbody v-if="filteredTasks.length > 0">
                 <tr v-for="task in filteredTasks" :key="task.id">
                     <td>{{ task.data.task_name }}</td>
-                    <td><RouterLink><button class="action-button view">View Details</button></RouterLink></td>
+                    <td><button class="action-button view" @click="viewTaskDetails(task.id)">View Details</button></td>
                     <td><RouterLink><button class="action-button edit">Edit Details</button></RouterLink></td>
                     <td><RouterLink><button class="action-button manage">Manage Volunteers</button></RouterLink></td>
                 </tr>

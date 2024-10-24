@@ -14,8 +14,9 @@ import HomePageUsername from '@/components/HomePageUsername.vue';
 import LastLoginDate from '@/components/LastLoginDate.vue';
 import LoginChoice from '@/views/LoginChoice.vue';
 import AdminLogin from '@/views/AdminLogin.vue';
-import AdminTaskAssignment from '@/views/AdminTaskManagement.vue';
 import AdminTaskManagement from '@/views/AdminTaskManagement.vue';
+import AdminTaskDetail from '@/views/AdminTaskDetail.vue';
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -106,6 +107,11 @@ const router = createRouter({
       path: '/Admin/ManageTasks',
       name: 'ManageTasks',
       component: AdminTaskManagement
+    }, 
+    {
+      path: '/Admin/ViewTask/:taskID',
+      name: 'AdminViewTasks',
+      component: AdminTaskDetail
     }
   ]
 });

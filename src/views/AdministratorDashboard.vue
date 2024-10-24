@@ -90,6 +90,10 @@ h1, h2 {
     margin-bottom: 20px;
 }
 
+.task-options {
+  padding: 20px;
+}
+
 .task-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
