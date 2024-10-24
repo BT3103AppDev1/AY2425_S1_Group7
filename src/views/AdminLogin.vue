@@ -1,87 +1,97 @@
 <template>
-    <div class="login-container">
-      <div class="welcome">
-        <img class="logo" src="/image.png" alt="Logo" />
-      </div>
-      <div class="login-form">
-        <h2>Admin Login</h2>
-        <form @submit.prevent="login">
-          <div class="input-group">
-            <input v-model="email" type="email" placeholder="Email" required />
-            <span class="icon">👤</span>
-          </div>
-          <div class="input-group">
-            <input v-model="password" type="password" placeholder="Password" required />
-            <span class="icon">🔒</span>
-          </div>
-          <a href="#" class="forgot-password">Forgot username/password?</a>
-          <button type="submit" class="login-button">Login</button>
-        </form>
-        <p>Don't have an account? <RouterLink to="/registerAdmin">Register</RouterLink></p>
-      </div>
-      <div id="Error Message">
-        {{ message }}
-      </div>
+  <div class="login-container">
+    <div class="welcome">
+      <img class="logo" src="/image.png" alt="Logo" />
     </div>
-  </template>
-  
-  <script setup>
-  import { ref } from 'vue';
-  import { signInWithEmailAndPassword } from 'firebase/auth';
-  import { db, auth } from '../firebase_setup';
-  import { getDoc, doc } from 'firebase/firestore';
-  import { useRouter } from 'vue-router';
-  
-  const email = ref('');
-  const password = ref('');
-  const message = ref('');
-  const loading = ref(false);
-  const router = useRouter();
-  
-  const displayMessage = (msg) => {
-    console.log(msg);
-    message.value = msg;
-  };
-  
-  const validateInputs = () => {
-    if (!email.value || !password.value) {
-      displayMessage('Please enter both email and password.');
-      return false;
-    }
-    return true;
-  };
-  
-  const login = async () => {
-    if (!validateInputs()) return;
-  
-    loading.value = true;
-    try {
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email.value,
-        password.value
-      );
-      displayMessage(`User Logged In: ${userCredential.user.email}`);
-      const userDoc = doc(db, "users", userCredential.user.uid);
-      const userDocSnap = await getDoc(userDoc);
-  
-      if (userDocSnap.exists()) {
-        const permission = userDocSnap.data().role;
-        if (permission === "admin") {
-          router.push({ path: "/Admin/Dashboard" });
-        } else {
-          displayMessage('Access denied. Admins only.');
-        }
+    <div class="login-form">
+      <h2>Admin Login</h2>
+      <form @submit.prevent="login">
+        <div class="input-group">
+          <input v-model="email" type="email" placeholder="Email" required />
+          <span class="icon">👤</span>
+        </div>
+        <div class="input-group">
+          <input v-model="password" type="password" placeholder="Password" required />
+          <span class="icon">🔒</span>
+        </div>
+        <button type="submit" class="login-button">Login</button>
+      </form>
+      <br />
+      <a href="#" class="forgot-password" @click.prevent="sendPasswordReset">Forgot password?</a>
+      <p>Don't have an account? <RouterLink to="/registerAdmin">Register</RouterLink></p>
+    </div>
+    <div id="error-message">
+      {{ message }}
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { ref } from 'vue';
+import { sendPasswordResetEmail, signInWithEmailAndPassword } from 'firebase/auth';
+import { db, auth } from '../firebase_setup';
+import { getDoc, doc } from 'firebase/firestore';
+import { useRouter } from 'vue-router';
+
+const email = ref('');
+const password = ref('');
+const message = ref('');
+const loading = ref(false);
+const router = useRouter();
+
+const displayMessage = (msg) => {
+  message.value = msg;
+};
+
+const validateInputs = () => {
+  if (!email.value || !password.value) {
+    displayMessage('Please enter both email and password.');
+    return false;
+  }
+  return true;
+};
+
+const login = async () => {
+  if (!validateInputs()) return;
+
+  loading.value = true;
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, email.value, password.value);
+    displayMessage(`User Logged In: ${userCredential.user.email}`);
+    const userDoc = doc(db, "users", userCredential.user.uid);
+    const userDocSnap = await getDoc(userDoc);
+
+    if (userDocSnap.exists()) {
+      const permission = userDocSnap.data().role;
+      if (permission === "admin") {
+        router.push({ path: "/Admin/Dashboard" });
       } else {
-        displayMessage('User data not found.');
+        displayMessage('Access denied. Admins only.');
       }
-    } catch (error) {
-      displayMessage(`Error: ${error.message}`);
-    } finally {
-      loading.value = false;
+    } else {
+      displayMessage('User data not found.');
     }
-  };
-  </script>
+  } catch (error) {
+    displayMessage(`Error: ${error.message}`);
+  } finally {
+    loading.value = false;
+  }
+};
+
+const sendPasswordReset = async () => {
+  if (!email.value) {
+    displayMessage('Please enter your email address.');
+    return;
+  }
+
+  try {
+    await sendPasswordResetEmail(auth, email.value);
+    displayMessage('Password reset email sent! Check your inbox.');
+  } catch (error) {
+    displayMessage(`Error: ${error.message}`);
+  }
+};
+</script>
   
   <style scoped>
   .login-container {
@@ -183,7 +193,7 @@ a:hover {
   }
 
 p {
-  margin-top: 20px;
+  margin-top: 10px;
   font-size: 0.9em;
   color: #666;
   text-align: center;
