@@ -12,4 +12,8 @@ import { RouterLink, RouterView } from 'vue-router';
 html {
   font-family: Helvetica, sans-serif;
 }
+
+body {
+  margin: 0;
+}
 </style>

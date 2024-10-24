@@ -51,6 +51,7 @@ async function checkIfSignedUp() {
         const q = query(taskReservationsRef, where("task_id", "==", taskID), where("volunteer_id", "==", userId));
 
         const querySnapshot = await getDocs(q);
+        console.log(querySnapshot)
         if (!querySnapshot.empty) {
             alreadySignedUp.value = true;
         }
@@ -89,13 +90,13 @@ onMounted(() => {
 <template>
     <VolunteerTaskbar></VolunteerTaskbar>
     <div>
-        <div class="volunteerViewTaskHeader">
+        <div class="taskDetailHeader">
             <h1>{{ taskName }}</h1>
             <div>
-                <button class="joinTaskButton" v-if="!alreadySignedUp" @click="joinTask">
+                <button class="taskDetailButton" v-if="!alreadySignedUp" @click="joinTask">
                     Sign Up
                 </button>
-                <button class="joinTaskButton" v-else disabled>
+                <button class="taskDetailButton" v-else disabled>
                     Pending
                 </button>
             </div>
@@ -118,8 +119,8 @@ onMounted(() => {
     </div>
 </template>
 
-<style scoped>
-.volunteerViewTaskHeader {
+<style>
+.taskDetailHeader {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -135,7 +136,7 @@ onMounted(() => {
     padding: 0.5rem 1rem;
 }
 
-.joinTaskButton {
+.taskDetailButton {
     border: 1px solid #ccc;
     padding: 10px 20px;
     cursor: pointer;

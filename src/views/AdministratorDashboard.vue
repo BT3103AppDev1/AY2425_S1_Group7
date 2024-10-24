@@ -38,15 +38,15 @@ Promise.all([getCountFromServer(queryOfRequests),getCountFromServer(queryOfAtten
         
         <div class="task-grid">
             <div class="task-card1">
-              <RouterLink to="/Admin/AddTasks">
-                <h3>Add Tasks</h3>
-                <p>Create new tasks for volunteers to sign up</p>
+              <RouterLink to="/Admin/ManageTasks">
+                <h3>Manage Tasks</h3>
+                <p>Add, manage and delete tasks for volunteers</p>
               </RouterLink>
             </div>
           
 
             <div class="task-card2">
-              <RouterLink to="/Admin/ManageTasks"> <!-- This is a placeholder. For now this will go to a 'Page Not Found' page. Edit once the Manage Users page is complete. -->
+              <RouterLink to="/Admin/ManageUsers"> <!-- This is a placeholder. For now this will go to a 'Page Not Found' page. Edit once the Manage Users page is complete. -->
                 <h3>Manage Users</h3>
                 <p>Add, manage and delete users here</p>
               </RouterLink>
@@ -65,9 +65,11 @@ Promise.all([getCountFromServer(queryOfRequests),getCountFromServer(queryOfAtten
 
             <div class = "dashboard-cards">
                 <div class = "requests">
+                  <RouterLink to="/Admin/TaskAssignment">
                     <h3> {{ requestsToManage }}</h3>
                     <p>Requests</p>
-                </div>
+                  </RouterLink>
+                </div>              
 
                 <div class = "attendance">
                     <h3>{{ tasksToTakeAttendance }}</h3>
@@ -86,6 +88,10 @@ Promise.all([getCountFromServer(queryOfRequests),getCountFromServer(queryOfAtten
 
 h1, h2 {
     margin-bottom: 20px;
+}
+
+.task-options {
+  padding: 20px;
 }
 
 .task-grid {

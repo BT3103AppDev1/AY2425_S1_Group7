@@ -6,7 +6,7 @@
           <span>VOLUNTRAC</span>
         </div>
         <div class="navbar-links">
-          <RouterLink to="/Admin/AddTasks">ADD TASKS</RouterLink>
+          <RouterLink to="/Admin/ManageTasks">MANAGE TASKS</RouterLink>
           <RouterLink to="/TakeAttendance">TAKE ATTENDANCE</RouterLink>
           <RouterLink to="/Profile">MY PROFILE ▼</RouterLink>
           <RouterLink to="/" @click.prevent="logOut">LOG OUT</RouterLink>
