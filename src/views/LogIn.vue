@@ -14,9 +14,9 @@
             <input v-model="password" type="password" placeholder="Password" required />
             <span class="icon">🔒</span>
           </div>
-          <a href="#" class="forgot-password">Forgot username/password?</a>
           <button type="submit" class="login-button">Login</button>
         </form>
+        <a href="#" class="forgot-password" @click.prevent="sendPasswordReset">Forgot password?</a>
         <p>Don’t have an account? <RouterLink to="/registerUser">Register</RouterLink></p>
       </div>
       <div id="Error Message">
@@ -26,59 +26,72 @@
   </template>
   
   <script setup>
-  import { ref } from 'vue';
-  import { signInWithEmailAndPassword } from 'firebase/auth';
-  import { db, auth } from '../firebase_setup';
-  import { getDoc, doc } from 'firebase/firestore';
-  import { useRouter } from 'vue-router';
-  
-  const email = ref('');
-  const password = ref('');
-  const message = ref('');
-  const loading = ref(false);
-  const router = useRouter();
-  
-  const displayMessage = (msg) => {
-    console.log(msg);
-  };
-  
-  const validateInputs = () => {
-    if (!email.value || !password.value) {
-      displayMessage('Please enter both email and password.');
-      return false;
+import { ref } from 'vue';
+import { signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
+import { db, auth } from '../firebase_setup';
+import { getDoc, doc } from 'firebase/firestore';
+import { useRouter } from 'vue-router';
+
+const email = ref('');
+const password = ref('');
+const message = ref('');
+const loading = ref(false);
+const router = useRouter();
+
+const displayMessage = (msg) => {
+  message.value = msg; 
+};
+
+const validateInputs = () => {
+  if (!email.value || !password.value) {
+    displayMessage('Please enter both email and password.');
+    return false;
+  }
+  return true;
+};
+
+const login = async () => {
+  if (!validateInputs()) return;
+
+  loading.value = true;
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, email.value, password.value);
+    displayMessage(`User Logged In: ${userCredential.user.email}`);
+    
+    const userDoc = doc(db, "users", userCredential.user.uid);
+    const docSnap = await getDoc(userDoc);
+    const permission = docSnap.data().role;
+
+    switch (permission) {
+      case "volunteer":
+        router.push({ path: "/ViewTasks" });
+        break;
+      case "admin":
+        router.push({ path: "/Admin/Dashboard" });
+        break;
     }
-    return true;
-  };
-  
-  const login = async () => {
-    if (!validateInputs()) return;
-  
-    loading.value = true;
-    try {
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email.value,
-        password.value
-      );
-      displayMessage(`User Logged In: ${userCredential.user.email}`);
-      const userDoc = doc(db, "users", userCredential.user.uid);
-      await getDoc(userDoc).then((doc) => {
-        const permission = doc.data().role;
-        switch (permission) {
-          case "volunteer":
-            router.push({path: "/ViewTasks"});
-            break;
-          case "admin":
-            router.push({path: "/Admin/Dashboard"})
-        }
-      }).catch((error) => console.log(error.message));
-    } catch (error) {
-      displayMessage(`Error: ${error.message}`);
-    } finally {
-      loading.value = false;
-    }
-  };
-  </script>
+  } catch (error) {
+    displayMessage(`Error: ${error.message}`);
+  } finally {
+    loading.value = false;
+  }
+};
+
+// Send reset password email
+const sendPasswordReset = async () => {
+  if (!email.value) {
+    displayMessage('Please enter your email address.');
+    return;
+  }
+
+  try {
+    await sendPasswordResetEmail(auth, email.value);
+    displayMessage('Password reset email sent! Check your inbox.');
+  } catch (error) {
+    displayMessage(`Error: ${error.message}`);
+  }
+};
+</script>
 
 <style scoped>
 .login-container {
@@ -174,6 +187,7 @@ input {
   text-align: center;
   margin-bottom: 10px;
   font-size: 0.9em;
+  padding-top: 20px;
 }
 
 a {
@@ -185,7 +199,7 @@ a:hover {
 }
 
 p {
-  margin-top: 20px;
+  margin-top: 10px;
   font-size: 0.9em;
   color: #666;
   text-align: center;
