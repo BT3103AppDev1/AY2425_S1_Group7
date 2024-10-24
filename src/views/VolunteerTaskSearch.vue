@@ -213,6 +213,7 @@ function viewTaskDetails(taskID) {
   padding: 15px;
   border-bottom: 2px solid #ccc;
   font-weight: bold;
+  text-align: center;
 }
 
 .task-table tbody td {

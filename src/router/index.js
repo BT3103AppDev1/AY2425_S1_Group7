@@ -16,6 +16,7 @@ import LoginChoice from '@/views/LoginChoice.vue';
 import AdminLogin from '@/views/AdminLogin.vue';
 import AdminTaskManagement from '@/views/AdminTaskManagement.vue';
 import AdminTaskDetail from '@/views/AdminTaskDetail.vue';
+import AdminTaskAssignment from '@/views/AdminTaskAssignment.vue';
 
 
 const router = createRouter({
@@ -112,6 +113,11 @@ const router = createRouter({
       path: '/Admin/ViewTask/:taskID',
       name: 'AdminViewTasks',
       component: AdminTaskDetail
+    }, 
+    {
+      path: '/Admin/TaskAssignment/:taskID',
+      name: 'AdminViewAssignment',
+      component: AdminTaskAssignment
     }
   ]
 });

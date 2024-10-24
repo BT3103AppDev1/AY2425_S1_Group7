@@ -1,12 +1,10 @@
 <script setup>
 import AdministratorTaskbar from '@/components/AdministratorTaskbar.vue';
 import { db } from "../firebase_setup.js";
-import { getDoc, doc, query, where, getDocs, collection, addDoc, Timestamp } from "firebase/firestore";
-import { auth } from '../firebase_setup';
+import { getDoc, doc } from "firebase/firestore";
 import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import Map from '../components/Map.vue';
-import VolunteerTaskbar from '../components/VolunteerTaskbar.vue';
 
 const route = useRoute();
 const taskID = route.params.taskID;

@@ -1,25 +1,40 @@
 <script setup>
 import AdministratorTaskbar from '@/components/AdministratorTaskbar.vue';
 import { ref, onMounted } from 'vue';
-import { getDocs, collection } from "firebase/firestore";
+import { getDocs, collection, where, query } from "firebase/firestore";
 import { db } from "../firebase_setup.js";
 import { RouterLink } from 'vue-router';
 import router from '@/router';
+import { Timestamp } from "firebase/firestore"; 
 
 const tasksList = ref([]);
-const filteredTasks = ref([]);
+const activeTasks = ref([]);
 
 async function fetchAllTasks() {
-    const tasksSnapshot = await getDocs(collection(db, "task"));
-    tasksList.value = tasksSnapshot.docs.map(doc => ({
-        id: doc.id,
-        data: doc.data()
-    }));
-    filteredTasks.value = [...tasksList.value];
+    // only fetch those that end date is after current date
+    try {
+        const currentTime = Timestamp.now();
+        const q = query(collection(db, "task"), where("end_date_time", ">", currentTime));
+        const tasksSnapshot = await getDocs(q);
+        
+        tasksList.value = tasksSnapshot.docs.map(doc => ({
+            id: doc.id,
+            data: doc.data()
+        }));
+
+        activeTasks.value = [...tasksList.value];
+    } catch (e) {
+        console.error("Error fetching tasks: ", e);
+    }
 }
+
 
 function viewTaskDetails(taskID) {
     router.push(`/Admin/ViewTask/${taskID}`);
+}
+
+function viewManageVolunteers(taskID) {
+    router.push(`/Admin/TaskAssignment/${taskID}`);
 }
 
 onMounted(async () => {
@@ -49,12 +64,12 @@ onMounted(async () => {
                     <th></th>
                 </tr>
             </thead>
-            <tbody v-if="filteredTasks.length > 0">
-                <tr v-for="task in filteredTasks" :key="task.id">
+            <tbody v-if="activeTasks.length > 0">
+                <tr v-for="task in activeTasks" :key="task.id">
                     <td>{{ task.data.task_name }}</td>
                     <td><button class="action-button view" @click="viewTaskDetails(task.id)">View Details</button></td>
                     <td><RouterLink><button class="action-button edit">Edit Details</button></RouterLink></td>
-                    <td><RouterLink><button class="action-button manage">Manage Volunteers</button></RouterLink></td>
+                    <td><RouterLink><button class="action-button manage" @click="viewManageVolunteers(task.id)">Manage Volunteers</button></RouterLink></td>
                 </tr>
             </tbody>
         </table>
