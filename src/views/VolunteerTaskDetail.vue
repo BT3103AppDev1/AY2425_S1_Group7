@@ -18,7 +18,7 @@ const description = ref('');
 const location_lat = ref(null);
 const location_lng = ref(null);
 const requirements = ref([]);
-const alreadySignedUp = ref(false);
+const signedUpStatus = ref('');
 
 async function fetchTaskDetails() {
     try {
@@ -53,7 +53,19 @@ async function checkIfSignedUp() {
         const querySnapshot = await getDocs(q);
         console.log(querySnapshot)
         if (!querySnapshot.empty) {
-            alreadySignedUp.value = true;
+            const assignmentQuery = query(
+            collection(db, 'task_assignment'),
+            where('task_id', '==', taskID),
+            where('volunteer_id', '==', currentUser.uid)
+            );
+
+            const assignmentSnapshot = await getDocs(assignmentQuery);
+            if (!assignmentSnapshot.empty) {
+                const assignmentDoc = assignmentSnapshot.docs[0];
+                signedUpStatus.value = assignmentDoc.data().status;
+            } else {
+                signedUpStatus.value = 'pending';
+            }
         }
     }
 }
@@ -61,7 +73,7 @@ async function checkIfSignedUp() {
 async function joinTask() {
     const currentUser = auth.currentUser;
 
-    if (currentUser && !alreadySignedUp.value) {  
+    if (currentUser && !signedUpStatus.value) {  
         const userId = currentUser.uid;
 
         try {
@@ -71,7 +83,7 @@ async function joinTask() {
                 volunteer_id: userId,
                 reservation_date: Timestamp.now()
             });
-            alreadySignedUp.value = true;
+            signedUpStatus.value = true;
             alert('Successfully signed up for the task!');
         } catch (error) {
             alert(`Error joining task: ${error.message}`);
@@ -93,11 +105,14 @@ onMounted(() => {
         <div class="taskDetailHeader">
             <h1>{{ taskName }}</h1>
             <div>
-                <button class="taskDetailButton" v-if="!alreadySignedUp" @click="joinTask">
+                <button class="taskDetailButton" v-if="!signedUpStatus" @click="joinTask">
                     Sign Up
                 </button>
-                <button class="taskDetailButton" v-else disabled>
+                <button class="taskDetailButton pending" v-else-if="signedUpStatus === 'pending'" disabled>
                     Pending
+                </button>
+                <button class="taskDetailButton status" v-else disabled>
+                    {{ signedUpStatus }}
                 </button>
             </div>
         </div>
@@ -142,6 +157,10 @@ onMounted(() => {
     cursor: pointer;
     border-radius: 5px;
     font-size: 1em;
+}
+
+.pending, .status {
+    cursor: not-allowed;
 }
 
 #map {

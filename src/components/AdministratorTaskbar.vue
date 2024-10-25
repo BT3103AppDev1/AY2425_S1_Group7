@@ -3,7 +3,7 @@
       <nav class="navbar">
         <div class="navbar-logo">
  
-          <span>VOLUNTRAC</span>
+          <RouterLink to="/Admin/Dashboard">VOLUNTRAC</RouterLink>
         </div>
         <div class="navbar-links">
           <RouterLink to="/Admin/ManageTasks">MANAGE TASKS</RouterLink>
@@ -46,9 +46,11 @@
     margin-right: 10px;
   }
   
-  .navbar-logo span {
+  .navbar-logo a {
     font-size: 1.5em;
     font-weight: bold;
+    text-decoration: none;
+    color: black;
   }
   
   .navbar-links {

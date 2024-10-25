@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import TaskFilter from "../components/TaskFilter.vue";
-import { getDocs, collection } from "firebase/firestore";
+import { getDocs, collection, query, where, Timestamp } from "firebase/firestore";
 import { db } from "../firebase_setup.js";
 import router from '@/router';
 import VolunteerTaskbar from "../components/VolunteerTaskbar.vue";
@@ -12,7 +12,9 @@ const filteredTasks = ref([]);
 const geocoder = ref(null);
 
 async function fetchAllTasks() {
-    const tasksSnapshot = await getDocs(collection(db, "task"));
+    const currentTime = Timestamp.now();
+        const q = query(collection(db, "task"), where("end_date_time", ">", currentTime));
+        const tasksSnapshot = await getDocs(q);
     tasksList.value = tasksSnapshot.docs.map(doc => ({
         id: doc.id,
         data: doc.data()
