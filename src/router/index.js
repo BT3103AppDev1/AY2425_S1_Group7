@@ -17,7 +17,7 @@ import AdminLogin from '@/views/AdminLogin.vue';
 import AdminTaskManagement from '@/views/AdminTaskManagement.vue';
 import AdminTaskDetail from '@/views/AdminTaskDetail.vue';
 import AdminTaskAssignment from '@/views/AdminTaskAssignment.vue';
-
+import AdminAttendance from '@/views/AdminAttendance.vue'; 
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -83,15 +83,32 @@ const router = createRouter({
     },
     {
       path: '/Admin/Dashboard',
+      name: 'AdminDashboard',
       component: AdministratorDashboard
     },
     {
-      path: '/:catchAll(.*)',
-      name: 'NotFound',
-      component: NotFound
+      path: '/Admin/ManageTasks',
+      name: 'ManageTasks',
+      component: AdminTaskManagement
     },
     {
+      path: '/Admin/ViewTask/:taskID',
+      name: 'AdminViewTasks',
+      component: AdminTaskDetail
+    },
+    {
+      path: '/Admin/TaskAssignment/:taskID',
+      name: 'AdminViewAssignment',
+      component: AdminTaskAssignment
+    },
+    {
+      path: '/TakeAttendance',
+      name: 'TakeAttendance',
+      component: AdminAttendance
+    },    
+    {
       path: '/Profile',
+      name: 'Profile',
       component: ProfileView
     },
     {
@@ -103,36 +120,27 @@ const router = createRouter({
       path: '/LastLoginDate',
       name: 'LastLoginDate',
       component: LastLoginDate
-    }, 
+    },
     {
-      path: '/Admin/ManageTasks',
-      name: 'ManageTasks',
-      component: AdminTaskManagement
-    }, 
-    {
-      path: '/Admin/ViewTask/:taskID',
-      name: 'AdminViewTasks',
-      component: AdminTaskDetail
-    }, 
-    {
-      path: '/Admin/TaskAssignment/:taskID',
-      name: 'AdminViewAssignment',
-      component: AdminTaskAssignment
+      path: '/:catchAll(.*)', 
+      name: 'NotFound',
+      component: NotFound
     }
   ]
 });
 
 /*
+// 
 router.beforeEach((to, from, next) => {
   const auth = getAuth();
   const user = auth.currentUser;
-  const publicLinks = ['/login','/register']
+  const publicLinks = ['/loginChoice', '/volunteerLogin', '/adminLogin', '/registerUser', '/registerAdmin'];
   if (!user && !publicLinks.includes(to.path)) {
-    next({path: "/login"});
+    next({ path: "/loginChoice" });
   } else {
     next();
   }
-})
+});
 */
 
 export default router;
