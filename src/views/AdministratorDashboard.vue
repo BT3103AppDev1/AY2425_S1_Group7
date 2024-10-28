@@ -107,6 +107,10 @@ h1, h2 {
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
+.task-card1 >>> a, .task-card2 >>> a, .task-card3 >>> a {
+  text-decoration: none;
+}
+
 .dashboard {
   margin-top: 40px;
 }
