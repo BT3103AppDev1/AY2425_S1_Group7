@@ -18,6 +18,7 @@ import AdminTaskManagement from '@/views/AdminTaskManagement.vue';
 import AdminTaskDetail from '@/views/AdminTaskDetail.vue';
 import AdminTaskAssignment from '@/views/AdminTaskAssignment.vue';
 import AdminAttendance from '@/views/AdminAttendance.vue'; 
+import AdminTaskEdit from '@/views/AdminTaskEdit.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -125,6 +126,11 @@ const router = createRouter({
       path: '/:catchAll(.*)', 
       name: 'NotFound',
       component: NotFound
+    },
+    {
+      path: '/EditTask/:taskID',
+      name: 'Edit Task',
+      component: AdminTaskEdit
     }
   ]
 });

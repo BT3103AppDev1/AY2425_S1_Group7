@@ -68,7 +68,7 @@ onMounted(async () => {
                 <tr v-for="task in activeTasks" :key="task.id">
                     <td>{{ task.data.task_name }}</td>
                     <td><button class="action-button view" @click="viewTaskDetails(task.id)">View Details</button></td>
-                    <td><RouterLink><button class="action-button edit">Edit Details</button></RouterLink></td>
+                    <td><RouterLink :to="'/EditTask/' + task.id"><button class="action-button edit">Edit Details</button></RouterLink></td>
                     <td><RouterLink><button class="action-button manage" @click="viewManageVolunteers(task.id)">Manage Volunteers</button></RouterLink></td>
                 </tr>
             </tbody>
