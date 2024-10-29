@@ -3,10 +3,11 @@ import AdministratorTaskbar from '@/components/AdministratorTaskbar.vue';
 import { db } from "../firebase_setup.js";
 import { getDoc, doc } from "firebase/firestore";
 import { ref, onMounted } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import Map from '../components/Map.vue';
 
 const route = useRoute();
+const router = useRouter();
 const taskID = route.params.taskID;
 
 const taskName = ref('');
@@ -51,7 +52,7 @@ onMounted(() => {
         <div class="taskDetailHeader">
             <h1>{{ taskName }}</h1>
             <div>
-                <button class="taskDetailButton">
+                <button class="taskDetailButton" @click="router.push({ path: '/EditTask/' + taskID})">
                     Edit Details
                 </button>
             </div>
