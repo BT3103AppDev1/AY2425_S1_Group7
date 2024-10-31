@@ -97,7 +97,7 @@ const router = createRouter({
       component: AdminTaskAssignment
     },
     {
-      path: '/TakeAttendance',
+      path: '/Admin/TakeAttendance',
       name: 'TakeAttendance',
       component: TakeAttendance
     },
