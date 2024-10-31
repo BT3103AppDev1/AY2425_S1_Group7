@@ -10,15 +10,14 @@ import ForbiddenAccess from "@/views/ForbiddenAccess.vue";
 import AdministratorDashboard from "@/views/AdministratorDashboard.vue";
 import NotFound from "@/views/NotFound.vue";
 import ProfileView from '@/components/ProfileView.vue';
-import HomePageUsername from '@/components/HomePageUsername.vue';
-import LastLoginDate from '@/components/LastLoginDate.vue';
 import LoginChoice from '@/views/LoginChoice.vue';
 import AdminLogin from '@/views/AdminLogin.vue';
 import AdminTaskManagement from '@/views/AdminTaskManagement.vue';
 import AdminTaskDetail from '@/views/AdminTaskDetail.vue';
 import AdminTaskAssignment from '@/views/AdminTaskAssignment.vue';
-import AdminAttendance from '@/views/AdminAttendance.vue'; 
 import AdminTaskEdit from '@/views/AdminTaskEdit.vue';
+import TakeAttendance from '@/views/TakeAttendance.vue'; 
+import ManageAttendance from '@/views/ManageAttendance.vue'; 
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -73,11 +72,6 @@ const router = createRouter({
       component: VolunteerTaskDetail
     },
     {
-      path: '/ViewMyTasks',
-      name: 'ViewMyTasks',
-      component: VolunteerHomePage
-    },
-    {
       path: '/ForbiddenAccess',
       name: 'ForbiddenAccess',
       component: ForbiddenAccess
@@ -105,22 +99,18 @@ const router = createRouter({
     {
       path: '/TakeAttendance',
       name: 'TakeAttendance',
-      component: AdminAttendance
-    },    
+      component: TakeAttendance
+    },
+    {
+      path: '/Admin/ManageAttendance/:taskID',
+      name: 'ManageAttendance',
+      component: ManageAttendance,
+      props: true
+    },
     {
       path: '/Profile',
       name: 'Profile',
       component: ProfileView
-    },
-    {
-      path: '/HomepageUsername',
-      name: 'HomePageUsername',
-      component: HomePageUsername
-    },
-    {
-      path: '/LastLoginDate',
-      name: 'LastLoginDate',
-      component: LastLoginDate
     },
     {
       path: '/:catchAll(.*)', 
@@ -136,13 +126,12 @@ const router = createRouter({
 });
 
 /*
-// 
 router.beforeEach((to, from, next) => {
   const auth = getAuth();
   const user = auth.currentUser;
-  const publicLinks = ['/loginChoice', '/volunteerLogin', '/adminLogin', '/registerUser', '/registerAdmin'];
-  if (!user && !publicLinks.includes(to.path)) {
-    next({ path: "/loginChoice" });
+  const publicLinks = ['LoginChoice', 'VolunteerLogin', 'AdminLogin', 'RegisterUser', 'RegisterAdmin'];
+  if (!user && !publicLinks.includes(to.name)) {
+    next({ name: 'LoginChoice' });
   } else {
     next();
   }
@@ -150,3 +139,4 @@ router.beforeEach((to, from, next) => {
 */
 
 export default router;
+
