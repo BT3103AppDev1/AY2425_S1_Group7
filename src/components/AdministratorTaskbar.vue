@@ -7,7 +7,7 @@
       </div>
       <div class="navbar-links">
         <RouterLink to="/Admin/ManageTasks">MANAGE TASKS</RouterLink>
-        <RouterLink to="/TakeAttendance">TAKE ATTENDANCE</RouterLink>
+        <RouterLink to="/Admin/TakeAttendance">TAKE ATTENDANCE</RouterLink>
         <RouterLink to="/Profile">MY PROFILE ▼</RouterLink>
         <RouterLink to="/" @click.prevent="logOut">LOG OUT</RouterLink>
       </div>
@@ -19,10 +19,13 @@
 import { auth } from '../firebase_setup';
 import { useRouter } from "vue-router";
 import { signOut } from 'firebase/auth';
+
 const router = useRouter();
 
 async function logOut() {
-  signOut(auth).then(() => router.push({path: "/"})).catch((error) => console.log(error.message));
+  signOut(auth)
+    .then(() => router.push({path: "/"}))
+    .catch((error) => console.log(error.message));
 }
 </script>
 
@@ -72,8 +75,8 @@ async function logOut() {
 
 @media (max-width: 768px) {
   .navbar-links {
-      flex-direction: column;
-      gap: 10px;
+    flex-direction: column;
+    gap: 10px;
   }
 }
 </style>
