@@ -2,7 +2,7 @@
 import { db } from "../firebase_setup.js";
 import { getDoc, doc, query, where, getDocs, collection, addDoc, Timestamp } from "firebase/firestore";
 import { auth } from '../firebase_setup';
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { useRoute } from "vue-router";
 import Map from '../components/Map.vue';
 import VolunteerTaskbar from '../components/VolunteerTaskbar.vue';
@@ -19,6 +19,7 @@ const location_lat = ref(null);
 const location_lng = ref(null);
 const requirements = ref([]);
 const signedUpStatus = ref('');
+const sessions = ref([]);
 
 async function fetchTaskDetails() {
     try {
@@ -35,6 +36,7 @@ async function fetchTaskDetails() {
             location_lng.value = taskData.location_lng;
             description.value = taskData.description;
             requirements.value = taskData.requirements || [];
+            sessions.value = taskData.sessions || [];
         }
     } catch (e) {
         alert(`Error fetching task details: ${e.message}`);
@@ -93,6 +95,25 @@ async function joinTask() {
     }
 }
 
+function timeToMinutes(timeStr) {
+    const [hours, minutes] = timeStr.split(':').map(Number);
+    return hours * 60 + minutes;
+}
+
+
+const sortedSessions = computed(() => {
+    return [...sessions.value].sort((a, b) => {
+        const dateA = new Date(a.date);
+        const dateB = new Date(b.date);
+        
+        if (dateA.getTime() !== dateB.getTime()) {
+            return dateA - dateB;
+        }
+        
+        return timeToMinutes(a.start_time) - timeToMinutes(b.start_time);
+    });
+});
+
 onMounted(() => {
     fetchTaskDetails();
     checkIfSignedUp();
@@ -117,6 +138,7 @@ onMounted(() => {
             </div>
         </div>
         
+</div>
         <div class="taskDetails">
             <p v-if="description">{{ description }}</p>
             
@@ -127,11 +149,24 @@ onMounted(() => {
             <p>Start Date: {{ startDateTime }}</p>
             <p>End Date: {{ endDateTime }}</p>
 
+            <div v-if="sortedSessions.length > 0" class="sessionDetailContainer">
+                <strong>Session Schedule</strong>
+                <div class="sessionsContainer">
+                    <div v-for="(session, index) in sortedSessions" :key="index" class="sessionCard">
+                        <div class="sessionDate">{{ session.date }}</div>
+                        <div class="sessionTime">
+                            <span>{{ session.start_time }}</span>
+                            <span class="timeSeparator">to</span>
+                            <span>{{ session.end_time }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <p v-if="location">Location: {{ location }}</p>
             
             <Map v-if="location_lat && location_lng" :location="{ lat: location_lat, lng: location_lng }" />
         </div>
-    </div>
 </template>
 
 <style>
