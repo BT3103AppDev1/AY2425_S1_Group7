@@ -6,6 +6,7 @@ import { ref, onMounted, computed } from "vue";
 import { useRoute } from "vue-router";
 import Map from '../components/Map.vue';
 import VolunteerTaskbar from '../components/VolunteerTaskbar.vue';
+import SessionSelection from "@/components/SessionSelection.vue";
 
 const route = useRoute();
 const taskID = route.params.taskID;
@@ -143,25 +144,34 @@ onMounted(() => {
             <p v-if="description">{{ description }}</p>
             
             <strong v-if="requirements[0] != ''">Requirements</strong>
-            <p v-if="requirements[0] != ''">Requirements: {{ requirements.join(', ') }}</p>
+            <p v-if="requirements[0] != ''">{{ requirements.join(', ') }}</p>
 
             <strong>Task Details:</strong>
             <p>Start Date: {{ startDateTime }}</p>
             <p>End Date: {{ endDateTime }}</p>
 
-            <div v-if="sortedSessions.length > 0" class="sessionDetailContainer">
-                <strong>Session Schedule</strong>
-                <div class="sessionsContainer">
-                    <div v-for="(session, index) in sortedSessions" :key="index" class="sessionCard">
-                        <div class="sessionDate">{{ session.date }}</div>
-                        <div class="sessionTime">
-                            <span>{{ session.start_time }}</span>
-                            <span class="timeSeparator">to</span>
-                            <span>{{ session.end_time }}</span>
+            <div v-if="signedUpStatus !== 'accepted'">
+                <div v-if="sortedSessions.length > 0" class="sessionDetailContainer">
+                    <strong>Session Schedule</strong>
+                    <div class="sessionsContainer">
+                        <div v-for="(session, index) in sortedSessions" :key="index" class="sessionCard">
+                            <div class="sessionDate">{{ session.date }}</div>
+                            <div class="sessionTime">
+                                <span>{{ session.start_time }}</span>
+                                <span class="timeSeparator">to</span>
+                                <span>{{ session.end_time }}</span>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <SessionSelection
+                v-else
+                :sessions="sortedSessions"
+                :taskId="taskID"
+                :volunteerId="auth.currentUser?.uid"
+            />
 
             <p v-if="location">Location: {{ location }}</p>
             
