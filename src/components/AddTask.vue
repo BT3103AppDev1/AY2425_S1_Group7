@@ -1,7 +1,7 @@
 <script setup>
 import { db } from "../firebase_setup.js";
 import { addDoc, collection, Timestamp } from "firebase/firestore";
-import { ref, onMounted } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import loader from '../google_setup';
 
@@ -15,6 +15,7 @@ const location_lat = ref(null);
 const location_lng = ref(null);
 const requirements = ref('');
 const description = ref('');
+const sessions = ref([]);
 
 function processData() {
     const fDateCheck = new Date(startDateTime.value);
@@ -22,28 +23,41 @@ function processData() {
 
     if (fDateCheck >= tDateCheck) {
         alert('Your start date and time must be before the end date and time!');
-    } else {
-        if (confirm(`You are about to add ${taskName.value}, are you sure?`) == true) {
-            const dataUpload = {
-                task_name: taskName.value,
-                start_date_time: Timestamp.fromDate(fDateCheck),
-                end_date_time: Timestamp.fromDate(tDateCheck),
-                location: location.value,
-                location_lat: location_lat.value,
-                location_lng: location_lng.value,
-                requirements: requirements.value.split(",").map(command => command.trim()),
-                description: description.value
-            };
+        return;
+    }
 
-            addDoc(collection(db, "task"), dataUpload)
-                .then(() => {
-                    router.replace('/Admin/Dashboard'); // Should we also have a ViewTasks for admin too?
-                    resetForm();
-                })
-                .catch((error) => {
-                    alert(error.message);
-                });
-        }
+    // validate the sessions
+    const invalidSessions = sessions.value.filter(session => !validateSessionTime(session));
+    if (invalidSessions.length > 0) {
+        alert('Some sessions have invalid times. Please ensure all sessions are within the main date range and end times are after start times.');
+        return;
+    }
+
+    if (confirm(`You are about to add ${taskName.value}, are you sure?`)) {
+        const dataUpload = {
+            task_name: taskName.value,
+            start_date_time: Timestamp.fromDate(fDateCheck),
+            end_date_time: Timestamp.fromDate(tDateCheck),
+            location: location.value,
+            location_lat: location_lat.value,
+            location_lng: location_lng.value,
+            requirements: requirements.value.split(",").map(command => command.trim()),
+            description: description.value,
+            sessions: sessions.value.map(session => ({
+                date: session.date,
+                start_time: session.startTime,
+                end_time: session.endTime
+            }))
+        };
+
+        addDoc(collection(db, "task"), dataUpload)
+            .then(() => {
+                router.replace('/Admin/Dashboard');
+                resetForm();
+            })
+            .catch((error) => {
+                alert(error.message);
+            });
     }
 }
 
@@ -56,6 +70,7 @@ function resetForm() {
     location_lng.value = null;
     requirements.value = '';
     description.value = '';
+    sessions.value = [];
 }
 
 let autocomplete;
@@ -76,6 +91,49 @@ function onPlaceChanged() {
     } else {
         alert("No details available for the selected location.");
     }
+}
+
+const dateRange = computed(() => {
+    if (!startDateTime.value || !endDateTime.value) return [];
+    
+    const dates = [];
+    const currentDate = new Date(startDateTime.value.split('T')[0]);
+    const endDate = new Date(endDateTime.value.split('T')[0]);
+    
+    while (currentDate <= endDate) {
+        dates.push(new Date(currentDate));
+        currentDate.setDate(currentDate.getDate() + 1);
+    }
+    return dates;
+});
+
+function addSession() {
+    sessions.value.push({
+        date: '',
+        startTime: '',
+        endTime: ''
+    });
+}
+
+function removeSession(index) {
+    sessions.value.splice(index, 1);
+}
+
+// check if session is within the main start and end datetime
+function validateSessionTime(session) {
+    if (!session.startTime || !session.endTime) return true;
+    
+    const startTime = new Date(`${session.date}T${session.startTime}`);
+    const endTime = new Date(`${session.date}T${session.endTime}`);
+    
+    const mainStart = new Date(startDateTime.value);
+    const mainEnd = new Date(endDateTime.value);
+    
+    if (startTime < mainStart || endTime > mainEnd) {
+        return false;
+    }
+    
+    return startTime < endTime;
 }
 
 onMounted(() => {
@@ -118,6 +176,63 @@ onMounted(() => {
         <div class="form-item">
             <label for="requirements">Requirements</label>
             <input v-model="requirements" id="requirements" placeholder="Separate by commas">
+        </div>
+
+        <div class="sessions-section">
+            <div class="sessions-header">
+                <h3>Session Timings</h3>
+                <button type="button" @click="addSession" class="add-session-btn">Add Session</button>
+            </div>
+
+            <div v-for="(session, index) in sessions" :key="index" class="session-item">
+                <div class="session-grid">
+                    <div class="session-date">
+                        <label :for="'session-date-' + index">Date</label>
+                        <select 
+                            v-model="session.date" 
+                            :id="'session-date-' + index"
+                            required
+                        >
+                            <option value="">Select a date</option>
+                            <option 
+                                v-for="date in dateRange" 
+                                :key="date"
+                                :value="date.toISOString().split('T')[0]"
+                            >
+                                {{ date.toLocaleDateString() }}
+                            </option>
+                        </select>
+                    </div>
+                    
+                    <div class="session-time">
+                        <label :for="'session-start-' + index">Start Time</label>
+                        <input 
+                            type="time" 
+                            v-model="session.startTime"
+                            :id="'session-start-' + index"
+                            required
+                        >
+                    </div>
+                    
+                    <div class="session-time">
+                        <label :for="'session-end-' + index">End Time</label>
+                        <input 
+                            type="time" 
+                            v-model="session.endTime"
+                            :id="'session-end-' + index"
+                            required
+                        >
+                    </div>
+                    
+                    <button 
+                        type="button" 
+                        @click="removeSession(index)"
+                        class="remove-session-btn"
+                    >
+                        Remove
+                    </button>
+                </div>
+            </div>
         </div>
         
         <div class="submit-button">
@@ -183,5 +298,78 @@ onMounted(() => {
 
 .submit-button input:hover {
   background-color: #f1d186;
+}
+
+.sessions-section {
+    margin-top: 20px;
+    border-top: 2px solid #eee;
+    padding-top: 20px;
+}
+
+.sessions-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.add-session-btn {
+    padding: 8px 16px;
+    background-color: #8dce90;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.add-session-btn:hover {
+    background-color: #66b96a;
+}
+
+.session-item {
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #fff;
+    border-radius: 4px;
+}
+
+.session-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr auto;
+    gap: 15px;
+    align-items: end;
+}
+
+.session-date,
+.session-time {
+    display: flex;
+    flex-direction: column;
+}
+
+.session-date label,
+.session-time label {
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+.session-date select,
+.session-time input {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.remove-session-btn {
+    padding: 8px 16px;
+    background-color: #df8484;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    height: fit-content;
+}
+
+.remove-session-btn:hover {
+    background-color: #ff4444;
 }
 </style>
