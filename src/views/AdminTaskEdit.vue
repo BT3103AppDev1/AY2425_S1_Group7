@@ -1,9 +1,8 @@
 <script setup>
-
-import AdministratorTaskbar from '../components/AdministratorTaskbar.vue'
+import AdministratorTaskbar from '../components/AdministratorTaskbar.vue';
 import { db } from "../firebase_setup.js";
 import { addDoc, collection, Timestamp, getDoc, doc, setDoc } from "firebase/firestore";
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import loader from '../google_setup';
 
@@ -19,15 +18,22 @@ const location_lat = ref(null);
 const location_lng = ref(null);
 const requirements = ref('');
 const description = ref('');
+const sessions = ref([]);
 
 function processData() {
     const fDateCheck = new Date(startDateTime.value);
     const tDateCheck = new Date(endDateTime.value);
 
+    const invalidSessions = sessions.value.filter(session => !validateSessionTime(session));
+    if (invalidSessions.length > 0) {
+        alert('Some sessions have invalid times. Please ensure all sessions are within the main date range and end times are after start times.');
+        return;
+    }
+
     if (fDateCheck >= tDateCheck) {
         alert('Your start date and time must be before the end date and time!');
     } else {
-        if (confirm(`You are about to edit ${taskName.value}, are you sure?`) == true) {
+        if (confirm(`You are about to edit ${taskName.value}, are you sure?`)) {
             const dataUpload = {
                 task_name: taskName.value,
                 start_date_time: Timestamp.fromDate(fDateCheck),
@@ -35,13 +41,18 @@ function processData() {
                 location: location.value,
                 location_lat: location_lat.value,
                 location_lng: location_lng.value,
-                requirements: requirements.value.split(",").map(command => command.trim()),
-                description: description.value
+                requirements: requirements.value.split(",").map(req => req.trim()),
+                description: description.value,
+                sessions: sessions.value.map(session => ({
+                    date: session.date,
+                    start_time: session.startTime,
+                    end_time: session.endTime
+                }))
             };
 
             setDoc(doc(db, "task", taskID), dataUpload)
                 .then(() => {
-                    router.replace('/Admin/Dashboard'); // Should we also have a ViewTasks for admin too?
+                    router.replace('/Admin/Dashboard');
                     resetForm();
                 })
                 .catch((error) => {
@@ -52,14 +63,21 @@ function processData() {
 }
 
 async function populateData() {
-    const document = await getDoc(doc(db, "task", taskID)).then((doc) => doc.data()).catch((error) => console.log(error.message));
-    console.log(document);
-    taskName.value = document.task_name;
-    startDateTime.value = document.start_date_time.toDate().toISOString().slice(0, 16);
-    endDateTime.value = document.end_date_time.toDate().toISOString().slice(0, 16);
-    location.value = document.location;
-    requirements.value = document.requirements.toString();
-    description.value = document.description;
+    try {
+        const document = await getDoc(doc(db, "task", taskID));
+        if (document.exists()) {
+            const data = document.data();
+            taskName.value = data.task_name;
+            startDateTime.value = data.start_date_time.toDate().toISOString().slice(0, 16);
+            endDateTime.value = data.end_date_time.toDate().toISOString().slice(0, 16);
+            location.value = data.location;
+            requirements.value = data.requirements.join(', ');
+            description.value = data.description;
+            sessions.value = data.sessions;
+        }
+    } catch (error) {
+        console.log(error.message);
+    }
 }
 
 function resetForm() {
@@ -71,6 +89,7 @@ function resetForm() {
     location_lng.value = null;
     requirements.value = '';
     description.value = '';
+    sessions.value = [];
 }
 
 let autocomplete;
@@ -93,8 +112,31 @@ function onPlaceChanged() {
     }
 }
 
+function addSession() {
+    sessions.value.push({
+        date: '',
+        startTime: '',
+        endTime: ''
+    });
+}
+
+function removeSession(index) {
+    sessions.value.splice(index, 1);
+}
+
+function validateSessionTime(session) {
+    if (!session.startTime || !session.endTime) return true;
+
+    const startTime = new Date(`${session.date}T${session.startTime}`);
+    const endTime = new Date(`${session.date}T${session.endTime}`);
+    const mainStart = new Date(startDateTime.value);
+    const mainEnd = new Date(endDateTime.value);
+
+    return startTime >= mainStart && endTime <= mainEnd && startTime < endTime;
+}
+
 onMounted(() => {
-    loader.load().then(async () => {
+    loader.load().then(() => {
         initAutocomplete();
         populateData();
     }).catch((e) => {
@@ -136,7 +178,28 @@ onMounted(() => {
             <label for="requirements">Requirements</label>
             <input v-model="requirements" id="requirements" placeholder="Separate by commas">
         </div>
-        
+
+        <div v-for="(session, index) in sessions" :key="index" class="session-item">
+            <div class="session-grid">
+                <div class="session-date">
+                    <label :for="'session-date-' + index">Date</label>
+                    <input type="date" v-model="session.date" :id="'session-date-' + index" required>
+                </div>
+
+                <div class="session-time">
+                    <label :for="'session-start-' + index">Start Time</label>
+                    <input type="time" v-model="session.startTime" :id="'session-start-' + index" required>
+                </div>
+
+                <div class="session-time">
+                    <label :for="'session-end-' + index">End Time</label>
+                    <input type="time" v-model="session.endTime" :id="'session-end-' + index" required>
+                </div>
+
+                <button type="button" @click="removeSession(index)" class="remove-session-btn">Remove</button>
+            </div>
+        </div>
+
         <div class="submit-button">
             <input type="submit" @click.prevent="processData" value="Save task!">
         </div>
