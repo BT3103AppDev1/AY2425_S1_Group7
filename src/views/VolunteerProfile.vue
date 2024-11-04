@@ -32,7 +32,7 @@
     dateOfBirth: '',
     residentialAddress: '',
     organisation: '',
-    skills: ''
+    skills: null,
   });
   
   function editProfile() {
@@ -48,6 +48,7 @@
   onMounted(() => {
   auth.onAuthStateChanged((currentUser) => {
     if (currentUser) {
+      // Fetch user data here or call getData if needed
     } else {
       console.error('No user is currently signed in.');
       alert('User not signed in. Please log in again.');
