@@ -242,7 +242,7 @@ onMounted(() => {
 </div>
 </template>
 
-<style scoped>
+<style>
 .form-container {
   max-width: 700px;
   margin: 0 auto;
