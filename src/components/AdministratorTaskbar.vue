@@ -8,7 +8,7 @@
       <div class="navbar-links">
         <RouterLink to="/Admin/ManageTasks">MANAGE TASKS</RouterLink>
         <RouterLink to="/Admin/TakeAttendance">TAKE ATTENDANCE</RouterLink>
-        <RouterLink to="/Profile">MY PROFILE ▼</RouterLink>
+        <RouterLink to="/admin-profile-view">MY PROFILE ▼</RouterLink>
         <RouterLink to="/" @click.prevent="logOut">LOG OUT</RouterLink>
       </div>
     </nav>
