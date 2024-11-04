@@ -7,6 +7,18 @@
       <h2>Register</h2>
       <form @submit.prevent="register">
         <div class="input-group">
+          <input v-model="firstName" type="text" placeholder="First Name" required />
+          <span class="icon">👤</span>
+        </div>
+        <div class="input-group">
+          <input v-model="lastName" type="text" placeholder="Last Name" required />
+          <span class="icon">👤</span>
+        </div>
+        <div class="input-group">
+          <input v-model="phone" type="tel" placeholder="Phone Number" required />
+          <span class="icon">📞</span>
+        </div>
+        <div class="input-group">
           <input v-model="username" type="text" placeholder="Username" required />
           <span class="icon">👤</span>
         </div>
@@ -26,6 +38,7 @@
   </div>
 </template>
 
+
 <script setup>
 import { ref } from 'vue';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
@@ -34,6 +47,9 @@ import { auth } from '../firebase_setup';
 
 const db = getFirestore();
 
+const firstName = ref('');
+const lastName = ref('');
+const phone = ref('');
 const username = ref('');
 const email = ref('');
 const password = ref('');
@@ -44,11 +60,14 @@ const register = async () => {
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email.value, password.value);
     const user = userCredential.user;
-
+    
     await setDoc(doc(db, 'users', user.uid), {
+      firstName: firstName.value,
+      lastName: lastName.value,
+      phone: phone.value,
       username: username.value,
       email: email.value,
-      password: password.value,
+      password: password.value,  // Consider storing the hashed password.
       role: role.value
     });
 
@@ -58,6 +77,7 @@ const register = async () => {
   }
 };
 </script>
+
 
 <style scoped>
 .register-container {
