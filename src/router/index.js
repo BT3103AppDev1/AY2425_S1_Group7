@@ -10,6 +10,7 @@ import ForbiddenAccess from "@/views/ForbiddenAccess.vue";
 import AdministratorDashboard from "@/views/AdministratorDashboard.vue";
 import NotFound from "@/views/NotFound.vue";
 import ProfileView from '@/components/ProfileView.vue';
+import VolunteerProfile from '@/views/VolunteerProfile.vue';
 import LoginChoice from '@/views/LoginChoice.vue';
 import AdminLogin from '@/views/AdminLogin.vue';
 import AdminTaskManagement from '@/views/AdminTaskManagement.vue';
@@ -18,6 +19,8 @@ import AdminTaskAssignment from '@/views/AdminTaskAssignment.vue';
 import AdminTaskEdit from '@/views/AdminTaskEdit.vue';
 import TakeAttendance from '@/views/TakeAttendance.vue'; 
 import ManageAttendance from '@/views/ManageAttendance.vue'; 
+import AdminProfile from '@/views/AdminProfile.vue';
+import AdminProfileView from '@/components/AdminProfileView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -108,9 +111,24 @@ const router = createRouter({
       props: true
     },
     {
+      path: '/user-profile',
+      name: 'VolunteerProfile',
+      component: VolunteerProfile
+    },
+    {
       path: '/Profile',
       name: 'Profile',
       component: ProfileView
+    },
+    {
+      path: '/admin-profile',
+      name: 'AdminProfile',
+      component: AdminProfile
+    },
+    {
+      path: '/admin-profile-view',
+      name: 'AdminProfileView',
+      component: AdminProfileView
     },
     {
       path: '/:catchAll(.*)', 
