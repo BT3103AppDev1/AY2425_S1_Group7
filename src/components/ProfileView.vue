@@ -151,7 +151,6 @@ async function reAuth() {
         </div>
       </form>
       <div class="go-back-container">
-      <!--<button @click="router.go(-1)" class="go-back-button">Go back!</button>-->
         <button @click="profileEditingEnabled = false" class="go-back-button">Go back!</button>
       </div>
     </div>
