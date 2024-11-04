@@ -1,7 +1,7 @@
 <script setup>
 import { getDoc, setDoc, doc } from 'firebase/firestore';
 import { db } from '@/firebase_setup';
-import { EmailAuthProvider, getAuth, reauthenticateWithCredential, updatePassword, updateEmail } from 'firebase/auth';
+import { EmailAuthProvider, getAuth, reauthenticateWithCredential } from 'firebase/auth';
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
@@ -10,7 +10,7 @@ const profile = ref({
   dateOfBirth: '',
   residentialAddress: '',
   organisation: '',
-  skills: '',
+  skills: null,
 });
 const emit = defineEmits(['save']);
 
@@ -23,7 +23,6 @@ const dateOfBirth = ref();
 const residentialAddress = ref();
 const organisation = ref();
 const skills = ref();
-const contactEmail = ref();
 const email = ref(user.email);
 const password1 = ref();
 const profileEditingEnabled = ref(false);
@@ -37,12 +36,12 @@ async function getData() {
     let data = (await getDoc(q)).data();
     role.value = data.role;
     name.value = data.username;
-    contactEmail.value = data.contact_email;
+    email.value = data.email;
     fullName.value = data?.fullName || '',
     dateOfBirth.value = data?.dob || '';
     residentialAddress.value = data?.residential_address || '';
     organisation.value = data?.organisation || '';
-    skills.value = data?.skills || '';
+    skills.value = data?.skills || null;
 }
 
 onMounted(() => {
@@ -58,19 +57,6 @@ onMounted(() => {
         }
     });
 });
-
-async function updateFields() {
-  await setDoc(q, {
-    full_name: profile.value.fullName,
-    dob: profile.value.dateOfBirth,
-    residential_address: profile.value.residentialAddress,
-    organisation: profile.value.organisation,
-    skills: profile.value.skills,
-  }, { merge: true });
-
-  emit('save', profile.value);  
-  profileEditingEnabled.value = false;  
-}
 
 async function saveChanges() {
   try {
@@ -107,84 +93,129 @@ async function reAuth() {
 
 <template>
 
-<!-- Welcome page with UserID and update profile button -->
-<div v-if="!profileEditingEnabled">
-    <h1>About you, {{ name }}.</h1>
-    <p>Welcome to your profile page. You can update your information below.</p>
-    <button @click="showPasswordModal = true">Update your profile</button>
-</div>
-
-<!-- Modal for password entry -->
-<div v-if="showPasswordModal" class="modal-overlay">
-    <div class="modal-content">
-      <h2>Please enter your password to continue</h2>
-      <form @submit.prevent="reAuth">
-        <label for="password1">Password:</label>
-        <input type="password" id="password1" v-model="password1" required>
-        <button type="submit">Submit</button>
+  <!-- Welcome page with UserID and update profile button -->
+  <div v-if="!profileEditingEnabled" class="profile-container">
+      <h1>About you, {{ name }}.</h1>
+      <p>Welcome to your profile page. You can update your information below.</p>
+  
+      <div class="update-button-container">
+        <button @click="showPasswordModal = true" class="update-button">Update your profile</button>
+      </div>
+  </div>
+  
+  <!-- Modal for password entry -->
+  <div v-if="showPasswordModal" class="modal-overlay">
+      <div class="modal-content">
+        <h2>Please enter your password to continue</h2>
+        <form @submit.prevent="reAuth">
+          <label for="password1">Password:</label>
+          <input type="password" id="password1" v-model="password1" required>
+          <button type="submit">Submit</button>
+        </form>
+        <button @click="showPasswordModal = false">Cancel</button>
+      </div>
+  </div>
+  
+  
+  <!-- Profile Editing Section (after re-authentication) -->
+  <div v-if="profileEditingEnabled" class="center-wrapper">
+    <div class="edit-profile-container">
+      <h1>Edit Your Profile</h1>
+      <form @submit.prevent="saveChanges" class="profile-form">
+        <table class="profile-table">
+          <tr>
+            <th><label for="fullName">Full Name:</label></th>
+            <td><input type="text" id="fullName" v-model="profile.fullName" required></td>
+          </tr>
+          <tr>
+            <th><label for="dob">Date of Birth:</label></th>
+            <td><input type="date" id="dob" v-model="profile.dateOfBirth" required></td>
+          </tr>
+          <tr>
+            <th><label for="residentialAddress">Residential Address:</label></th>
+            <td><input type="text" id="residentialAddress" v-model="profile.residentialAddress" required></td>
+          </tr>
+          <tr>
+            <th><label for="organisation">Your Organisation:</label></th>
+            <td><input type="text" id="organisation" v-model="profile.organisation" required></td>
+          </tr>
+          <tr>
+            <th><label for="skills">Your Skills:</label></th>
+            <td>
+              <input type="text" id="skills" v-model="profile.skills" placeholder="Separate by commas" required>
+            </td>
+          </tr>
+        </table>
+        <div class="submit-button-container">
+          <button type="submit" class="save-button">Save Changes</button>
+        </div>
       </form>
-      <button @click="showPasswordModal = false">Cancel</button>
+      <div class="go-back-container">
+        <button @click="profileEditingEnabled = false" class="go-back-button">Go back!</button>
+      </div>
     </div>
-</div>
-
-
-<!-- Profile Editing Section (after re-authentication) -->
-<div v-if="profileEditingEnabled">
-  <h1>Edit Your Profile</h1>
-  <form @submit.prevent="updateFields">
-    <label for="fullName">Full Name:</label>
-    <input type="text" id="fullName" v-model="profile.fullName" required>
-
-    <label for="dob">Date of Birth:</label>
-    <input type="date" id="dob" v-model="profile.dateOfBirth" required>
-
-    <label for="residentialAddress">Residential Address:</label>
-    <input type="text" id="residentialAddress" v-model="profile.residentialAddress" required>
-
-    <label for="organisation">Your Organisation:</label>
-    <input type="text" id="organisation" v-model="profile.organisation" required>
-
-    <label for="skills">Your Skills:</label>
-    <input type="text" id="skills" v-model="profile.skills" required>
-
-    <button type="submit">Save Changes</button>
-  </form>
-</div>
-
-
+  </div>
+  
   <!-- Display User Profile Information -->
   <div v-if="!profileEditingEnabled">
-    <h2>Your Profile Information</h2>
-    <table>
-      <tr>
-        <td>Full Name:</td>
-        <td>{{ fullName }}</td>
-      </tr>
-      <tr>
-        <td>Date of Birth:</td>
-        <td>{{ dateOfBirth }}</td>
-      </tr>
-      <tr>
-        <td>Residential Address:</td>
-        <td>{{ residentialAddress }}</td>
-      </tr>
-      <tr>
-        <td>Organisation:</td>
-        <td>{{ organisation }}</td>
-      </tr>
-      <tr>
-        <td>Skills:</td>
-        <td>{{ skills }}</td>
-      </tr>
-    </table>
-  </div>
+    <div class="profile-table-container">
+      <h2>Your Profile Information</h2>
+      <table class = "profile-table">
+        <tr>
+          <td>Full Name:</td>
+          <td>{{ fullName }}</td>
+        </tr>
+        <tr>
+          <td>Date of Birth:</td>
+          <td>{{ dateOfBirth }}</td>
+        </tr>
+        <tr>
+          <td>Residential Address:</td>
+          <td>{{ residentialAddress }}</td>
+        </tr>
+        <tr>
+          <td>Organisation:</td>
+          <td>{{ organisation }}</td>
+        </tr>
+        <tr>
+          <td>Skills:</td>
+          <td>{{ skills }}</td>
+        </tr>
+      </table>
+      <div class="go-back-container">
+        <button @click="router.push('/ViewTasks')" class="go-back-button">Go back!</button>
+      </div> 
+    </div>
+  </div> 
 
-<div id="goBack">
-    <button @click="router.go(-1)">Go back!</button>
-</div>
-</template>
+  </template>
 
 <style scoped>
+.profile-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.update-button-container {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.update-button {
+  margin-bottom: 20px;
+  padding: 10px 20px;
+  background-color: #ddd;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -216,6 +247,7 @@ async function reAuth() {
   margin: 10px 0;
   border-radius: 5px;
   border: 1px solid #ccc;
+  box-sizing: border-box;
 }
 
 .modal-content button {
@@ -238,5 +270,123 @@ async function reAuth() {
 
 .modal-content button[type="submit"]:hover {
   background-color: #0056b3;
+}
+
+.profile-table-container {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.profile-table th {
+  text-align: left;
+  padding: 8px;
+  background-color: #f2f2f2;
+  font-weight: bold;
+  width: 30%;
+}
+
+.profile-table td {
+  padding: 8px;
+  border-top: 1px solid #ddd;
+}
+
+.profile-table input[type="text"],
+.profile-table input[type="date"] {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #b89ac9; 
+    border-radius: 5px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+.profile-table input#skills::placeholder {
+    color: #888; 
+    font-style: italic; 
+}
+
+.profile-table input::placeholder {
+    color: #888; 
+    font-style: italic;
+}
+
+.go-back-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.go-back-button {
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold; 
+  color: black;
+  background-color: #fadfa1;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.go-back-button :hover {
+  background-color: #f0d78c;
+}
+
+.profile-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+} 
+
+.submit-button-container {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.save-button {
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold; 
+  color: black;
+  background-color: #fadfa1;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.save-button:hover {
+  background-color: #f0c975;
+}
+
+.center-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh; 
+    width: 100%;
+}
+
+.edit-profile-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    max-width: 600px;
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 }
 </style>
