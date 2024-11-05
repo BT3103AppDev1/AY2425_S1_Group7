@@ -53,7 +53,7 @@ Promise.all([getCountFromServer(queryOfRequests),getCountFromServer(queryOfAtten
             </div>
 
             <div class = "task-card3">
-              <RouterLink to="/TakeAttendance">
+              <RouterLink to="/Admin/TakeAttendance">
                 <h3>Take Attendance</h3>
                 <p>Record and track attendance of volunteers at events</p>
               </RouterLink>
