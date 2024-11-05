@@ -152,7 +152,6 @@ async function reAuth() {
         </div>
       </form>
       <div class="go-back-container">
-      <!--<button @click="router.go(-1)" class="go-back-button">Go back!</button>-->
         <button @click="profileEditingEnabled = false" class="go-back-button">Go back!</button>
       </div>
     </div>
@@ -185,7 +184,7 @@ async function reAuth() {
         </tr>
       </table>
       <div class="go-back-container">
-        <button @click="router.push('/ViewTasks')" class="go-back-button">Go back!</button>
+        <button @click="router.push('/Admin/Dashboard')" class="go-back-button">Go back!</button>
       </div> 
     </div>
   </div> 
