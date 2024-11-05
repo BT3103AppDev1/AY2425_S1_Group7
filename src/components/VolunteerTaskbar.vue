@@ -2,7 +2,7 @@
     <div>
       <nav class="navbar">
         <div class="navbar-logo">
- 
+          <img src="/app logo.png" alt="Voluntrac Logo" />
           <RouterLink to="/ViewTasks">VOLUNTRAC</RouterLink>
         </div>
         <div class="navbar-links">
