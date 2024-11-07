@@ -1,31 +1,4 @@
-<template>
-    <div class="login-container">
-      <div class="welcome">
-        <img class="logo" src="/image.png" alt="Logo" />
-      </div>
-      <div class="login-form">
-        <h2>Login</h2>
-        <form @submit.prevent="login">
-          <div class="input-group">
-            <input v-model="email" type="email" placeholder="Email" required />
-            <span class="icon">👤</span>
-          </div>
-          <div class="input-group">
-            <input v-model="password" type="password" placeholder="Password" required />
-            <span class="icon">🔒</span>
-          </div>
-          <button type="submit" class="login-button">Login</button>
-        </form>
-        <a href="#" class="forgot-password" @click.prevent="sendPasswordReset">Forgot password?</a>
-        <p>Don’t have an account? <RouterLink to="/registerUser">Register</RouterLink></p>
-      </div>
-      <div id="Error Message">
-        {{ message }}
-      </div>
-    </div>
-  </template>
-  
-  <script setup>
+<script setup>
 import { ref } from 'vue';
 import { signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
 import { db, auth } from '../firebase_setup';
@@ -92,6 +65,33 @@ const sendPasswordReset = async () => {
   }
 };
 </script>
+
+<template>
+    <div class="login-container">
+      <div class="welcome">
+        <img class="logo" src="/image.png" alt="Logo" />
+      </div>
+      <div class="login-form">
+        <h2>Login</h2>
+        <form @submit.prevent="login">
+          <div class="input-group">
+            <input v-model="email" type="email" placeholder="Email" required />
+            <span class="icon">👤</span>
+          </div>
+          <div class="input-group">
+            <input v-model="password" type="password" placeholder="Password" required />
+            <span class="icon">🔒</span>
+          </div>
+          <button type="submit" class="login-button">Login</button>
+        </form>
+        <a href="#" class="forgot-password" @click.prevent="sendPasswordReset">Forgot password?</a>
+        <p>Don’t have an account? <RouterLink to="/registerUser">Register</RouterLink></p>
+      </div>
+      <div id="Error Message">
+        {{ message }}
+      </div>
+    </div>
+  </template>
 
 <style scoped>
 .login-container {

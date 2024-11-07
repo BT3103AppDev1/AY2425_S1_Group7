@@ -1,3 +1,14 @@
+<script setup>
+import { auth } from '../firebase_setup';
+import { useRouter } from "vue-router";
+import { signOut } from 'firebase/auth';
+const router = useRouter();
+
+async function logOut() {
+    signOut(auth).then(() => router.push({path: "/"})).catch((error) => console.log(error.message));
+}
+</script>
+
 <template>
     <div>
       <nav class="navbar">
@@ -14,17 +25,6 @@
       </nav>
     </div>
   </template>
-  
-  <script setup>
-  import { auth } from '../firebase_setup';
-  import { useRouter } from "vue-router";
-  import { signOut } from 'firebase/auth';
-  const router = useRouter();
-
-  async function logOut() {
-      signOut(auth).then(() => router.push({path: "/"})).catch((error) => console.log(error.message));
-  }
-  </script>
   
   <style scoped>
   .navbar {

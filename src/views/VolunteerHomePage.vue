@@ -1,49 +1,3 @@
-<template>
-  <div>
-    <VolunteerTaskbar></VolunteerTaskbar>
-
-    <div class="volunteer-homepage">
-      <HomePageUsername /> <!-- Renders the username -->
-      <LastLoginDate /> <!-- Renders the last login date -->
-    </div>
-
-    <div class="task-table-container">
-      <h2 class="page-title">Here's what you signed up for</h2>
-      <table class="task-table">
-        <thead>
-          <tr>
-            <th>Upcoming Tasks</th>
-            <th>Start Date & Time</th>
-            <th>Reporting Location</th>
-            <th>Status</th>
-            <th>Options</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="task in tasks" :key="task.id">
-            <td @click="viewTaskDetails(task.task_id)">{{ task.task_name }}</td>
-            <td>{{ task.start_date_time.toDate().toLocaleString() }}</td>
-            <td>{{ task.location }}</td>
-            <td>{{ task.status }}</td>
-            <td>
-              <button v-if="task.status === 'accepted'" @click="cancelTask(task.task_id, task.id)" class="action-button">Cancel</button>
-              <button v-else-if="task.status === 'rejected'" @click="cancelTask(task.task_id, task.id)" class="action-button">Delete</button>
-              <button v-else @click="cancelPendingTask(task.task_id)" class="action-button">Cancel</button>
-            </td>
-          </tr>
-          <tr v-if="tasks.length === 0">
-            <td colspan="5">No tasks available</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="image-container">
-      <img src="/img2.png" alt="Illustration">
-    </div>
-  </div>
-</template>
-
 <script setup>
 import { ref, onMounted } from 'vue';
 import { db } from '../firebase_setup';
@@ -165,6 +119,52 @@ function viewTaskDetails(taskID) {
   router.push(`/ViewTask/${taskID}`);
 }
 </script>
+
+<template>
+  <div>
+    <VolunteerTaskbar></VolunteerTaskbar>
+
+    <div class="volunteer-homepage">
+      <HomePageUsername /> <!-- Renders the username -->
+      <LastLoginDate /> <!-- Renders the last login date -->
+    </div>
+
+    <div class="task-table-container">
+      <h2 class="page-title">Here's what you signed up for</h2>
+      <table class="task-table">
+        <thead>
+          <tr>
+            <th>Upcoming Tasks</th>
+            <th>Start Date & Time</th>
+            <th>Reporting Location</th>
+            <th>Status</th>
+            <th>Options</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="task in tasks" :key="task.id">
+            <td @click="viewTaskDetails(task.task_id)">{{ task.task_name }}</td>
+            <td>{{ task.start_date_time.toDate().toLocaleString() }}</td>
+            <td>{{ task.location }}</td>
+            <td>{{ task.status }}</td>
+            <td>
+              <button v-if="task.status === 'accepted'" @click="cancelTask(task.task_id, task.id)" class="action-button">Cancel</button>
+              <button v-else-if="task.status === 'rejected'" @click="cancelTask(task.task_id, task.id)" class="action-button">Delete</button>
+              <button v-else @click="cancelPendingTask(task.task_id)" class="action-button">Cancel</button>
+            </td>
+          </tr>
+          <tr v-if="tasks.length === 0">
+            <td colspan="5">No tasks available</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="image-container">
+      <img src="/img2.png" alt="Illustration">
+    </div>
+  </div>
+</template>
 
 <style scoped>
 

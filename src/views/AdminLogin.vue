@@ -1,31 +1,3 @@
-<template>
-  <div class="login-container">
-    <div class="welcome">
-      <img class="logo" src="/image.png" alt="Logo" />
-    </div>
-    <div class="login-form">
-      <h2>Admin Login</h2>
-      <form @submit.prevent="login">
-        <div class="input-group">
-          <input v-model="email" type="email" placeholder="Email" required />
-          <span class="icon">👤</span>
-        </div>
-        <div class="input-group">
-          <input v-model="password" type="password" placeholder="Password" required />
-          <span class="icon">🔒</span>
-        </div>
-        <button type="submit" class="login-button">Login</button>
-      </form>
-      <br />
-      <a href="#" class="forgot-password" @click.prevent="sendPasswordReset">Forgot password?</a>
-      <p>Don't have an account? <RouterLink to="/registerAdmin">Register</RouterLink></p>
-    </div>
-    <div id="error-message">
-      {{ message }}
-    </div>
-  </div>
-</template>
-
 <script setup>
 import { ref } from 'vue';
 import { sendPasswordResetEmail, signInWithEmailAndPassword } from 'firebase/auth';
@@ -92,8 +64,36 @@ const sendPasswordReset = async () => {
   }
 };
 </script>
+
+<template>
+  <div class="login-container">
+    <div class="welcome">
+      <img class="logo" src="/image.png" alt="Logo" />
+    </div>
+    <div class="login-form">
+      <h2>Admin Login</h2>
+      <form @submit.prevent="login">
+        <div class="input-group">
+          <input v-model="email" type="email" placeholder="Email" required />
+          <span class="icon">👤</span>
+        </div>
+        <div class="input-group">
+          <input v-model="password" type="password" placeholder="Password" required />
+          <span class="icon">🔒</span>
+        </div>
+        <button type="submit" class="login-button">Login</button>
+      </form>
+      <br />
+      <a href="#" class="forgot-password" @click.prevent="sendPasswordReset">Forgot password?</a>
+      <p>Don't have an account? <RouterLink to="/registerAdmin">Register</RouterLink></p>
+    </div>
+    <div id="error-message">
+      {{ message }}
+    </div>
+  </div>
+</template>
   
-  <style scoped>
+<style scoped>
   .login-container {
     display: flex;
     justify-content: center;

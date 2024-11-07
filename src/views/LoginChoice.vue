@@ -1,3 +1,6 @@
+<script setup>
+</script>
+
 <template>
     <div class="choice-container">
       <h2>Select Your Login Type</h2>
@@ -11,9 +14,6 @@
       </div>
     </div>
   </template>
-  
-  <script setup>
-  </script>
   
   <style scoped>
   .choice-container {

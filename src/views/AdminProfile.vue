@@ -1,24 +1,4 @@
-<template>
-    <div>
-      <h1>Your Profile</h1>
-      <AdminProfileView v-if="!showConfirmation" @save="handleSave" />
-      
-      <!-- Confirmation Page -->
-      <div v-if="showConfirmation">
-        <h2>Profile Saved</h2>
-        <table>
-          <tr><td>Full Name:</td><td>{{ profile.fullName }}</td></tr>
-          <tr><td>Date of Birth:</td><td>{{ profile.dateOfBirth }}</td></tr>
-          <tr><td>Residential Address:</td><td>{{ profile.residentialAddress }}</td></tr>
-          <tr><td>Organisation:</td><td>{{ profile.organisation }}</td></tr>
-          <tr><td>Department:</td><td>{{ profile.department }}</td></tr>
-        </table>
-        <button @click="editProfile">Edit Again</button>
-      </div>
-    </div>
-  </template>
-  
-  <script setup>
+<script setup>
   import { ref, onMounted } from 'vue';
   import AdminProfileView from '@/components/AdminProfileView.vue';
   import { useRouter } from 'vue-router';
@@ -57,4 +37,26 @@
   });
 });
 </script>
+
+<template>
+    <div>
+      <h1>Your Profile</h1>
+      <AdminProfileView v-if="!showConfirmation" @save="handleSave" />
+      
+      <!-- Confirmation Page -->
+      <div v-if="showConfirmation">
+        <h2>Profile Saved</h2>
+        <table>
+          <tr><td>Full Name:</td><td>{{ profile.fullName }}</td></tr>
+          <tr><td>Date of Birth:</td><td>{{ profile.dateOfBirth }}</td></tr>
+          <tr><td>Residential Address:</td><td>{{ profile.residentialAddress }}</td></tr>
+          <tr><td>Organisation:</td><td>{{ profile.organisation }}</td></tr>
+          <tr><td>Department:</td><td>{{ profile.department }}</td></tr>
+        </table>
+        <button @click="editProfile">Edit Again</button>
+      </div>
+    </div>
+</template>
   
+<style scoped>
+</style>

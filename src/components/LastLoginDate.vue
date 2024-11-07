@@ -26,4 +26,8 @@ onMounted(() => {
 
 <template>
     <h3>Last login: {{ lastLogin }}</h3> <!-- Display the last login date -->
-  </template>
+</template>
+
+
+<style scoped>
+</style>

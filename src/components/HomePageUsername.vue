@@ -32,4 +32,8 @@ onMounted(() => {
 
 <template>
     <h1>Welcome, {{ username }}!</h1>
-  </template>
+</template>
+
+
+<style scoped>
+</style>
