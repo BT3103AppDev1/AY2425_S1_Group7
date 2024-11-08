@@ -111,7 +111,7 @@ const router = createRouter({
       props: true
     },
     {
-      path: '/user-profile',
+      path: '/UserProfile',
       name: 'VolunteerProfile',
       component: VolunteerProfile
     },
@@ -121,12 +121,12 @@ const router = createRouter({
       component: ProfileView
     },
     {
-      path: '/admin-profile',
+      path: '/AdminProfile',
       name: 'AdminProfile',
       component: AdminProfile
     },
     {
-      path: '/admin-profile-view',
+      path: '/AdminProfileView',
       name: 'AdminProfileView',
       component: AdminProfileView
     },

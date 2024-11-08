@@ -50,7 +50,7 @@ onMounted(() => {
             user.value = currentUser;
             email.value = currentUser.email;
             getData().then(() => {
-                router.push('/admin-profile');
+                router.push('/AdminProfile');
             });
         } else {
             console.error('No user is currently signed in.');
@@ -66,7 +66,7 @@ async function saveChanges() {
     await setDoc(q, profile.value, { merge: true });
     console.log('Profile updated:', profile.value);
     emit('save', profile.value);  
-    router.push('/admin-profile-view'); 
+    router.push('/AdminProfileView'); 
   } catch (error) {
     console.error('Error saving changes:', error);
   }

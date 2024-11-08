@@ -64,7 +64,7 @@ async function saveChanges() {
     await setDoc(q, profile.value, { merge: true });
     console.log('Profile updated:', profile.value);
     emit('save', profile.value);  
-    router.push('/user-profile'); 
+    router.push('/UserProfile'); 
   } catch (error) {
     console.error('Error saving changes:', error);
   }
