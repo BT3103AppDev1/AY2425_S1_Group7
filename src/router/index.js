@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import TaskAdd from '@/views/TaskAdd.vue';
+import TaskAdd from '@/views/AdminTaskAdd.vue';
 import LogIn from '@/views/LogIn.vue';
 import RegisterUser from '@/views/RegisterUser.vue';
 import RegisterAdmin from '@/views/RegisterAdmin.vue';

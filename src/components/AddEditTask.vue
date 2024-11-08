@@ -1,11 +1,13 @@
 <script setup>
 import { db } from "../firebase_setup.js";
-import { addDoc, collection, Timestamp } from "firebase/firestore";
+import { addDoc, collection, Timestamp, getDoc, doc, setDoc } from "firebase/firestore";
 import { ref, computed, onMounted } from "vue";
-import { useRouter } from "vue-router";
-import loader from '../google_setup';
+import { useRouter, useRoute } from "vue-router";
+import loader from '../google_setup.js';
 
 const router = useRouter();
+const route = useRoute();
+const taskID = route.params.taskID;
 
 const taskName = ref('');
 const startDateTime = ref('');
@@ -50,7 +52,17 @@ function processData() {
             }))
         };
 
-        addDoc(collection(db, "task"), dataUpload)
+        if (taskID) {
+            setDoc(doc(db, "task", taskID), dataUpload)
+                .then(() => {
+                    router.replace('/Admin/Dashboard');
+                    resetForm();
+                })
+                .catch((error) => {
+                    alert(error.message);
+                });
+        } else {
+            addDoc(collection(db, "task"), dataUpload)
             .then(() => {
                 router.replace('/Admin/Dashboard');
                 resetForm();
@@ -58,6 +70,27 @@ function processData() {
             .catch((error) => {
                 alert(error.message);
             });
+        }
+    }
+}
+
+async function populateData() {
+    if (taskID != null) {
+        try {
+            const document = await getDoc(doc(db, "task", taskID));
+        if (document.exists()) {
+            const data = document.data();
+            taskName.value = data.task_name;
+            startDateTime.value = data.start_date_time.toDate().toISOString().slice(0, 16);
+            endDateTime.value = data.end_date_time.toDate().toISOString().slice(0, 16);
+            location.value = data.location;
+            requirements.value = data.requirements.join(', ');
+            description.value = data.description;
+            sessions.value = data.sessions;
+        }
+        } catch (error) {
+            console.log(error.message);
+        }
     }
 }
 
@@ -139,6 +172,7 @@ function validateSessionTime(session) {
 onMounted(() => {
     loader.load().then(() => {
         initAutocomplete();
+        populateData();
     }).catch((e) => {
         console.log('Error loading Google Maps:', e);
     });
@@ -185,53 +219,24 @@ onMounted(() => {
             </div>
 
             <div v-for="(session, index) in sessions" :key="index" class="session-item">
-                <div class="session-grid">
-                    <div class="session-date">
-                        <label :for="'session-date-' + index">Date</label>
-                        <select 
-                            v-model="session.date" 
-                            :id="'session-date-' + index"
-                            required
-                        >
-                            <option value="">Select a date</option>
-                            <option 
-                                v-for="date in dateRange" 
-                                :key="date"
-                                :value="date.toISOString().split('T')[0]"
-                            >
-                                {{ date.toLocaleDateString() }}
-                            </option>
-                        </select>
-                    </div>
-                    
-                    <div class="session-time">
-                        <label :for="'session-start-' + index">Start Time</label>
-                        <input 
-                            type="time" 
-                            v-model="session.startTime"
-                            :id="'session-start-' + index"
-                            required
-                        >
-                    </div>
-                    
-                    <div class="session-time">
-                        <label :for="'session-end-' + index">End Time</label>
-                        <input 
-                            type="time" 
-                            v-model="session.endTime"
-                            :id="'session-end-' + index"
-                            required
-                        >
-                    </div>
-                    
-                    <button 
-                        type="button" 
-                        @click="removeSession(index)"
-                        class="remove-session-btn"
-                    >
-                        Remove
-                    </button>
+            <div class="session-grid">
+                <div class="session-date">
+                    <label :for="'session-date-' + index">Date</label>
+                    <input type="date" v-model="session.date" :id="'session-date-' + index" required>
                 </div>
+
+                <div class="session-time">
+                    <label :for="'session-start-' + index">Start Time</label>
+                    <input type="time" v-model="session.startTime" :id="'session-start-' + index" required>
+                </div>
+
+                <div class="session-time">
+                    <label :for="'session-end-' + index">End Time</label>
+                    <input type="time" v-model="session.endTime" :id="'session-end-' + index" required>
+                </div>
+
+                <button type="button" @click="removeSession(index)" class="remove-session-btn">Remove</button>
+            </div>
             </div>
         </div>
         
