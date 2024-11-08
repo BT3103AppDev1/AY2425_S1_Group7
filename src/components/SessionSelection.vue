@@ -92,51 +92,51 @@ onMounted(() => {
 </script>
 
 <template>
-    <div class="sessionSelectionCard">
-        <div class="cardHeader">
-            <h2>{{ hasExistingAssignments ? 'Your Confirmed Sessions' : 'Select Available Sessions' }}</h2>
-        </div>
-        <div class="cardContent">
-            <div v-if="error" class="alert error">{{ error }}</div>
-            <div v-if="success" class="alert success">{{ success }}</div>
+<div class="sessionSelectionCard">
+    <div class="cardHeader">
+        <h2>{{ hasExistingAssignments ? 'Your Confirmed Sessions' : 'Select Available Sessions' }}</h2>
+    </div>
+    <div class="cardContent">
+        <div v-if="error" class="alert error">{{ error }}</div>
+        <div v-if="success" class="alert success">{{ success }}</div>
 
-            <div v-if="sessions.length > 0" class="sessionDetailContainer">
-                <strong>Session Schedule</strong>
-                <div class="sessionsContainer">
-                    <div v-for="(session, index) in sessions" 
-                         :key="index" 
-                         class="sessionCard"
-                         :class="{ 'confirmed': hasExistingAssignments && confirmedSessions.includes(index) }">
-                        <input 
-                            type="checkbox"
-                            :checked="selectedSessions.includes(index) || (hasExistingAssignments && confirmedSessions.includes(index))"
-                            @change="toggleSession(index)"
-                            :disabled="hasExistingAssignments"
-                        >
-                        <div class="sessionDate">{{ session.date }}</div>
-                        <div class="sessionTime">
-                            <span>{{ session.start_time }}</span>
-                            <span class="timeSeparator">to</span>
-                            <span>{{ session.end_time }}</span>
-                        </div>
-                        <div v-if="hasExistingAssignments && confirmedSessions.includes(index)" 
-                             class="confirmedBadge">
-                            Confirmed
-                        </div>
+        <div v-if="sessions.length > 0" class="sessionDetailContainer">
+            <strong>Session Schedule</strong>
+            <div class="sessionsContainer">
+                <div v-for="(session, index) in sessions" 
+                        :key="index" 
+                        class="sessionCard"
+                        :class="{ 'confirmed': hasExistingAssignments && confirmedSessions.includes(index) }">
+                    <input 
+                        type="checkbox"
+                        :checked="selectedSessions.includes(index) || (hasExistingAssignments && confirmedSessions.includes(index))"
+                        @change="toggleSession(index)"
+                        :disabled="hasExistingAssignments"
+                    >
+                    <div class="sessionDate">{{ session.date }}</div>
+                    <div class="sessionTime">
+                        <span>{{ session.start_time }}</span>
+                        <span class="timeSeparator">to</span>
+                        <span>{{ session.end_time }}</span>
+                    </div>
+                    <div v-if="hasExistingAssignments && confirmedSessions.includes(index)" 
+                            class="confirmedBadge">
+                        Confirmed
                     </div>
                 </div>
             </div>
-            
-            <button 
-                v-if="!hasExistingAssignments"
-                class="sessionConfirm"
-                :disabled="isSubmitting || selectedSessions.length === 0"
-                @click="handleConfirm"
-            >
-                {{ isSubmitting ? 'Confirming...' : 'Confirm Selected Sessions' }}
-            </button>
         </div>
+        
+        <button 
+            v-if="!hasExistingAssignments"
+            class="sessionConfirm"
+            :disabled="isSubmitting || selectedSessions.length === 0"
+            @click="handleConfirm"
+        >
+            {{ isSubmitting ? 'Confirming...' : 'Confirm Selected Sessions' }}
+        </button>
     </div>
+</div>
 </template>
 
 <style scoped>

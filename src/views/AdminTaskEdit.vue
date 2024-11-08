@@ -146,121 +146,121 @@ onMounted(() => {
 </script>
 
 <template>
-    <AdministratorTaskbar></AdministratorTaskbar>
-    <h1>Edit Tasks here!</h1>
-    <form>
-        <div class="form-grid">
-            <label for="taskName">Task Name</label>
-            <input v-model="taskName" id="taskName" required>
-        </div>
+<AdministratorTaskbar></AdministratorTaskbar>
+<h1>Edit Tasks here!</h1>
+<form>
+    <div class="form-grid">
+        <label for="taskName">Task Name</label>
+        <input v-model="taskName" id="taskName" required>
+    </div>
 
-        <div class="form-item">
-            <label for="description">Task Description</label>
-            <textarea v-model="description" id="description" required></textarea>
-        </div>
+    <div class="form-item">
+        <label for="description">Task Description</label>
+        <textarea v-model="description" id="description" required></textarea>
+    </div>
 
-        <div class="form-item">
-            <label for="startDateTime">Start Date & Time</label>
-            <input v-model="startDateTime" type="datetime-local" id="startDateTime" required>
-        </div>
+    <div class="form-item">
+        <label for="startDateTime">Start Date & Time</label>
+        <input v-model="startDateTime" type="datetime-local" id="startDateTime" required>
+    </div>
 
-        <div class="form-item">
-            <label for="endDateTime">End Date & Time</label>
-            <input v-model="endDateTime" type="datetime-local" id="endDateTime" required>
-        </div>
+    <div class="form-item">
+        <label for="endDateTime">End Date & Time</label>
+        <input v-model="endDateTime" type="datetime-local" id="endDateTime" required>
+    </div>
 
-        <div class="form-item">
-            <label for="location">Location</label>
-            <input v-model="location" id="autocomplete" type="text" placeholder="Enter location" required>
-        </div>
+    <div class="form-item">
+        <label for="location">Location</label>
+        <input v-model="location" id="autocomplete" type="text" placeholder="Enter location" required>
+    </div>
 
-        <div class="form-item">
-            <label for="requirements">Requirements</label>
-            <input v-model="requirements" id="requirements" placeholder="Separate by commas">
-        </div>
+    <div class="form-item">
+        <label for="requirements">Requirements</label>
+        <input v-model="requirements" id="requirements" placeholder="Separate by commas">
+    </div>
 
-        <div v-for="(session, index) in sessions" :key="index" class="session-item">
-            <div class="session-grid">
-                <div class="session-date">
-                    <label :for="'session-date-' + index">Date</label>
-                    <input type="date" v-model="session.date" :id="'session-date-' + index" required>
-                </div>
-
-                <div class="session-time">
-                    <label :for="'session-start-' + index">Start Time</label>
-                    <input type="time" v-model="session.startTime" :id="'session-start-' + index" required>
-                </div>
-
-                <div class="session-time">
-                    <label :for="'session-end-' + index">End Time</label>
-                    <input type="time" v-model="session.endTime" :id="'session-end-' + index" required>
-                </div>
-
-                <button type="button" @click="removeSession(index)" class="remove-session-btn">Remove</button>
+    <div v-for="(session, index) in sessions" :key="index" class="session-item">
+        <div class="session-grid">
+            <div class="session-date">
+                <label :for="'session-date-' + index">Date</label>
+                <input type="date" v-model="session.date" :id="'session-date-' + index" required>
             </div>
-        </div>
 
-        <div class="submit-button">
-            <input type="submit" @click.prevent="processData" value="Save task!">
+            <div class="session-time">
+                <label :for="'session-start-' + index">Start Time</label>
+                <input type="time" v-model="session.startTime" :id="'session-start-' + index" required>
+            </div>
+
+            <div class="session-time">
+                <label :for="'session-end-' + index">End Time</label>
+                <input type="time" v-model="session.endTime" :id="'session-end-' + index" required>
+            </div>
+
+            <button type="button" @click="removeSession(index)" class="remove-session-btn">Remove</button>
         </div>
-    </form>
+    </div>
+
+    <div class="submit-button">
+        <input type="submit" @click.prevent="processData" value="Save task!">
+    </div>
+</form>
 </template>
 
 <style scoped>
 .form-container {
-  max-width: 700px;
-  margin: 0 auto;
-  padding: 20px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background-color: #f9f9f9;
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
 }
 
 .form-grid {
-  display: grid;
-  font-size: 16px;
-  font-weight: bold;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-  margin-bottom: 30px;
+    display: grid;
+    font-size: 16px;
+    font-weight: bold;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 30px;
 }
 
 .form-item {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 30px; 
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 30px; 
 }
 
 .form-item label {
-  font-weight: bold; 
-  margin-bottom: 8px;
+    font-weight: bold; 
+    margin-bottom: 8px;
 }
 
 .form-item input,
 .form-item textarea {
-  padding: 10px; 
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 16px;
+    padding: 10px; 
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
 }
 
 .submit-button {
-  margin-top: 20px;
-  text-align: right;
+    margin-top: 20px;
+    text-align: right;
 }
 
 .submit-button input {
-  padding: 10px 20px;
-  font-size: 16px;
-  font-weight: bold; 
-  color: black;
-  background-color: #fadfa1;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold; 
+    color: black;
+    background-color: #fadfa1;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
 }
 
 .submit-button input:hover {
-  background-color: #f1d186;
+    background-color: #f1d186;
 }
 </style>

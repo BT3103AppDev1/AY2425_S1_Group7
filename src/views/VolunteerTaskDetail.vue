@@ -122,61 +122,60 @@ onMounted(() => {
 </script>
 
 <template>
-    <VolunteerTaskbar></VolunteerTaskbar>
-    <div>
-        <div class="taskDetailHeader">
-            <h1>{{ taskName }}</h1>
-            <div>
-                <button class="taskDetailButton" v-if="!signedUpStatus" @click="joinTask">
-                    Sign Up
-                </button>
-                <button class="taskDetailButton pending" v-else-if="signedUpStatus === 'pending'" disabled>
-                    Pending
-                </button>
-                <button class="taskDetailButton status" v-else disabled>
-                    {{ signedUpStatus }}
-                </button>
-            </div>
+<VolunteerTaskbar></VolunteerTaskbar>
+<div>
+    <div class="taskDetailHeader">
+        <h1>{{ taskName }}</h1>
+        <div>
+            <button class="taskDetailButton" v-if="!signedUpStatus" @click="joinTask">
+                Sign Up
+            </button>
+            <button class="taskDetailButton pending" v-else-if="signedUpStatus === 'pending'" disabled>
+                Pending
+            </button>
+            <button class="taskDetailButton status" v-else disabled>
+                {{ signedUpStatus }}
+            </button>
         </div>
-        
+    </div>
 </div>
-        <div class="taskDetails">
-            <p v-if="description">{{ description }}</p>
-            
-            <strong v-if="requirements[0] != ''">Requirements</strong>
-            <p v-if="requirements[0] != ''">{{ requirements.join(', ') }}</p>
+<div class="taskDetails">
+    <p v-if="description">{{ description }}</p>
+    
+    <strong v-if="requirements[0] != ''">Requirements</strong>
+    <p v-if="requirements[0] != ''">{{ requirements.join(', ') }}</p>
 
-            <strong>Task Details:</strong>
-            <p>Start Date: {{ startDateTime }}</p>
-            <p>End Date: {{ endDateTime }}</p>
+    <strong>Task Details:</strong>
+    <p>Start Date: {{ startDateTime }}</p>
+    <p>End Date: {{ endDateTime }}</p>
 
-            <div v-if="signedUpStatus !== 'accepted'">
-                <div v-if="sortedSessions.length > 0" class="sessionDetailContainer">
-                    <strong>Session Schedule</strong>
-                    <div class="sessionsContainer">
-                        <div v-for="(session, index) in sortedSessions" :key="index" class="sessionCard">
-                            <div class="sessionDate">{{ session.date }}</div>
-                            <div class="sessionTime">
-                                <span>{{ session.start_time }}</span>
-                                <span class="timeSeparator">to</span>
-                                <span>{{ session.end_time }}</span>
-                            </div>
-                        </div>
+    <div v-if="signedUpStatus !== 'accepted'">
+        <div v-if="sortedSessions.length > 0" class="sessionDetailContainer">
+            <strong>Session Schedule</strong>
+            <div class="sessionsContainer">
+                <div v-for="(session, index) in sortedSessions" :key="index" class="sessionCard">
+                    <div class="sessionDate">{{ session.date }}</div>
+                    <div class="sessionTime">
+                        <span>{{ session.start_time }}</span>
+                        <span class="timeSeparator">to</span>
+                        <span>{{ session.end_time }}</span>
                     </div>
                 </div>
             </div>
-
-            <SessionSelection
-                v-else
-                :sessions="sortedSessions"
-                :taskId="taskID"
-                :volunteerId="auth.currentUser?.uid"
-            />
-
-            <p v-if="location">Location: {{ location }}</p>
-            
-            <Map v-if="location_lat && location_lng" :location="{ lat: location_lat, lng: location_lng }" />
         </div>
+    </div>
+
+    <SessionSelection
+        v-else
+        :sessions="sortedSessions"
+        :taskId="taskID"
+        :volunteerId="auth.currentUser?.uid"
+    />
+
+    <p v-if="location">Location: {{ location }}</p>
+    
+    <Map v-if="location_lat && location_lng" :location="{ lat: location_lat, lng: location_lng }" />
+</div>
 </template>
 
 <style>

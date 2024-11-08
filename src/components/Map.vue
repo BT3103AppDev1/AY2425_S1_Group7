@@ -40,9 +40,9 @@ onMounted(() => {
 </script>
 
 <template>
-    <div>
-        <div ref="mapElement" style="height: 400px; width: 100%;"></div>
-    </div>
+<div>
+    <div ref="mapElement" style="height: 400px; width: 100%;"></div>
+</div>
 </template>
 
 <style scoped>

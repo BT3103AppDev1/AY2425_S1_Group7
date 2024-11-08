@@ -1,7 +1,6 @@
 <script setup>
 import AdministratorTaskbar from '@/components/AdministratorTaskbar.vue';
 import { ref, onMounted } from 'vue';
-import { getDocs, collection, where, query } from "firebase/firestore";
 import { db } from "../firebase_setup.js";
 import router from '@/router';
 import { getDoc, doc } from "firebase/firestore";
@@ -52,67 +51,67 @@ onMounted(async () => {
 </script>
 
 <template>
-    <AdministratorTaskbar />
-    <div>
-        <!-- 제목 및 설명 위치를 조정하여 Manage attendance here 아래에 나타나도록 함 -->
-        <div id="taskManagementHeader">
-            <h1>Manage attendance here</h1>
-            <p class="task-description">{{ taskDescription }} {{ activeTaskName }}</p>
+<AdministratorTaskbar />
+<div>
+    <!-- 제목 및 설명 위치를 조정하여 Manage attendance here 아래에 나타나도록 함 -->
+    <div id="taskManagementHeader">
+        <h1>Manage attendance here</h1>
+        <p class="task-description">{{ taskDescription }} {{ activeTaskName }}</p>
+    </div>
+</div>
+
+<div class="main-content">
+    <div class="content-container">
+        <div class="action-buttons">
+            <button @click="markAll('present')" class="action-button present">
+                Mark all as present
+            </button>
+            <button @click="markAll('absent')" class="action-button absent">
+                Mark all as absent
+            </button>
+        </div>
+
+        <div class="task-table-container">
+            <table class="task-table">
+                <thead>
+                    <tr>
+                        <th>User Name</th>
+                        <th>Attendance</th>
+                        <th>Remarks</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(resv, index) in taskResv" :key="index">
+                        <td>{{ resv.username }}</td>
+                        <td class="attendance-cell">
+                            <div class="attendance-buttons">
+                                <button 
+                                    class="attendance-btn"
+                                    :class="{ active: attendance[resv.volunteer_id] === 'present' }"
+                                    @click="confirmIndividual(resv.volunteer_id, 'present')">
+                                    Present
+                                </button>
+                                <button 
+                                    class="attendance-btn"
+                                    :class="{ active: attendance[resv.volunteer_id] === 'absent' }"
+                                    @click="confirmIndividual(resv.volunteer_id, 'absent')">
+                                    Absent
+                                </button>
+                            </div>
+                        </td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="footer-section">
+            <button @click="finalizeAttendance" class="finalize-button">
+                Finalise
+            </button>
         </div>
     </div>
-    
-    <div class="main-content">
-        <div class="content-container">
-            <div class="action-buttons">
-                <button @click="markAll('present')" class="action-button present">
-                    Mark all as present
-                </button>
-                <button @click="markAll('absent')" class="action-button absent">
-                    Mark all as absent
-                </button>
-            </div>
-
-            <div class="task-table-container">
-                <table class="task-table">
-                    <thead>
-                        <tr>
-                            <th>User Name</th>
-                            <th>Attendance</th>
-                            <th>Remarks</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="(resv, index) in taskResv" :key="index">
-                            <td>{{ resv.username }}</td>
-                            <td class="attendance-cell">
-                                <div class="attendance-buttons">
-                                    <button 
-                                        class="attendance-btn"
-                                        :class="{ active: attendance[resv.volunteer_id] === 'present' }"
-                                        @click="confirmIndividual(resv.volunteer_id, 'present')">
-                                        Present
-                                    </button>
-                                    <button 
-                                        class="attendance-btn"
-                                        :class="{ active: attendance[resv.volunteer_id] === 'absent' }"
-                                        @click="confirmIndividual(resv.volunteer_id, 'absent')">
-                                        Absent
-                                    </button>
-                                </div>
-                            </td>
-                            <td></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="footer-section">
-                <button @click="finalizeAttendance" class="finalize-button">
-                    Finalise
-                </button>
-            </div>
-        </div>
-    </div>
+</div>
 </template>
 
 <style scoped>

@@ -1,75 +1,75 @@
 <script setup>
-  import { ref } from 'vue';
-  import { createUserWithEmailAndPassword } from 'firebase/auth';
-  import { getFirestore, doc, setDoc } from 'firebase/firestore';
-  import { auth } from '../firebase_setup';
-  
-  const db = getFirestore();
-  
-  const username = ref('');
-  const email = ref('');
-  const password = ref('');
-  const role = ref('admin');
-  const message = ref('');
-  
-  const register = async () => {
+import { ref } from 'vue';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { getFirestore, doc, setDoc } from 'firebase/firestore';
+import { auth } from '../firebase_setup';
+
+const db = getFirestore();
+
+const username = ref('');
+const email = ref('');
+const password = ref('');
+const role = ref('admin');
+const message = ref('');
+
+const register = async () => {
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email.value, password.value);
-      const user = userCredential.user;
-  
-      await setDoc(doc(db, 'users', user.uid), {
-        username: username.value,
-        email: email.value,
-        password: password.value,
-        role: role.value
-      });
-  
-      message.value = `User Registered: ${user.email}`;
+        const userCredential = await createUserWithEmailAndPassword(auth, email.value, password.value);
+        const user = userCredential.user;
+    
+        await setDoc(doc(db, 'users', user.uid), {
+            username: username.value,
+            email: email.value,
+            password: password.value,
+            role: role.value
+        });
+    
+        message.value = `User Registered: ${user.email}`;
     } catch (error) {
-      message.value = `Error: ${error.message}`;
+        message.value = `Error: ${error.message}`;
     }
-  };
-  </script>
-  
+};
+</script>
+
 <template>
-    <div class="register-container">
-      <div class="welcome">
+<div class="register-container">
+    <div class="welcome">
         <img class="logo" src="/image.png" alt="Logo" />
-      </div>
-      <div class="register-form">
+    </div>
+    <div class="register-form">
         <h2>Register</h2>
         <form @submit.prevent="register">
-          <div class="input-group">
-            <input v-model="username" type="text" placeholder="Username" required />
-            <span class="icon">👤</span>
-          </div>
-          <div class="input-group">
-            <input v-model="email" type="email" placeholder="Email" required />
-            <span class="icon">✉️</span>
-          </div>
-          <div class="input-group">
-            <input v-model="password" type="password" placeholder="Password" required />
-            <span class="icon">🔒</span>
-          </div>
-          <button type="submit" class="register-button">Register</button>
+            <div class="input-group">
+                <input v-model="username" type="text" placeholder="Username" required />
+                <span class="icon">👤</span>
+            </div>
+            <div class="input-group">
+                <input v-model="email" type="email" placeholder="Email" required />
+                <span class="icon">✉️</span>
+            </div>
+            <div class="input-group">
+                <input v-model="password" type="password" placeholder="Password" required />
+                <span class="icon">🔒</span>
+            </div>
+            <button type="submit" class="register-button">Register</button>
         </form>
         <p>Already have an account? <RouterLink to="/adminLogin">Login</RouterLink></p>
         <p>{{ message }}</p>
-      </div>
     </div>
-  </template>
-  
-  <style scoped>
-  .register-container {
+</div>
+</template>
+
+<style scoped>
+.register-container {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
     background-color: #f8f8f8;
     gap: 10px;
-  }
-  
-  .welcome {
+}
+
+.welcome {
     background-color: white;
     padding: 20px;
     border-radius: 10px;
@@ -79,14 +79,14 @@
     flex-direction: column;
     align-items: center;
     box-sizing: border-box;
-  }
-  
-  .logo {
+}
+
+.logo {
     width: 95%;
     height: auto;
-  }
-  
-  .register-form {
+}
+
+.register-form {
     background-color: rgb(228, 228, 228);
     padding: 45px;
     border-radius: 10px;
@@ -96,39 +96,39 @@
     flex-direction: column;
     align-items: center;
     box-sizing: border-box;
-  }
-  
-  h2 {
+}
+
+h2 {
     font-size: 1.5em;
     color: #333;
     margin-bottom: 15px;
     text-align: center;
-  }
-  
-  .input-group {
+}
+
+.input-group {
     position: relative;
     margin-bottom: 15px;
     width: 100%;
-  }
-  
-  input {
+}
+
+input {
     width: calc(100% - 40px);
     padding: 8px;
     padding-right: 40px;
     border: 1px solid #ccc;
     border-radius: 5px;
     font-size: 1em;
-  }
-  
-  .icon {
+}
+
+.icon {
     position: absolute;
     right: 10px;
     top: 50%;
     transform: translateY(-50%);
     color: #333;
-  }
-  
-  .register-button {
+}
+
+.register-button {
     width: 100%;
     padding: 8px;
     background-color: #f8e7bc;
@@ -137,21 +137,20 @@
     cursor: pointer;
     font-size: 1em;
     color: #333;
-  }
-  
-  a {
+}
+
+a {
     color: #007bff;
-  }
-  
-  a:hover {
+}
+
+a:hover {
     text-decoration: underline;
-  }
-  
-  p {
+}
+
+p {
     margin-top: 10px;
     font-size: 0.9em;
     color: #666;
     text-align: center;
-  }
-  </style>
-  
+}
+</style>

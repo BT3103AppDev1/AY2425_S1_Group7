@@ -69,46 +69,46 @@ onMounted(() => {
 </script>
 
 <template>
-    <AdministratorTaskbar />
-    
-    <div>
-        <div class="taskDetailHeader">
-            <h1>{{ taskName }}</h1>
-            <div>
-                <button class="taskDetailButton" @click="router.push({ path: '/EditTask/' + taskID})">
-                    Edit Details
-                </button>
-            </div>
+<AdministratorTaskbar />
+
+<div>
+    <div class="taskDetailHeader">
+        <h1>{{ taskName }}</h1>
+        <div>
+            <button class="taskDetailButton" @click="router.push({ path: '/EditTask/' + taskID})">
+                Edit Details
+            </button>
         </div>
-        <div class="taskDetails">
-            <p v-if="description">{{ description }}</p>
-            
-            <strong v-if="requirements[0] != ''">Requirements</strong>
-            <p v-if="requirements[0] != ''">Requirements: {{ requirements.join(', ') }}</p>
+    </div>
+    <div class="taskDetails">
+        <p v-if="description">{{ description }}</p>
+        
+        <strong v-if="requirements[0] != ''">Requirements</strong>
+        <p v-if="requirements[0] != ''">Requirements: {{ requirements.join(', ') }}</p>
 
-            <strong>Task Details:</strong>
-            <p>Start Date: {{ startDateTime }}</p>
-            <p>End Date: {{ endDateTime }}</p>
+        <strong>Task Details:</strong>
+        <p>Start Date: {{ startDateTime }}</p>
+        <p>End Date: {{ endDateTime }}</p>
 
-            <div v-if="sortedSessions.length > 0" class="sessionDetailContainer">
-                <strong>Session Schedule</strong>
-                <div class="sessionsContainer">
-                    <div v-for="(session, index) in sortedSessions" :key="index" class="sessionCard">
-                        <div class="sessionDate">{{ session.date }}</div>
-                        <div class="sessionTime">
-                            <span>{{ session.start_time }}</span>
-                            <span class="timeSeparator">to</span>
-                            <span>{{ session.end_time }}</span>
-                        </div>
+        <div v-if="sortedSessions.length > 0" class="sessionDetailContainer">
+            <strong>Session Schedule</strong>
+            <div class="sessionsContainer">
+                <div v-for="(session, index) in sortedSessions" :key="index" class="sessionCard">
+                    <div class="sessionDate">{{ session.date }}</div>
+                    <div class="sessionTime">
+                        <span>{{ session.start_time }}</span>
+                        <span class="timeSeparator">to</span>
+                        <span>{{ session.end_time }}</span>
                     </div>
                 </div>
             </div>
-
-            <p v-if="location">Location: {{ location }}</p>
-            
-            <Map v-if="location_lat && location_lng" :location="{ lat: location_lat, lng: location_lng }" />
         </div>
+
+        <p v-if="location">Location: {{ location }}</p>
+        
+        <Map v-if="location_lat && location_lng" :location="{ lat: location_lat, lng: location_lng }" />
     </div>
+</div>
 </template>
 
 <style>
