@@ -72,15 +72,15 @@ onMounted(() => {
 <AdministratorTaskbar />
 
 <div>
-    <div class="taskDetailHeader">
+    <div class="task-detail-header">
         <h1>{{ taskName }}</h1>
         <div>
-            <button class="taskDetailButton" @click="router.push({ path: '/EditTask/' + taskID})">
+            <button class="task-detail-button" @click="router.push({ path: '/EditTask/' + taskID})">
                 Edit Details
             </button>
         </div>
     </div>
-    <div class="taskDetails">
+    <div class="task-details">
         <p v-if="description">{{ description }}</p>
         
         <strong v-if="requirements[0] != ''">Requirements</strong>
@@ -90,14 +90,14 @@ onMounted(() => {
         <p>Start Date: {{ startDateTime }}</p>
         <p>End Date: {{ endDateTime }}</p>
 
-        <div v-if="sortedSessions.length > 0" class="sessionDetailContainer">
+        <div v-if="sortedSessions.length > 0" class="session-detail-container">
             <strong>Session Schedule</strong>
-            <div class="sessionsContainer">
+            <div class="sessions-container">
                 <div v-for="(session, index) in sortedSessions" :key="index" class="sessionCard">
-                    <div class="sessionDate">{{ session.date }}</div>
-                    <div class="sessionTime">
+                    <div class="session-date">{{ session.date }}</div>
+                    <div class="session-time">
                         <span>{{ session.start_time }}</span>
-                        <span class="timeSeparator">to</span>
+                        <span class="time-separator">to</span>
                         <span>{{ session.end_time }}</span>
                     </div>
                 </div>
@@ -112,15 +112,15 @@ onMounted(() => {
 </template>
 
 <style>
-.sessionDetailContainer {
+.session-detail-container {
     padding-bottom: 20px;
     border-bottom: 1px solid #eee;
 }
 
-.sessionDetailContainer:last-child {
+.session-detail-container:last-child {
     border-bottom: none;
 }
-.sessionsContainer {
+.sessions-container {
     display: grid;
     gap: 15px;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -139,19 +139,19 @@ onMounted(() => {
     transform: translateY(-2px);
 } */
 
-.sessionDate {
+.session-date {
     font-weight: bold;
     margin-bottom: 8px;
 }
 
-.sessionTime {
+.session-time {
     display: flex;
     align-items: center;
     color: #6c757d;
     gap: 8px;
 }
 
-.timeSeparator {
+.time-separator {
     color: #adb5bd;
 }
 </style>

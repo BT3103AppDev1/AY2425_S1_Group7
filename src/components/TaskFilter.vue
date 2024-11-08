@@ -28,7 +28,7 @@ function toggleDropdown(event) {
 }
 
 function handleClickOutside(event) {
-    if (!event.target.closest('#taskFilter') && !event.target.closest('#dropdownToggle')) {
+    if (!event.target.closest('#task-filter') && !event.target.closest('#dropdown-toggle')) {
         dropdownVisible.value = false;
     }
 }
@@ -64,10 +64,10 @@ onBeforeUnmount(() => {
 
 <template>
 <div style="position: relative;">
-    <button id="dropdownToggle" @click.stop="toggleDropdown">Filter & Sort</button>
+    <button id="dropdown-toggle" @click.stop="toggleDropdown">Filter & Sort</button>
     
-    <div v-if="dropdownVisible" id="taskFilter" class="dropdown" @click.stop>
-        <div class="dropdownItem">
+    <div v-if="dropdownVisible" id="task-filter" class="dropdown" @click.stop>
+        <div class="dropdownitem">
             <label for="sortBy">Sort by: </label>
             <select v-model="sortBy" id="sortBy">
                 <option value="">None</option>
@@ -75,7 +75,7 @@ onBeforeUnmount(() => {
                 <option value="startDate">Start Date</option>
             </select>
         </div>
-        <div class="dropdownItem">
+        <div class="dropdownitem">
             <label for="filterDuration">Duration: </label>
             <select v-model="filterDuration" id="filterDuration">
                 <option value="">All</option>
@@ -84,15 +84,15 @@ onBeforeUnmount(() => {
                 <option value="long">> 7 days</option>
             </select>
         </div>
-        <div class="dropdownItem">
+        <div class="dropdownitem">
             <label for="filterStartDate">Start Date: </label>
             <input type="date" v-model="filterStartDate" id="filterStartDate" />
         </div>
-        <div class="dropdownItem">
+        <div class="dropdownitem">
             <label for="filterEndDate">End Date: </label>
             <input type="date" v-model="filterEndDate" id="filterEndDate" />
         </div>
-        <div class="dropdownItem">
+        <div class="dropdownitem">
             <label for="radius">Radius (km):</label>
             <select v-model="radius" id="radius">
                 <option value="">Select Distance</option>
@@ -109,7 +109,7 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
-#dropdownToggle {
+#dropdown-toggle {
     border: 1px solid #ccc;
     padding: 10px 20px;
     cursor: pointer;
@@ -128,11 +128,11 @@ onBeforeUnmount(() => {
     z-index: 1000;
 }
 
-.dropdownItem {
+.dropdownitem {
     margin: 0.5rem;
 }
 
-#taskFilter {
+#task-filter {
     display: flex;
     flex-direction: column;
 }

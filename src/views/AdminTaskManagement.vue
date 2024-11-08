@@ -46,11 +46,11 @@ onMounted(async () => {
 <AdministratorTaskbar />
 
 <div>
-    <div id="taskManagementHeader">
+    <div id="task-management-header">
         <h1>Manage Tasks</h1>
-        <div id="taskManagementHeaderButtons">
-            <RouterLink to="/Admin/AddTasks"><button class="headerButton">+ Add Task</button></RouterLink>
-            <RouterLink><button class="headerButton">View Past Tasks</button></RouterLink>
+        <div id="task-management-header-buttons">
+            <RouterLink to="/Admin/AddTasks"><button class="header-button">+ Add Task</button></RouterLink>
+            <RouterLink><button class="header-button">View Past Tasks</button></RouterLink>
         </div>            
     </div>
 </div>
@@ -77,7 +77,7 @@ onMounted(async () => {
 </template>
 
 <style>
-.headerButton {
+.header-button {
     border: 1px solid #ccc;
     padding: 10px 20px;
     cursor: pointer;
@@ -85,14 +85,14 @@ onMounted(async () => {
     font-size: 1em;
 }
 
-#taskManagementHeader {
+#task-management-header {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
     padding: 1rem;
 }
-#taskManagementHeaderButtons {
+#task-management-header-buttons {
     display: flex;
     gap: 10px;
 }

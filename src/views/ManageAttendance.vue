@@ -7,10 +7,7 @@ import { getDoc, doc } from "firebase/firestore";
 
 
 const taskDescription = ref("You are currently taking attendance for");
-const taskResv = ref([
-    { username: "Test User 1", volunteer_id: "user1" },
-    { username: "ZHD1987E", volunteer_id: "user2" }
-]);
+const taskResv = ref([]);
 const attendance = ref({});
 const activeTaskName = ref("");
 
@@ -54,7 +51,7 @@ onMounted(async () => {
 <AdministratorTaskbar />
 <div>
     <!-- 제목 및 설명 위치를 조정하여 Manage attendance here 아래에 나타나도록 함 -->
-    <div id="taskManagementHeader">
+    <div id="task-management-header">
         <h1>Manage attendance here</h1>
         <p class="task-description">{{ taskDescription }} {{ activeTaskName }}</p>
     </div>
@@ -86,13 +83,13 @@ onMounted(async () => {
                         <td class="attendance-cell">
                             <div class="attendance-buttons">
                                 <button 
-                                    class="attendance-btn"
+                                    class="attendance-button"
                                     :class="{ active: attendance[resv.volunteer_id] === 'present' }"
                                     @click="confirmIndividual(resv.volunteer_id, 'present')">
                                     Present
                                 </button>
                                 <button 
-                                    class="attendance-btn"
+                                    class="attendance-button"
                                     :class="{ active: attendance[resv.volunteer_id] === 'absent' }"
                                     @click="confirmIndividual(resv.volunteer_id, 'absent')">
                                     Absent
@@ -115,7 +112,7 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-#taskManagementHeader {
+#task-management-header {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -216,7 +213,7 @@ onMounted(async () => {
     gap: 0.5rem;
 }
 
-.attendance-btn {
+.attendance-button {
     padding: 0.5rem 1rem;
     border: none;
     border-radius: 4px;
@@ -226,7 +223,7 @@ onMounted(async () => {
     transition: all 0.2s;
 }
 
-.attendance-btn.active {
+.attendance-button.active {
     background-color: #97bdc4;
     color: white;
 }
@@ -278,7 +275,7 @@ onMounted(async () => {
         flex-direction: column;
     }
 
-    .attendance-btn {
+    .attendance-button {
         width: 100%;
     }
 

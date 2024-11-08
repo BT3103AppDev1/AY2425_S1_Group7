@@ -124,22 +124,22 @@ onMounted(() => {
 <template>
 <VolunteerTaskbar></VolunteerTaskbar>
 <div>
-    <div class="taskDetailHeader">
+    <div class="task-detail-header">
         <h1>{{ taskName }}</h1>
         <div>
-            <button class="taskDetailButton" v-if="!signedUpStatus" @click="joinTask">
+            <button class="task-detail-button" v-if="!signedUpStatus" @click="joinTask">
                 Sign Up
             </button>
-            <button class="taskDetailButton pending" v-else-if="signedUpStatus === 'pending'" disabled>
+            <button class="task-detail-button pending" v-else-if="signedUpStatus === 'pending'" disabled>
                 Pending
             </button>
-            <button class="taskDetailButton status" v-else disabled>
+            <button class="task-detail-button status" v-else disabled>
                 {{ signedUpStatus }}
             </button>
         </div>
     </div>
 </div>
-<div class="taskDetails">
+<div class="task-details">
     <p v-if="description">{{ description }}</p>
     
     <strong v-if="requirements[0] != ''">Requirements</strong>
@@ -150,14 +150,14 @@ onMounted(() => {
     <p>End Date: {{ endDateTime }}</p>
 
     <div v-if="signedUpStatus !== 'accepted'">
-        <div v-if="sortedSessions.length > 0" class="sessionDetailContainer">
+        <div v-if="sortedSessions.length > 0" class="session-detail-container">
             <strong>Session Schedule</strong>
-            <div class="sessionsContainer">
+            <div class="sessions-container">
                 <div v-for="(session, index) in sortedSessions" :key="index" class="sessionCard">
-                    <div class="sessionDate">{{ session.date }}</div>
-                    <div class="sessionTime">
+                    <div class="session-date">{{ session.date }}</div>
+                    <div class="session-time">
                         <span>{{ session.start_time }}</span>
-                        <span class="timeSeparator">to</span>
+                        <span class="time-separator">to</span>
                         <span>{{ session.end_time }}</span>
                     </div>
                 </div>
@@ -179,7 +179,7 @@ onMounted(() => {
 </template>
 
 <style>
-.taskDetailHeader {
+.task-detail-header {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -191,11 +191,11 @@ onMounted(() => {
     }
 }
 
-.taskDetails {
+.task-details {
     padding: 0.5rem 1rem;
 }
 
-.taskDetailButton {
+.task-detail-button {
     border: 1px solid #ccc;
     padding: 10px 20px;
     cursor: pointer;

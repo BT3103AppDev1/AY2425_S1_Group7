@@ -92,20 +92,20 @@ onMounted(() => {
 </script>
 
 <template>
-<div class="sessionSelectionCard">
-    <div class="cardHeader">
+<div class="session-selection-card">
+    <div class="card-header">
         <h2>{{ hasExistingAssignments ? 'Your Confirmed Sessions' : 'Select Available Sessions' }}</h2>
     </div>
-    <div class="cardContent">
+    <div class="card-content">
         <div v-if="error" class="alert error">{{ error }}</div>
         <div v-if="success" class="alert success">{{ success }}</div>
 
-        <div v-if="sessions.length > 0" class="sessionDetailContainer">
+        <div v-if="sessions.length > 0" class="session-detail-container">
             <strong>Session Schedule</strong>
-            <div class="sessionsContainer">
+            <div class="sessions-container">
                 <div v-for="(session, index) in sessions" 
                         :key="index" 
-                        class="sessionCard"
+                        class="session-card"
                         :class="{ 'confirmed': hasExistingAssignments && confirmedSessions.includes(index) }">
                     <input 
                         type="checkbox"
@@ -113,14 +113,14 @@ onMounted(() => {
                         @change="toggleSession(index)"
                         :disabled="hasExistingAssignments"
                     >
-                    <div class="sessionDate">{{ session.date }}</div>
-                    <div class="sessionTime">
+                    <div class="session-date">{{ session.date }}</div>
+                    <div class="session-time">
                         <span>{{ session.start_time }}</span>
-                        <span class="timeSeparator">to</span>
+                        <span class="time-separator">to</span>
                         <span>{{ session.end_time }}</span>
                     </div>
                     <div v-if="hasExistingAssignments && confirmedSessions.includes(index)" 
-                            class="confirmedBadge">
+                            class="confirmed-badge">
                         Confirmed
                     </div>
                 </div>
@@ -129,7 +129,7 @@ onMounted(() => {
         
         <button 
             v-if="!hasExistingAssignments"
-            class="sessionConfirm"
+            class="session-confirm"
             :disabled="isSubmitting || selectedSessions.length === 0"
             @click="handleConfirm"
         >
@@ -140,7 +140,7 @@ onMounted(() => {
 </template>
 
 <style scoped>
-.sessionConfirm {
+.session-confirm {
     width: 100%;
     padding: 0.75rem;
     background-color: #2563eb;
@@ -152,7 +152,7 @@ onMounted(() => {
     margin-top: 1rem;
 }
 
-.sessionConfirm:disabled {
+.session-confirm:disabled {
     background-color: #93c5fd;
     cursor: not-allowed;
 }
@@ -162,7 +162,7 @@ input[type="checkbox"]:disabled {
     opacity: 0.5;
 }
 
-.confirmedBadge {
+.confirmed-badge {
     padding: 5px 0;
 }
 </style>

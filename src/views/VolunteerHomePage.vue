@@ -63,22 +63,22 @@ async function fetchTasks() {
 async function cancelTask(taskID, reservationID) {
     if (confirm('Are you sure you want to cancel this task?')) {
         try {
-        const resvQuery = query(
-            collection(db, 'task_reservations'),
-            where('task_id', '==', taskID)
-        );
-        const querySnapshot = await getDocs(resvQuery);
-        querySnapshot.forEach(async (docSnap) => {
-            await deleteDoc(doc(db, 'task_reservations', docSnap.id));
-        });
+            const resvQuery = query(
+                collection(db, 'task_reservations'),
+                where('task_id', '==', taskID)
+            );
+            const querySnapshot = await getDocs(resvQuery);
+            querySnapshot.forEach(async (docSnap) => {
+                await deleteDoc(doc(db, 'task_reservations', docSnap.id));
+            });
 
-        await deleteDoc(doc(db, 'task_assignment', reservationID));
+            await deleteDoc(doc(db, 'task_assignment', reservationID));
 
-        alert('Task successfully cancelled!');
-        await fetchTasks(); 
+            alert('Task successfully cancelled!');
+            await fetchTasks(); 
         } catch (error) {
-        console.error('Error deleting task:', error);
-        alert('There was an error cancelling the task. Please try again.');
+            console.error('Error deleting task:', error);
+            alert('There was an error cancelling the task. Please try again.');
         }
     }
 }
