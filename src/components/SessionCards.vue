@@ -20,7 +20,7 @@ session: {
 </div>
 </template>
 
-<style scoped>
+<style>
 .session-card {
     margin-top: 10px;
     border-radius: 6px;

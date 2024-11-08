@@ -161,24 +161,24 @@ async function reAuth() {
         <h2>Your Profile Information</h2>
         <table class = "profile-table">
             <tr>
-            <td>Full Name:</td>
-            <td>{{ fullName }}</td>
+                <td>Full Name:</td>
+                <td>{{ fullName }}</td>
             </tr>
             <tr>
-            <td>Date of Birth:</td>
-            <td>{{ dateOfBirth }}</td>
+                <td>Date of Birth:</td>
+                <td>{{ dateOfBirth }}</td>
             </tr>
             <tr>
-            <td>Residential Address:</td>
-            <td>{{ residentialAddress }}</td>
+                <td>Residential Address:</td>
+                <td>{{ residentialAddress }}</td>
             </tr>
             <tr>
-            <td>Organisation:</td>
-            <td>{{ organisation }}</td>
+                <td>Organisation:</td>
+                <td>{{ organisation }}</td>
             </tr>
             <tr>
-            <td>Skills:</td>
-            <td>{{ skills }}</td>
+                <td>Skills:</td>
+                <td>{{ skills }}</td>
             </tr>
         </table>
         <div class="go-back-container">

@@ -6,6 +6,8 @@ import { ref, onMounted, computed } from "vue";
 import { useRoute } from "vue-router";
 import VolunteerTaskbar from '../components/VolunteerTaskbar.vue';
 import TaskDetails from "@/components/TaskDetails.vue";
+import SessionCards from "@/components/SessionCards.vue";
+import SessionSelection from "@/components/SessionSelection.vue";
 
 const route = useRoute();
 const taskID = route.params.taskID;
@@ -147,7 +149,6 @@ onMounted(() => {
     <template #session-cards>
         <div v-if="signedUpStatus !== 'accepted'">
             <div v-if="sortedSessions.length > 0" class="session-detail-container">
-                <strong>Session Schedule</strong>
                 <div class="sessions-container">
                     <SessionCards 
                     v-for="(session, index) in sortedSessions" 

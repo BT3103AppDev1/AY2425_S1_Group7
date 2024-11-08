@@ -102,7 +102,7 @@ onBeforeUnmount(() => {
                 <option value="20">20 km</option>
                 <option value="25">25 km</option>
             </select>
-            <button @click="getLocation" :disabled="!radius">Get My Location</button>
+            <button @click="getLocation" :disabled="!radius" id="get-location">Get My Location</button>
         </div>
     </div>
 </div>
