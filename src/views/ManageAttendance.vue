@@ -1,17 +1,13 @@
 <script setup>
 import AdministratorTaskbar from '@/components/AdministratorTaskbar.vue';
 import { ref, onMounted } from 'vue';
-import { getDocs, collection, where, query } from "firebase/firestore";
 import { db } from "../firebase_setup.js";
 import router from '@/router';
 import { getDoc, doc } from "firebase/firestore";
 
 
 const taskDescription = ref("You are currently taking attendance for");
-const taskResv = ref([
-    { username: "Test User 1", volunteer_id: "user1" },
-    { username: "ZHD1987E", volunteer_id: "user2" }
-]);
+const taskResv = ref([]);
 const attendance = ref({});
 const activeTaskName = ref("");
 
@@ -52,71 +48,71 @@ onMounted(async () => {
 </script>
 
 <template>
-    <AdministratorTaskbar />
-    <div>
-        <!-- 제목 및 설명 위치를 조정하여 Manage attendance here 아래에 나타나도록 함 -->
-        <div id="taskManagementHeader">
-            <h1>Manage attendance here</h1>
-            <p class="task-description">{{ taskDescription }} {{ activeTaskName }}</p>
+<AdministratorTaskbar />
+<div>
+    <!-- 제목 및 설명 위치를 조정하여 Manage attendance here 아래에 나타나도록 함 -->
+    <div id="task-management-header">
+        <h1>Manage attendance here</h1>
+        <p class="task-description">{{ taskDescription }} {{ activeTaskName }}</p>
+    </div>
+</div>
+
+<div class="main-content">
+    <div class="content-container">
+        <div class="action-buttons">
+            <button @click="markAll('present')" class="action-button present">
+                Mark all as present
+            </button>
+            <button @click="markAll('absent')" class="action-button absent">
+                Mark all as absent
+            </button>
+        </div>
+
+        <div class="task-table-container">
+            <table class="task-table">
+                <thead>
+                    <tr>
+                        <th>User Name</th>
+                        <th>Attendance</th>
+                        <th>Remarks</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(resv, index) in taskResv" :key="index">
+                        <td>{{ resv.username }}</td>
+                        <td class="attendance-cell">
+                            <div class="attendance-buttons">
+                                <button 
+                                    class="attendance-button"
+                                    :class="{ active: attendance[resv.volunteer_id] === 'present' }"
+                                    @click="confirmIndividual(resv.volunteer_id, 'present')">
+                                    Present
+                                </button>
+                                <button 
+                                    class="attendance-button"
+                                    :class="{ active: attendance[resv.volunteer_id] === 'absent' }"
+                                    @click="confirmIndividual(resv.volunteer_id, 'absent')">
+                                    Absent
+                                </button>
+                            </div>
+                        </td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="footer-section">
+            <button @click="finalizeAttendance" class="finalize-button">
+                Finalise
+            </button>
         </div>
     </div>
-    
-    <div class="main-content">
-        <div class="content-container">
-            <div class="action-buttons">
-                <button @click="markAll('present')" class="action-button present">
-                    Mark all as present
-                </button>
-                <button @click="markAll('absent')" class="action-button absent">
-                    Mark all as absent
-                </button>
-            </div>
-
-            <div class="task-table-container">
-                <table class="task-table">
-                    <thead>
-                        <tr>
-                            <th>User Name</th>
-                            <th>Attendance</th>
-                            <th>Remarks</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="(resv, index) in taskResv" :key="index">
-                            <td>{{ resv.username }}</td>
-                            <td class="attendance-cell">
-                                <div class="attendance-buttons">
-                                    <button 
-                                        class="attendance-btn"
-                                        :class="{ active: attendance[resv.volunteer_id] === 'present' }"
-                                        @click="confirmIndividual(resv.volunteer_id, 'present')">
-                                        Present
-                                    </button>
-                                    <button 
-                                        class="attendance-btn"
-                                        :class="{ active: attendance[resv.volunteer_id] === 'absent' }"
-                                        @click="confirmIndividual(resv.volunteer_id, 'absent')">
-                                        Absent
-                                    </button>
-                                </div>
-                            </td>
-                            <td></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="footer-section">
-                <button @click="finalizeAttendance" class="finalize-button">
-                    Finalise
-                </button>
-            </div>
-        </div>
-    </div>
+</div>
 </template>
 
 <style scoped>
-#taskManagementHeader {
+#task-management-header {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -217,7 +213,7 @@ onMounted(async () => {
     gap: 0.5rem;
 }
 
-.attendance-btn {
+.attendance-button {
     padding: 0.5rem 1rem;
     border: none;
     border-radius: 4px;
@@ -227,7 +223,7 @@ onMounted(async () => {
     transition: all 0.2s;
 }
 
-.attendance-btn.active {
+.attendance-button.active {
     background-color: #97bdc4;
     color: white;
 }
@@ -279,7 +275,7 @@ onMounted(async () => {
         flex-direction: column;
     }
 
-    .attendance-btn {
+    .attendance-button {
         width: 100%;
     }
 

@@ -14,103 +14,103 @@ const tasks = ref([]);
 async function fetchTasks() {
   const currentUser = auth.currentUser;
   if (currentUser) {
-    try {
-      // query task_reservations to get tasks the user has signed up for
-      const resvQuery = query(
-        collection(db, 'task_reservations'),
-        where('volunteer_id', '==', currentUser.uid)
-      );
-      const reservationSnapshot = await getDocs(resvQuery);
+        try {
+            // query task_reservations to get tasks the user has signed up for
+            const resvQuery = query(
+                collection(db, 'task_reservations'),
+                where('volunteer_id', '==', currentUser.uid)
+            );
+            const reservationSnapshot = await getDocs(resvQuery);
 
-      const tasksPromises = reservationSnapshot.docs.map(async (resvDoc) => {
-        const taskID = resvDoc.data().task_id;
+            const tasksPromises = reservationSnapshot.docs.map(async (resvDoc) => {
+                const taskID = resvDoc.data().task_id;
 
-        // get task details from the 'task' collection
-        const taskDoc = await getDoc(doc(db, 'task', taskID));
+                // get task details from the 'task' collection
+                const taskDoc = await getDoc(doc(db, 'task', taskID));
 
-        // query task_assignment to check task status
-        const assignmentQuery = query(
-          collection(db, 'task_assignment'),
-          where('task_id', '==', taskID),
-          where('volunteer_id', '==', currentUser.uid)
-        );
-        const assignmentSnapshot = await getDocs(assignmentQuery);
+                // query task_assignment to check task status
+                const assignmentQuery = query(
+                    collection(db, 'task_assignment'),
+                    where('task_id', '==', taskID),
+                    where('volunteer_id', '==', currentUser.uid)
+                );
+                const assignmentSnapshot = await getDocs(assignmentQuery);
 
-        let status = 'pending';
+                let status = 'pending';
 
-        // if task exists in task_assignment, use the status from there
-        if (!assignmentSnapshot.empty) {
-          const assignmentDoc = assignmentSnapshot.docs[0];
-          status = assignmentDoc.data().status;
+                // if task exists in task_assignment, use the status from there
+                if (!assignmentSnapshot.empty) {
+                    const assignmentDoc = assignmentSnapshot.docs[0];
+                    status = assignmentDoc.data().status;
+                }
+
+                return taskDoc.exists()
+                    ? { id: resvDoc.id, task_id: taskID, status: status, ...taskDoc.data() }
+                    : null;
+            });
+
+            tasks.value = await Promise.all(tasksPromises);
+            tasks.value = tasks.value.filter(task => task !== null); // Filter out null values (tasks that don't exist)
+
+            console.log(tasks.value);
+        } catch (error) {
+            console.error("Error fetching tasks:", error);
         }
-
-        return taskDoc.exists()
-          ? { id: resvDoc.id, task_id: taskID, status: status, ...taskDoc.data() }
-          : null;
-      });
-
-      tasks.value = await Promise.all(tasksPromises);
-      tasks.value = tasks.value.filter(task => task !== null); // Filter out null values (tasks that don't exist)
-
-      console.log(tasks.value);
-    } catch (error) {
-      console.error("Error fetching tasks:", error);
-    }
   }
 }
 
 // for cancelling tasks that have been assigned
 async function cancelTask(taskID, reservationID) {
-  if (confirm('Are you sure you want to cancel this task?')) {
-    try {
-      const resvQuery = query(
-        collection(db, 'task_reservations'),
-        where('task_id', '==', taskID)
-      );
-      const querySnapshot = await getDocs(resvQuery);
-      querySnapshot.forEach(async (docSnap) => {
-        await deleteDoc(doc(db, 'task_reservations', docSnap.id));
-      });
+    if (confirm('Are you sure you want to cancel this task?')) {
+        try {
+            const resvQuery = query(
+                collection(db, 'task_reservations'),
+                where('task_id', '==', taskID)
+            );
+            const querySnapshot = await getDocs(resvQuery);
+            querySnapshot.forEach(async (docSnap) => {
+                await deleteDoc(doc(db, 'task_reservations', docSnap.id));
+            });
 
-      await deleteDoc(doc(db, 'task_assignment', reservationID));
+            await deleteDoc(doc(db, 'task_assignment', reservationID));
 
-      alert('Task successfully cancelled!');
-      await fetchTasks(); 
-    } catch (error) {
-      console.error('Error deleting task:', error);
-      alert('There was an error cancelling the task. Please try again.');
+            alert('Task successfully cancelled!');
+            await fetchTasks(); 
+        } catch (error) {
+            console.error('Error deleting task:', error);
+            alert('There was an error cancelling the task. Please try again.');
+        }
     }
-  }
 }
 
 // for cancelling tasks that reservation has been made but no assignment
 async function cancelPendingTask(taskID) {
-  const currentUser = auth.currentUser;
-  if (currentUser && confirm('Are you sure you want to cancel this pending task?')) {
-    try {
-      const resvQuery = query(
-        collection(db, 'task_reservations'),
-        where('task_id', '==', taskID),
-        where('volunteer_id', '==', currentUser.uid)
-      );
+    const currentUser = auth.currentUser;
+    if (currentUser && confirm('Are you sure you want to cancel this pending task?')) {
+        try {
+            const resvQuery = query(
+                collection(db, 'task_reservations'),
+                where('task_id', '==', taskID),
+                where('volunteer_id', '==', currentUser.uid)
+            );
 
-      const querySnapshot = await getDocs(resvQuery);
+            const querySnapshot = await getDocs(resvQuery);
 
-      if (!querySnapshot.empty) {
-        querySnapshot.forEach(async (docSnap) => {
-          await deleteDoc(doc(db, 'task_reservations', docSnap.id));
-        });
+            if (!querySnapshot.empty) {
+                querySnapshot.forEach(async (docSnap) => {
+                    await deleteDoc(doc(db, 'task_reservations', docSnap.id));
+                });
 
-        alert('Pending task successfully cancelled!');
-        await fetchTasks();
-      } else {
-        alert('No pending task found.');
-      }
-    } catch (error) {
-      console.error('Error cancelling the pending task:', error);
-      alert('There was an error cancelling the task. Please try again.');
+                alert('Pending task successfully cancelled!');
+                await fetchTasks();
+            } else {
+                alert('No pending task found.');
+            }
+        } catch (error) {
+            console.error('Error cancelling the pending task:', error);
+            alert('There was an error cancelling the task. Please try again.');
+        }
     }
-  }
 }
 
 onMounted(fetchTasks);
@@ -121,49 +121,49 @@ function viewTaskDetails(taskID) {
 </script>
 
 <template>
-  <div>
+<div>
     <VolunteerTaskbar></VolunteerTaskbar>
 
     <div class="volunteer-homepage">
-      <HomePageUsername /> <!-- Renders the username -->
-      <LastLoginDate /> <!-- Renders the last login date -->
+        <HomePageUsername /> <!-- Renders the username -->
+        <LastLoginDate /> <!-- Renders the last login date -->
     </div>
 
     <div class="task-table-container">
-      <h2 class="page-title">Here's what you signed up for</h2>
-      <table class="task-table">
-        <thead>
-          <tr>
-            <th>Upcoming Tasks</th>
-            <th>Start Date & Time</th>
-            <th>Reporting Location</th>
-            <th>Status</th>
-            <th>Options</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="task in tasks" :key="task.id">
-            <td @click="viewTaskDetails(task.task_id)">{{ task.task_name }}</td>
-            <td>{{ task.start_date_time.toDate().toLocaleString() }}</td>
-            <td>{{ task.location }}</td>
-            <td>{{ task.status }}</td>
-            <td>
-              <button v-if="task.status === 'accepted'" @click="cancelTask(task.task_id, task.id)" class="action-button">Cancel</button>
-              <button v-else-if="task.status === 'rejected'" @click="cancelTask(task.task_id, task.id)" class="action-button">Delete</button>
-              <button v-else @click="cancelPendingTask(task.task_id)" class="action-button">Cancel</button>
-            </td>
-          </tr>
-          <tr v-if="tasks.length === 0">
-            <td colspan="5">No tasks available</td>
-          </tr>
-        </tbody>
-      </table>
+        <h2 class="page-title">Here's what you signed up for</h2>
+        <table class="task-table">
+            <thead>
+                <tr>
+                    <th>Upcoming Tasks</th>
+                    <th>Start Date & Time</th>
+                    <th>Reporting Location</th>
+                    <th>Status</th>
+                    <th>Options</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="task in tasks" :key="task.id">
+                    <td @click="viewTaskDetails(task.task_id)">{{ task.task_name }}</td>
+                    <td>{{ task.start_date_time.toDate().toLocaleString() }}</td>
+                    <td>{{ task.location }}</td>
+                    <td>{{ task.status }}</td>
+                    <td>
+                        <button v-if="task.status === 'accepted'" @click="cancelTask(task.task_id, task.id)" class="action-button">Cancel</button>
+                        <button v-else-if="task.status === 'rejected'" @click="cancelTask(task.task_id, task.id)" class="action-button">Delete</button>
+                        <button v-else @click="cancelPendingTask(task.task_id)" class="action-button">Cancel</button>
+                    </td>
+                </tr>
+                <tr v-if="tasks.length === 0">
+                    <td colspan="5">No tasks available</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 
     <div class="image-container">
-      <img src="/img2.png" alt="Illustration">
+        <img src="/img2.png" alt="Illustration">
     </div>
-  </div>
+</div>
 </template>
 
 <style scoped>

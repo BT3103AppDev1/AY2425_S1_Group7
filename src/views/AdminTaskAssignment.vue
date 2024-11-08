@@ -90,41 +90,41 @@ onMounted(() => {
 </script>
 
 <template>
-    <AdministratorTaskbar />
-        
-    <div class="task-table-container">
-        <h2>Task Reservations</h2>
-        <table class="task-table">
-            <thead>
-                <tr>
-                    <th>Volunteer Name</th>
-                    <th>Date</th>
-                    <th>Actions/ Status</th>
-                </tr>
-            </thead>
-            <tbody v-if="taskResv.length > 0">
-                <tr v-for="(resv, index) in taskResv" :key="index">
-                    <td>{{ resv.username }}</td>
-                    <td>{{ resv.reservation_date ? resv.reservation_date.toDate().toLocaleString() : 'No Date' }}</td>
-                    <td id="approve-reject-buttons">
-                        <template v-if="resv.status === 'pending'">
-                            <button class="action-button edit" @click="acceptVolunteer(resv.volunteer_id)">Approve</button> 
-                            <button class="action-button view" @click="rejectVolunteer(resv.volunteer_id)">Reject</button>
-                        </template>
-                        <template v-else>
-                            <span v-if="resv.status === 'accepted'" class="status accepted">Accepted</span>
-                            <span v-if="resv.status === 'rejected'" class="status rejected">Rejected</span>
-                        </template>
-                    </td>
-                </tr>
-            </tbody>
-            <tbody v-else>
-                <tr>
-                    <td colspan="3" class="text-center">No Requests Yet</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+<AdministratorTaskbar />
+    
+<div class="task-table-container">
+    <h2>Task Reservations</h2>
+    <table class="task-table">
+        <thead>
+            <tr>
+                <th>Volunteer Name</th>
+                <th>Date</th>
+                <th>Actions/ Status</th>
+            </tr>
+        </thead>
+        <tbody v-if="taskResv.length > 0">
+            <tr v-for="(resv, index) in taskResv" :key="index">
+                <td>{{ resv.username }}</td>
+                <td>{{ resv.reservation_date ? resv.reservation_date.toDate().toLocaleString() : 'No Date' }}</td>
+                <td id="approve-reject-buttons">
+                    <template v-if="resv.status === 'pending'">
+                        <button class="action-button edit" @click="acceptVolunteer(resv.volunteer_id)">Approve</button> 
+                        <button class="action-button view" @click="rejectVolunteer(resv.volunteer_id)">Reject</button>
+                    </template>
+                    <template v-else>
+                        <span v-if="resv.status === 'accepted'" class="status accepted">Accepted</span>
+                        <span v-if="resv.status === 'rejected'" class="status rejected">Rejected</span>
+                    </template>
+                </td>
+            </tr>
+        </tbody>
+        <tbody v-else>
+            <tr>
+                <td colspan="3" class="text-center">No Requests Yet</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
 </template>
 
 <style>

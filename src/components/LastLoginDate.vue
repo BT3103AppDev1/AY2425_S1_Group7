@@ -25,7 +25,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <h3>Last login: {{ lastLogin }}</h3> <!-- Display the last login date -->
+<h3>Last login: {{ lastLogin }}</h3> <!-- Display the last login date -->
 </template>
 
 

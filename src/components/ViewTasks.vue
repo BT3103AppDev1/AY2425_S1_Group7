@@ -37,36 +37,35 @@
 const removeTask = (key) => {
         if (confirm('You are about to remove this task. Are you sure?')) {
             deleteDoc(doc(db, "task", key)).then(() => {
-            delete dataList.value[key]
-        }).catch((error) => {
-            alert(error.message);
-        })
+                delete dataList.value[key]
+            }).catch((error) => {
+                alert(error.message);
+            })
         }
-
     }
 </script>
 
 <template>
-    <table>
-        <thead>
-            <tr>
-            <td>Upcoming Tasks</td>
-            <td>Start Date & Time</td>
-            <td>Actions</td>
+<table>
+    <thead>
+        <tr>
+        <td>Upcoming Tasks</td>
+        <td>Start Date & Time</td>
+        <td>Actions</td>
+    </tr>
+    </thead>
+    <tbody>
+        <tr v-for="(entry, key) in dataList" :key="key">
+            <td>{{entry.taskName}}</td>
+            <td>{{entry.startDateTime}}</td>
+            <td>
+                <button @click="removeTask(key)">Delete?</button>
+                <button>Manage Volunteers!</button>
+                <button>View task!</button>
+            </td>
         </tr>
-        </thead>
-        <tbody>
-            <tr v-for="(entry, key) in dataList" :key="key">
-                <td>{{entry.taskName}}</td>
-                <td>{{entry.startDateTime}}</td>
-                <td>
-                    <button @click="removeTask(key)">Delete?</button>
-                    <button>Manage Volunteers!</button>
-                    <button>View task!</button>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+    </tbody>
+</table>
 </template>
 
 <style scoped>

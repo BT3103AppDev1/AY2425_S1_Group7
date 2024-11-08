@@ -12,98 +12,98 @@ const loading = ref(false);
 const router = useRouter();
 
 const displayMessage = (msg) => {
-  message.value = msg;
+    message.value = msg;
 };
 
 const validateInputs = () => {
-  if (!email.value || !password.value) {
-    displayMessage('Please enter both email and password.');
-    return false;
-  }
-  return true;
+    if (!email.value || !password.value) {
+        displayMessage('Please enter both email and password.');
+        return false;
+    }
+    return true;
 };
 
 const login = async () => {
-  if (!validateInputs()) return;
+    if (!validateInputs()) return;
 
-  loading.value = true;
-  try {
-    const userCredential = await signInWithEmailAndPassword(auth, email.value, password.value);
-    displayMessage(`User Logged In: ${userCredential.user.email}`);
-    const userDoc = doc(db, "users", userCredential.user.uid);
-    const userDocSnap = await getDoc(userDoc);
+    loading.value = true;
+    try {
+        const userCredential = await signInWithEmailAndPassword(auth, email.value, password.value);
+        displayMessage(`User Logged In: ${userCredential.user.email}`);
+        const userDoc = doc(db, "users", userCredential.user.uid);
+        const userDocSnap = await getDoc(userDoc);
 
-    if (userDocSnap.exists()) {
-      const permission = userDocSnap.data().role;
-      if (permission === "admin") {
-        router.push({ path: "/Admin/Dashboard" });
-      } else {
-        displayMessage('Access denied. Admins only.');
-      }
-    } else {
-      displayMessage('User data not found.');
+        if (userDocSnap.exists()) {
+            const permission = userDocSnap.data().role;
+            if (permission === "admin") {
+                router.push({ path: "/Admin/Dashboard" });
+            } else {
+                displayMessage('Access denied. Admins only.');
+            }
+        } else {
+            displayMessage('User data not found.');
+        }
+    } catch (error) {
+        displayMessage(`Error: ${error.message}`);
+    } finally {
+        loading.value = false;
     }
-  } catch (error) {
-    displayMessage(`Error: ${error.message}`);
-  } finally {
-    loading.value = false;
-  }
 };
 
 const sendPasswordReset = async () => {
-  if (!email.value) {
-    displayMessage('Please enter your email address.');
-    return;
-  }
+    if (!email.value) {
+        displayMessage('Please enter your email address.');
+        return;
+    }
 
-  try {
-    await sendPasswordResetEmail(auth, email.value);
-    displayMessage('Password reset email sent! Check your inbox.');
-  } catch (error) {
-    displayMessage(`Error: ${error.message}`);
-  }
+    try {
+        await sendPasswordResetEmail(auth, email.value);
+        displayMessage('Password reset email sent! Check your inbox.');
+    } catch (error) {
+        displayMessage(`Error: ${error.message}`);
+    }
 };
 </script>
 
 <template>
-  <div class="login-container">
+<div class="login-container">
     <div class="welcome">
-      <img class="logo" src="/image.png" alt="Logo" />
+        <img class="logo" src="/image.png" alt="Logo" />
     </div>
     <div class="login-form">
-      <h2>Admin Login</h2>
-      <form @submit.prevent="login">
-        <div class="input-group">
-          <input v-model="email" type="email" placeholder="Email" required />
-          <span class="icon">👤</span>
-        </div>
-        <div class="input-group">
-          <input v-model="password" type="password" placeholder="Password" required />
-          <span class="icon">🔒</span>
-        </div>
-        <button type="submit" class="login-button">Login</button>
-      </form>
-      <br />
-      <a href="#" class="forgot-password" @click.prevent="sendPasswordReset">Forgot password?</a>
-      <p>Don't have an account? <RouterLink to="/registerAdmin">Register</RouterLink></p>
+        <h2>Admin Login</h2>
+        <form @submit.prevent="login">
+            <div class="input-group">
+                <input v-model="email" type="email" placeholder="Email" required />
+                <span class="icon">👤</span>
+            </div>
+            <div class="input-group">
+                <input v-model="password" type="password" placeholder="Password" required />
+                <span class="icon">🔒</span>
+            </div>
+            <button type="submit" class="login-button">Login</button>
+        </form>
+        <br />
+        <a href="#" class="forgot-password" @click.prevent="sendPasswordReset">Forgot password?</a>
+        <p>Don't have an account? <RouterLink to="/registerAdmin">Register</RouterLink></p>
     </div>
     <div id="error-message">
-      {{ message }}
+        {{ message }}
     </div>
-  </div>
+</div>
 </template>
-  
+
 <style scoped>
-  .login-container {
+.login-container {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
     background-color: #f8f8f8;
     gap: 10px;
-  }
-  
-  .welcome {
+}
+
+.welcome {
     background-color: white;
     padding: 30px;
     border-radius: 10px;
@@ -113,14 +113,14 @@ const sendPasswordReset = async () => {
     flex-direction: column;
     align-items: center;
     box-sizing: border-box;
-  }
-  
-  .logo {
+}
+
+.logo {
     width: 95%;
     height: auto;
-  }
-  
-  .login-form {
+}
+
+.login-form {
     background-color: rgb(228, 228, 228);
     padding: 30px;
     border-radius: 10px;
@@ -130,72 +130,71 @@ const sendPasswordReset = async () => {
     flex-direction: column;
     align-items: center;
     box-sizing: border-box;
-  }
-  
-  h2 {
+}
+
+h2 {
     font-size: 1.5em;
     color: #333;
     margin-bottom: 20px;
     text-align: center;
-  }
-  
-  .input-group {
+}
+
+.input-group {
     position: relative;
     margin-bottom: 20px;
     width: 100%;
-  }
-  
-  input {
+}
+
+input {
     width: calc(100% - 40px);
     padding: 10px;
     padding-right: 40px;
     border: 1px solid #ccc;
     border-radius: 5px;
     font-size: 1em;
-  }
-  
+}
 
 .icon {
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #333;
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #333;
 }
 
 .login-button {
-  width: 100%;
-  padding: 10px;
-  background-color: #f8e7bc;
-  border: 0;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 1em;
-  color: #333;
+    width: 100%;
+    padding: 10px;
+    background-color: #f8e7bc;
+    border: 0;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    color: #333;
 }
 
 .forgot-password {
-  text-align: center;
-  margin-bottom: 10px;
-  font-size: 0.9em;
+    text-align: center;
+    margin-bottom: 10px;
+    font-size: 0.9em;
 }
 
 a {
-  color: #007bff;
+    color: #007bff;
 }
 
 a:hover {
-  text-decoration: underline;
+    text-decoration: underline;
 }
 
 .login-button:hover {
     background-color: #fbce5b;
-  }
+}
 
 p {
-  margin-top: 10px;
-  font-size: 0.9em;
-  color: #666;
-  text-align: center;
+    margin-top: 10px;
+    font-size: 0.9em;
+    color: #666;
+    text-align: center;
 }
 </style>

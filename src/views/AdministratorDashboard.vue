@@ -12,128 +12,127 @@ const requestsToManage = ref(0);
 const tasksToTakeAttendance = ref(0); 
 
 async function fetchOutstandingRequests() {
-  try {
-    const resvQuery = query(collection(db, "task_reservations"));
-    const reservationsSnapshot = await getDocs(resvQuery);
+    try {
+        const resvQuery = query(collection(db, "task_reservations"));
+        const reservationsSnapshot = await getDocs(resvQuery);
 
-    let pendingCount = 0;
+        let pendingCount = 0;
 
-    for (const docSnap of reservationsSnapshot.docs) {
-      const resvData = docSnap.data();
-      
-      const assignmentQuery = query(
-        collection(db, "task_assignment"),
-        where("task_id", "==", resvData.task_id),
-        where("volunteer_id", "==", resvData.volunteer_id)
-      );
-      const assignmentSnap = await getDocs(assignmentQuery);
-      
-      if (assignmentSnap.empty || assignmentSnap.docs[0].data().status === "pending") {
-        pendingCount++;
-      }
+        for (const docSnap of reservationsSnapshot.docs) {
+            const resvData = docSnap.data();
+            
+            const assignmentQuery = query(
+                collection(db, "task_assignment"),
+                where("task_id", "==", resvData.task_id),
+                where("volunteer_id", "==", resvData.volunteer_id)
+            );
+            const assignmentSnap = await getDocs(assignmentQuery);
+            
+            if (assignmentSnap.empty || assignmentSnap.docs[0].data().status === "pending") {
+                pendingCount++;
+            }
+        }
+        
+        requestsToManage.value = pendingCount;
+    } catch (error) {
+        console.error("Error fetching outstanding requests: ", error);
     }
-    
-    requestsToManage.value = pendingCount;
-  } catch (error) {
-    console.error("Error fetching outstanding requests: ", error);
-  }
 }
 
 async function updateAttendanceFinalisedField() {
-  try {
-    const tasksSnapshot = await getDocs(collection(db, "task"));
+    try {
+        const tasksSnapshot = await getDocs(collection(db, "task"));
 
-    tasksSnapshot.forEach(async (doc) => {
-      const data = doc.data();
+        tasksSnapshot.forEach(async (doc) => {
+            const data = doc.data();
 
-      if (data.attendance_finalised === undefined) {
-        await updateDoc(doc.ref, { attendance_finalised: false });
-        console.log(`Updated task ${doc.id} with attendance_finalised: false`);
-      } else {
-        console.log(`Task ${doc.id} already has attendance_finalised set to: ${data.attendance_finalised}`);
-      }
-    });
-  } catch (error) {
-    console.error("Error updating tasks:", error);
-  }
+            if (data.attendance_finalised === undefined) {
+                await updateDoc(doc.ref, { attendance_finalised: false });
+                console.log(`Updated task ${doc.id} with attendance_finalised: false`);
+            } else {
+                console.log(`Task ${doc.id} already has attendance_finalised set to: ${data.attendance_finalised}`);
+            }
+        });
+    } catch (error) {
+        console.error("Error updating tasks:", error);
+    }
 }
 
 
 async function fetchUnfinalisedAttendance() {
-  try {
-    const taskQuery = query(collection(db, "task"), where("attendance_finalised", "==", false));
-    const tasksSnapshot = await getDocs(taskQuery);
+    try {
+        const taskQuery = query(collection(db, "task"), where("attendance_finalised", "==", false));
+        const tasksSnapshot = await getDocs(taskQuery);
 
-    tasksToTakeAttendance.value = tasksSnapshot.size;
-  } catch (error) {
-    console.error("Error fetching unfinalised attendance tasks:", error);
-  }
+        tasksToTakeAttendance.value = tasksSnapshot.size;
+    } catch (error) {
+        console.error("Error fetching unfinalised attendance tasks:", error);
+    }
 }
 
 updateAttendanceFinalisedField();
 
 onMounted(() => {
-  fetchOutstandingRequests();
-  fetchUnfinalisedAttendance();
+    fetchOutstandingRequests();
+    fetchUnfinalisedAttendance();
 });
 </script>
 
 <template>
-    <AdministratorTaskbar></AdministratorTaskbar>
-    
-    <div class="admin-homepage">
-        <HomePageUsername /> <!-- Renders the username -->
-        <LastLoginDate /> <!-- Renders the last login date -->
-    </div>
+<AdministratorTaskbar></AdministratorTaskbar>
 
-    <div class = "task-options">
-        <h2>What would you like to do today?</h2>
-        
-        <div class="task-grid">
-            <div class="task-card1">
-              <RouterLink to="/Admin/ManageTasks">
+<div class="admin-homepage">
+    <HomePageUsername /> <!-- Renders the username -->
+    <LastLoginDate /> <!-- Renders the last login date -->
+</div>
+
+<div class = "task-options">
+    <h2>What would you like to do today?</h2>
+    
+    <div class="task-grid">
+        <div class="task-card1">
+            <RouterLink to="/Admin/ManageTasks">
                 <h3>Manage Tasks</h3>
                 <p>Add, manage and delete tasks for volunteers</p>
-              </RouterLink>
-            </div>
-          
+            </RouterLink>
+        </div>
+        
 
-            <div class="task-card2">
-              <RouterLink to="/Admin/ManageUsers"> 
+        <div class="task-card2">
+            <RouterLink to="/Admin/ManageUsers"> 
                 <h3>Manage Users</h3>
                 <p>Add, manage and delete users here</p>
-              </RouterLink>
-            </div>
-
-            <div class = "task-card3">
-              <RouterLink to="/Admin/TakeAttendance">
-                <h3>Take Attendance</h3>
-                <p>Record and track attendance of volunteers at events here</p>
-              </RouterLink>
-            </div>
+            </RouterLink>
         </div>
 
-        <div class = "dashboard">
-            <h2>Here’s what you missed out:</h2>
-
-            <div class = "dashboard-cards">
-                <div class = "requests">
-                  <RouterLink to = "/Admin/ManageTasks">
-                    <h3> {{ requestsToManage }}</h3>
-                    <p>Requests</p>
-                  </RouterLink>
-                </div>              
-
-                <div class = "attendance">
-                  <RouterLink to = "/Admin/TakeAttendance">
-                    <h3>{{ tasksToTakeAttendance }}</h3>
-                    <p>Attendance to submit</p>
-                  </RouterLink>
-                </div>
-            </div>
+        <div class = "task-card3">
+            <RouterLink to="/Admin/TakeAttendance">
+                <h3>Take Attendance</h3>
+                <p>Record and track attendance of volunteers at events here</p>
+            </RouterLink>
         </div>
     </div>
 
+    <div class = "dashboard">
+        <h2>Here’s what you missed out:</h2>
+
+        <div class = "dashboard-cards">
+            <div class = "requests">
+                <RouterLink to = "/Admin/ManageTasks">
+                    <h3> {{ requestsToManage }}</h3>
+                    <p>Requests</p>
+                </RouterLink>
+            </div>              
+
+            <div class = "attendance">
+                <RouterLink to = "/Admin/TakeAttendance">
+                    <h3>{{ tasksToTakeAttendance }}</h3>
+                    <p>Attendance to submit</p>
+                </RouterLink>
+            </div>
+        </div>
+    </div>
+</div>
 </template>
 
 <style scoped>
@@ -146,11 +145,11 @@ h1, h2 {
 }
 
 h3 {
-  font-size: 20px;
+    font-size: 20px;
 }
 
 .task-options {
-  padding: 20px;
+    padding: 20px;
 }
 
 .task-grid {
@@ -171,54 +170,53 @@ h3 {
 }
 
 .task-card1:hover, .task-card2:hover, .task-card3:hover {
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .task-card1 >>> a, .task-card2 >>> a, .task-card3 >>> a {
-  text-decoration: none;
-  color:black;
+    text-decoration: none;
+    color:black;
 }
 
 .dashboard {
-  margin-top: 40px;
+    margin-top: 40px;
 }
 
 .dashboard-cards {
-  display: flex;
-  gap: 20px;
+    display: flex;
+    gap: 20px;
 }
 
 .requests, .attendance {
-  background-color: #97bdc4;
-  border: 1px solid #ddd;
-  padding: 50px;
-  border-radius: 8px;
-  flex: 1;
-  text-align: center;
+    background-color: #97bdc4;
+    border: 1px solid #ddd;
+    padding: 50px;
+    border-radius: 8px;
+    flex: 1;
+    text-align: center;
 }
 
 .requests h3 {
-  font-size: 40px;
-  margin: 0;
+    font-size: 40px;
+    margin: 0;
 }
 
 .requests >>> a, .attendance >>> a {
-  text-decoration: none;
-  color:white;
+    text-decoration: none;
+    color:white;
 }
 
 .attendance h3 {
-  font-size: 40px;
-  margin: 0;
-  text-decoration: none;
+    font-size: 40px;
+    margin: 0;
+    text-decoration: none;
 }
 
 .requests p {
-  margin: 5px 0 0;
+    margin: 5px 0 0;
 }
 
 .attendance p {
-  margin: 5px 0 0;
+    margin: 5px 0 0;
 }
-
 </style>    

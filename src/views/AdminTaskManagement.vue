@@ -10,7 +10,7 @@ import { Timestamp } from "firebase/firestore";
 const tasksList = ref([]);
 const activeTasks = ref([]);
 
-async function fetchAllTasks() {
+async function fetchCurrentTasks() {
     // only fetch those that end date is after current date
     try {
         const currentTime = Timestamp.now();
@@ -38,46 +38,46 @@ function viewManageVolunteers(taskID) {
 }
 
 onMounted(async () => {
-    fetchAllTasks();
+    fetchCurrentTasks();
 });
 </script>
 
 <template>
-    <AdministratorTaskbar />
-    
-    <div>
-        <div id="taskManagementHeader">
-            <h1>Manage Tasks</h1>
-            <div id="taskManagementHeaderButtons">
-                <RouterLink to="/Admin/AddTasks"><button class="headerButton">+ Add Task</button></RouterLink>
-                <RouterLink><button class="headerButton">View Past Tasks</button></RouterLink>
-            </div>            
-        </div>
+<AdministratorTaskbar />
+
+<div>
+    <div id="task-management-header">
+        <h1>Manage Tasks</h1>
+        <div id="task-management-header-buttons">
+            <RouterLink to="/Admin/AddTasks"><button class="header-button">+ Add Task</button></RouterLink>
+            <RouterLink><button class="header-button">View Past Tasks</button></RouterLink>
+        </div>            
     </div>
-    <div class="task-table-container">
-        <table class="task-table">
-            <thead>
-                <tr>
-                    <th>Active Tasks</th>
-                    <th></th>
-                    <th>Actions</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody v-if="activeTasks.length > 0">
-                <tr v-for="task in activeTasks" :key="task.id">
-                    <td>{{ task.data.task_name }}</td>
-                    <td><button class="action-button view" @click="viewTaskDetails(task.id)">View Details</button></td>
-                    <td><RouterLink :to="'/EditTask/' + task.id"><button class="action-button edit">Edit Details</button></RouterLink></td>
-                    <td><RouterLink><button class="action-button manage" @click="viewManageVolunteers(task.id)">Manage Volunteers</button></RouterLink></td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+</div>
+<div class="task-table-container">
+    <table class="task-table">
+        <thead>
+            <tr>
+                <th>Active Tasks</th>
+                <th></th>
+                <th>Actions</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody v-if="activeTasks.length > 0">
+            <tr v-for="task in activeTasks" :key="task.id">
+                <td>{{ task.data.task_name }}</td>
+                <td><button class="action-button view" @click="viewTaskDetails(task.id)">View Details</button></td>
+                <td><RouterLink :to="'/EditTask/' + task.id"><button class="action-button edit">Edit Details</button></RouterLink></td>
+                <td><RouterLink><button class="action-button manage" @click="viewManageVolunteers(task.id)">Manage Volunteers</button></RouterLink></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
 </template>
 
 <style>
-.headerButton {
+.header-button {
     border: 1px solid #ccc;
     padding: 10px 20px;
     cursor: pointer;
@@ -85,14 +85,14 @@ onMounted(async () => {
     font-size: 1em;
 }
 
-#taskManagementHeader {
+#task-management-header {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
     padding: 1rem;
 }
-#taskManagementHeaderButtons {
+#task-management-header-buttons {
     display: flex;
     gap: 10px;
 }

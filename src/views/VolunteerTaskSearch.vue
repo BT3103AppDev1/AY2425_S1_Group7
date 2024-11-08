@@ -138,40 +138,40 @@ function viewTaskDetails(taskID) {
 </script>
 
 <template>
-    <VolunteerTaskbar />
-    <div>
-        <div id="taskSearchFilter">
-            <h1>Available Tasks</h1>
-            <TaskFilter @filterTasks="applyFilter" />
-        </div>
+<VolunteerTaskbar />
+<div>
+    <div id="taskSearchFilter">
+        <h1>Available Tasks</h1>
+        <TaskFilter @filterTasks="applyFilter" />
     </div>
-    <div class="task-table-container">
-        <table class="task-table">
-            <thead>
-                <tr>
-                    <th>Tasks</th>
-                    <th>Start Date & Time</th>
-                    <th>End Date & Time</th>
-                    <th>Location</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody v-if="filteredTasks.length > 0">
-                <tr v-for="task in filteredTasks" :key="task.id">
-                    <td>{{ task.data.task_name }}</td>
-                    <td>{{ task.data.start_date_time.toDate().toLocaleString() }}</td>
-                    <td>{{ task.data.end_date_time.toDate().toLocaleString() }}</td>
-                    <td>{{ task.data.location }}</td>
-                    <td><button class="action-button" @click="viewTaskDetails(task.id)">View More</button></td>
-                </tr>
-            </tbody>
-            <tbody v-else>
-                <tr>
-                    <td colspan="5">No Tasks Available</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+</div>
+<div class="task-table-container">
+    <table class="task-table">
+        <thead>
+            <tr>
+                <th>Tasks</th>
+                <th>Start Date & Time</th>
+                <th>End Date & Time</th>
+                <th>Location</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody v-if="filteredTasks.length > 0">
+            <tr v-for="task in filteredTasks" :key="task.id">
+                <td>{{ task.data.task_name }}</td>
+                <td>{{ task.data.start_date_time.toDate().toLocaleString() }}</td>
+                <td>{{ task.data.end_date_time.toDate().toLocaleString() }}</td>
+                <td>{{ task.data.location }}</td>
+                <td><button class="action-button" @click="viewTaskDetails(task.id)">View More</button></td>
+            </tr>
+        </tbody>
+        <tbody v-else>
+            <tr>
+                <td colspan="5">No Tasks Available</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
 </template>
 
 <style>
@@ -188,56 +188,56 @@ function viewTaskDetails(taskID) {
 }
 
 .task-table-container {
-  width: 80%;
-  margin: 20px auto;
-  padding: 20px;
-  background-color: #fff;
-  border-radius: 10px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    width: 80%;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .page-title {
-  text-align: center;
-  font-size: 2.4em;
-  color: #333;
-  margin-bottom: 20px;
+    text-align: center;
+    font-size: 2.4em;
+    color: #333;
+    margin-bottom: 20px;
 }
 
 .task-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 1.1em;
-  text-align: left;
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 1.1em;
+    text-align: left;
 }
 
 .task-table thead th {
-  background-color: #f8f8f8;
-  padding: 15px;
-  border-bottom: 2px solid #ccc;
-  font-weight: bold;
-  text-align: center;
+    background-color: #f8f8f8;
+    padding: 15px;
+    border-bottom: 2px solid #ccc;
+    font-weight: bold;
+    text-align: center;
 }
 
 .task-table tbody td {
-  padding: 15px;
-  border-bottom: 1px solid #eee;
+    padding: 15px;
+    border-bottom: 1px solid #eee;
 }
 
 .task-table tbody tr:last-child td {
-  border-bottom: none;
+    border-bottom: none;
 }
 
 .action-button {
-  background-color: #f8e7bc;
-  border: none;
-  padding: 10px 20px;
-  cursor: pointer;
-  border-radius: 5px;
-  font-size: 1em;
-  color: #333;
+    background-color: #f8e7bc;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 1em;
+    color: #333;
 }
 
 .action-button:hover {
-  background-color: #f4c9a1;
+    background-color: #f4c9a1;
 }
 </style>
