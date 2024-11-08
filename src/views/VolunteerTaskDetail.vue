@@ -4,9 +4,8 @@ import { getDoc, doc, query, where, getDocs, collection, addDoc, Timestamp } fro
 import { auth } from '../firebase_setup';
 import { ref, onMounted, computed } from "vue";
 import { useRoute } from "vue-router";
-import Map from '../components/Map.vue';
 import VolunteerTaskbar from '../components/VolunteerTaskbar.vue';
-import SessionSelection from "@/components/SessionSelection.vue";
+import TaskDetails from "@/components/TaskDetails.vue";
 
 const route = useRoute();
 const taskID = route.params.taskID;
@@ -123,59 +122,50 @@ onMounted(() => {
 
 <template>
 <VolunteerTaskbar></VolunteerTaskbar>
-<div>
-    <div class="task-detail-header">
-        <h1>{{ taskName }}</h1>
-        <div>
-            <button class="task-detail-button" v-if="!signedUpStatus" @click="joinTask">
-                Sign Up
-            </button>
-            <button class="task-detail-button pending" v-else-if="signedUpStatus === 'pending'" disabled>
-                Pending
-            </button>
-            <button class="task-detail-button status" v-else disabled>
-                {{ signedUpStatus }}
-            </button>
-        </div>
-    </div>
-</div>
-<div class="task-details">
-    <p v-if="description">{{ description }}</p>
-    
-    <strong v-if="requirements[0] != ''">Requirements</strong>
-    <p v-if="requirements[0] != ''">{{ requirements.join(', ') }}</p>
-
-    <strong>Task Details:</strong>
-    <p>Start Date: {{ startDateTime }}</p>
-    <p>End Date: {{ endDateTime }}</p>
-
-    <div v-if="signedUpStatus !== 'accepted'">
-        <div v-if="sortedSessions.length > 0" class="session-detail-container">
-            <strong>Session Schedule</strong>
-            <div class="sessions-container">
-                <div v-for="(session, index) in sortedSessions" :key="index" class="sessionCard">
-                    <div class="session-date">{{ session.date }}</div>
-                    <div class="session-time">
-                        <span>{{ session.start_time }}</span>
-                        <span class="time-separator">to</span>
-                        <span>{{ session.end_time }}</span>
-                    </div>
+<TaskDetails
+    :taskName="taskName"
+    :startDateTime="startDateTime"
+    :endDateTime="endDateTime"
+    :location="location"
+    :description="description"
+    :location_lat="location_lat"
+    :location_lng="location_lng"
+    :requirements="requirements"
+    :sessions="sessions"
+>
+    <template #task-detail-button>
+        <button class="task-detail-button" v-if="!signedUpStatus" @click="joinTask">
+            Sign Up
+        </button>
+        <button class="task-detail-button pending" v-else-if="signedUpStatus === 'pending'" disabled>
+            Pending
+        </button>
+        <button class="task-detail-button status" v-else disabled>
+            {{ signedUpStatus }}
+        </button>
+    </template>
+    <template #session-cards>
+        <div v-if="signedUpStatus !== 'accepted'">
+            <div v-if="sortedSessions.length > 0" class="session-detail-container">
+                <strong>Session Schedule</strong>
+                <div class="sessions-container">
+                    <SessionCards 
+                    v-for="(session, index) in sortedSessions" 
+                    :key="index" 
+                    :session="session" 
+                    />
                 </div>
             </div>
         </div>
-    </div>
 
-    <SessionSelection
-        v-else
-        :sessions="sortedSessions"
-        :taskId="taskID"
-        :volunteerId="auth.currentUser?.uid"
-    />
-
-    <p v-if="location">Location: {{ location }}</p>
-    
-    <Map v-if="location_lat && location_lng" :location="{ lat: location_lat, lng: location_lng }" />
-</div>
+        <SessionSelection
+            v-else
+            :sessions="sortedSessions"
+            :taskId="taskID"
+            :volunteerId="auth.currentUser?.uid"
+        />
+    </template>
+</TaskDetails>
 </template>
 
 <style>

@@ -10,7 +10,7 @@ import { Timestamp } from "firebase/firestore";
 const tasksList = ref([]);
 const activeTasks = ref([]);
 
-async function fetchAllTasks() {
+async function fetchCurrentTasks() {
     // only fetch those that end date is after current date
     try {
         const currentTime = Timestamp.now();
@@ -38,7 +38,7 @@ function viewManageVolunteers(taskID) {
 }
 
 onMounted(async () => {
-    fetchAllTasks();
+    fetchCurrentTasks();
 });
 </script>
 
