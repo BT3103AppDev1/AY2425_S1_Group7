@@ -1,5 +1,5 @@
 <script setup>
-import AdministratorTaskbar from "../components/AdministratorTaskbar.vue"
+import AdministratorTaskbar from "../components/AdminTaskbar.vue"
 import HomePageUsername from '@/components/HomePageUsername.vue'
 import LastLoginDate from '@/components/LastLoginDate.vue';
 import { db } from "@/firebase_setup.js";

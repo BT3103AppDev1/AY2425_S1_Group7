@@ -1,7 +1,7 @@
 <script setup>
 import TaskDetails from '@/components/TaskDetails.vue';
 import SessionCards from '@/components/SessionCards.vue';
-import AdministratorTaskbar from '@/components/AdministratorTaskbar.vue';
+import AdministratorTaskbar from '@/components/AdminTaskbar.vue';
 import { db } from "../firebase_setup.js";
 import { getDoc, doc } from "firebase/firestore";
 import { ref, onMounted, computed } from "vue";
