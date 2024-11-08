@@ -92,21 +92,15 @@ onMounted(() => {
     <div class="task-grid">
         <div class="task-card1">
             <RouterLink to="/Admin/ManageTasks">
+                <img src="/AdminDashboard_Icon 1.png" alt="Manage Tasks Icon" class="task-icon">
                 <h3>Manage Tasks</h3>
                 <p>Add, manage and delete tasks for volunteers</p>
             </RouterLink>
         </div>
-        
 
-        <div class="task-card2">
-            <RouterLink to="/Admin/ManageUsers"> 
-                <h3>Manage Users</h3>
-                <p>Add, manage and delete users here</p>
-            </RouterLink>
-        </div>
-
-        <div class = "task-card3">
+        <div class = "task-card2">
             <RouterLink to="/Admin/TakeAttendance">
+                <img src="/AdminDashboard_Icon 2.png" alt="Manage Tasks Icon" class="task-icon">
                 <h3>Take Attendance</h3>
                 <p>Record and track attendance of volunteers at events here</p>
             </RouterLink>
@@ -154,11 +148,12 @@ h3 {
 
 .task-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, minmax(200px, 1fr));
     gap: 20px;
+    justify-content: center;
 }
 
-.task-card1, .task-card2, .task-card3 {
+.task-card1, .task-card2 {
     background-image: linear-gradient(#f8e7bc, #e6c2bf);
     /*background-color: #f8e7bc;*/
     border: 1px solid #ddd;
@@ -169,13 +164,25 @@ h3 {
     transition: box-shadow 0.3s ease;
 }
 
-.task-card1:hover, .task-card2:hover, .task-card3:hover {
+.task-card1:hover, .task-card2:hover {
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-.task-card1 >>> a, .task-card2 >>> a, .task-card3 >>> a {
+.task-card1 >>> a, .task-card2 >>> a {
     text-decoration: none;
     color:black;
+}
+
+.task-card1 img.task-icon {
+    width: 80px; 
+    height: auto;
+    margin-bottom: 5px; 
+}
+
+.task-card2 img.task-icon {
+    width: 100px; 
+    height: auto;
+    margin-bottom: 5px; 
 }
 
 .dashboard {
