@@ -52,7 +52,6 @@ onMounted(() => {
             getData();  
         } else {
             console.error('No user is currently signed in.');
-            alert('User not signed in. Please log in again. VA');
             router.push('/login');
         }
     });

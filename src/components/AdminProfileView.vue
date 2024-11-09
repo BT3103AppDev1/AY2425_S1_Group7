@@ -50,7 +50,7 @@ onMounted(() => {
             user.value = currentUser;
             email.value = currentUser.email;
             getData().then(() => {
-                router.push('/AdminProfile');
+				console.log("done getting data!")
             });
         } else {
             console.error('No user is currently signed in.');

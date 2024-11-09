@@ -3,7 +3,6 @@ import { ref, onMounted } from 'vue';
 import AdminProfileView from '@/components/AdminProfileView.vue';
 import { useRouter } from 'vue-router';
 import { getAuth } from 'firebase/auth';
-import AdministratorTaskbar from '@/components/AdminTaskbar.vue';
 
 const auth = getAuth();
 const router = useRouter();
@@ -40,8 +39,6 @@ onMounted(() => {
 
 <template>
 <div>
-    <AdministratorTaskbar>
-    </AdministratorTaskbar>
 
     <AdminProfileView v-if="!showConfirmation" @save="handleSave" />
     
