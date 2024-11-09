@@ -147,7 +147,6 @@ onMounted(() => {
     <template #session-cards>
         <div v-if="signedUpStatus !== 'accepted'">
             <div v-if="sortedSessions.length > 0" class="session-detail-container">
-                <strong>Session Schedule</strong>
                 <div class="sessions-container">
                     <SessionCards 
                     v-for="(session, index) in sortedSessions" 
