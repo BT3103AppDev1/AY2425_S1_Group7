@@ -97,7 +97,8 @@ const router = createRouter({
     {
       path: '/Admin/TaskAssignment/:taskID',
       name: 'AdminViewAssignment',
-      component: AdminTaskAssignment
+      component: AdminTaskAssignment,
+      props: true,
     },
     {
       path: '/Admin/TakeAttendance',

@@ -34,7 +34,7 @@ function viewTaskDetails(taskID) {
 }
 
 function viewManageVolunteers(taskID) {
-    router.push(`/Admin/TaskAssignment/${taskID}`);
+    router.push({ name: 'AdminViewAssignment', params: { taskID } });
 }
 
 onMounted(async () => {
@@ -69,7 +69,7 @@ onMounted(async () => {
                 <td>{{ task.data.task_name }}</td>
                 <td><button class="action-button view" @click="viewTaskDetails(task.id)">View Details</button></td>
                 <td><RouterLink :to="'/EditTask/' + task.id"><button class="action-button edit">Edit Details</button></RouterLink></td>
-                <td><RouterLink><button class="action-button manage" @click="viewManageVolunteers(task.id)">Manage Volunteers</button></RouterLink></td>
+                <td><button class="action-button manage" @click="viewManageVolunteers(task.id)">Manage Volunteers</button></td>
             </tr>
         </tbody>
     </table>
