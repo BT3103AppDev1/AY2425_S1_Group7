@@ -19,7 +19,7 @@ const requirements = ref('');
 const description = ref('');
 const sessions = ref([]);
 
-function processData() {
+async function processData() {
     const fDateCheck = new Date(startDateTime.value);
     const tDateCheck = new Date(endDateTime.value);
 
@@ -28,7 +28,6 @@ function processData() {
         return;
     }
 
-    // validate the sessions
     const invalidSessions = sessions.value.filter(session => !validateSessionTime(session));
     if (invalidSessions.length > 0) {
         alert('Some sessions have invalid times. Please ensure all sessions are within the main date range and end times are after start times.');
@@ -41,8 +40,6 @@ function processData() {
             start_date_time: Timestamp.fromDate(fDateCheck),
             end_date_time: Timestamp.fromDate(tDateCheck),
             location: location.value,
-            location_lat: location_lat.value,
-            location_lng: location_lng.value,
             requirements: requirements.value.split(",").map(command => command.trim()),
             description: description.value,
             sessions: sessions.value.map(session => ({
@@ -52,8 +49,13 @@ function processData() {
             }))
         };
 
+        if (location_lat.value !== null && location_lng.value !== null) {
+            dataUpload.location_lat = location_lat.value;
+            dataUpload.location_lng = location_lng.value;
+        }
+
         if (taskID) {
-            setDoc(doc(db, "task", taskID), dataUpload)
+            setDoc(doc(db, "task", taskID), dataUpload, { merge: true }) 
                 .then(() => {
                     router.replace('/Admin/Dashboard');
                     resetForm();
@@ -63,13 +65,13 @@ function processData() {
                 });
         } else {
             addDoc(collection(db, "task"), dataUpload)
-            .then(() => {
-                router.replace('/Admin/Dashboard');
-                resetForm();
-            })
-            .catch((error) => {
-                alert(error.message);
-            });
+                .then(() => {
+                    router.replace('/Admin/Dashboard');
+                    resetForm();
+                })
+                .catch((error) => {
+                    alert(error.message);
+                });
         }
     }
 }
