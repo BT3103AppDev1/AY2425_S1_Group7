@@ -1,6 +1,6 @@
 <script setup>
 import AddEditTask from '../components/AdminAddEditTask.vue'
-import AdministratorTaskbar from '../components/AdministratorTaskbar.vue'
+import AdministratorTaskbar from '../components/AdminTaskbar.vue'
 </script>
 
 <template>

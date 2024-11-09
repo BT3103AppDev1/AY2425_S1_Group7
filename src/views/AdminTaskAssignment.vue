@@ -1,5 +1,5 @@
 <script setup>
-import AdministratorTaskbar from '@/components/AdministratorTaskbar.vue';
+import AdministratorTaskbar from '@/components/AdminTaskbar.vue';
 import { useRoute } from "vue-router";
 import { db } from "../firebase_setup.js";
 import { query, where, getDocs, collection, doc, getDoc, addDoc, Timestamp } from "firebase/firestore";

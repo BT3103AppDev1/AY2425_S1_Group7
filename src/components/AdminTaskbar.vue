@@ -20,10 +20,10 @@ async function logOut() {
 			<RouterLink to="/Admin/Dashboard">VOLUNTRAC</RouterLink>
 		</div>
 		<div class="navbar-links">
-			<RouterLink to="/Admin/ManageTasks">MANAGE TASKS</RouterLink>
-			<RouterLink to="/Admin/TakeAttendance">TAKE ATTENDANCE</RouterLink>
-			<RouterLink to="/AdminProfileView">MY PROFILE ▼</RouterLink>
-			<RouterLink to="/" @click.prevent="logOut">LOG OUT</RouterLink>
+			<RouterLink to="/Admin/ManageTasks" id="admin-manage-task">MANAGE TASKS</RouterLink>
+			<RouterLink to="/Admin/TakeAttendance" id="admin-take-attendance">TAKE ATTENDANCE</RouterLink>
+			<RouterLink to="/AdminProfileView" id="admin-profile-link">MY PROFILE ▼</RouterLink>
+			<RouterLink to="/" @click.prevent="logOut" id="admin-logout">LOG OUT</RouterLink>
 		</div>
 		</nav>
 	</div>

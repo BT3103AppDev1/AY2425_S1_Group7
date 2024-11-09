@@ -101,7 +101,6 @@ onMounted(() => {
         <div v-if="success" class="alert success">{{ success }}</div>
 
         <div v-if="sessions.length > 0" class="session-detail-container">
-            <strong>Session Schedule</strong>
             <div class="sessions-container">
                 <div v-for="(session, index) in sessions" 
                         :key="index" 
