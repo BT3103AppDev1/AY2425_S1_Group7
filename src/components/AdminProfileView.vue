@@ -12,17 +12,13 @@ const profile = ref({
 	organisation: '',
 	department: '',
 });
+
+const successMessage = ref('');
 const emit = defineEmits(['save']);
 
 const auth = getAuth();
 const user = auth.currentUser;
 const uid = user.uid;
-const name = ref();
-const fullName = ref();
-const dateOfBirth = ref();
-const residentialAddress = ref();
-const organisation = ref();
-const department = ref();
 const email = ref(user.email);
 const password1 = ref();
 const profileEditingEnabled = ref(false);
@@ -34,14 +30,15 @@ const q = doc(db, 'users', uid);
 
 async function getData() {
     let data = (await getDoc(q)).data();
-    role.value = data.role;
-    name.value = data.username;
-    email.value = data.email;
-    fullName.value = data?.fullName || '',
-    dateOfBirth.value = data?.dob || '';
-    residentialAddress.value = data?.residential_address || '';
-    organisation.value = data?.organisation || '';
-    department.value = data?.department || '';
+    role.value = data?.role || '';
+	profile.value = {
+		name: data?.username,
+		fullName: data?.fullName || '',
+		dateOfBirth: data?.dob || '',
+		residentialAddress: data?.residential_address || '',
+		organisation: data?.organisation || '',
+		department: data?.department || '',
+	}
 }
 
 onMounted(() => {
@@ -64,6 +61,7 @@ async function saveChanges() {
 		const q = doc(db, 'users', user.value.uid);
 		await setDoc(q, profile.value, { merge: true });
 		console.log('Profile updated:', profile.value);
+		successMessage.value = 'Profile has been updated successfully!'; // Set success message
 		emit('save', profile.value);  
 		router.push('/AdminProfileView'); 
 	} catch (error) {
@@ -95,7 +93,7 @@ async function reAuth() {
 <template>
 <!-- Welcome page with UserID and update profile button -->
 <div v-if="!profileEditingEnabled" class="profile-container">
-	<h1>About you, {{ name }}.</h1>
+	<h1>About you, {{ profile.name }}.</h1>
 	<p>Welcome to your profile page. You can update your information below.</p>
 
 	<div class="update-button-container">
@@ -162,23 +160,23 @@ async function reAuth() {
 		<table class = "profile-table">
 			<tr>
 				<td>Full Name:</td>
-				<td>{{ fullName }}</td>
+				<td>{{ profile.fullName }}</td>
 			</tr>
 			<tr>
 				<td>Date of Birth:</td>
-				<td>{{ dateOfBirth }}</td>
+				<td>{{ profile.dateOfBirth }}</td>
 			</tr>
 			<tr>
 				<td>Residential Address:</td>
-				<td>{{ residentialAddress }}</td>
+				<td>{{ profile.residentialAddress }}</td>
 			</tr>
 			<tr>
 				<td>Organisation:</td>
-				<td>{{ organisation }}</td>
+				<td>{{ profile.organisation }}</td>
 			</tr>
 			<tr>
 				<td>Department:</td>
-				<td>{{ department }}</td>
+				<td>{{ profile.department }}</td>
 			</tr>
 		</table>
 		<div class="go-back-container">
