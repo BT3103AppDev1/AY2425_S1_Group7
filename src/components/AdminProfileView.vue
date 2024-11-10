@@ -57,16 +57,30 @@ onMounted(() => {
 });
 
 async function saveChanges() {
-	try {
-		const q = doc(db, 'users', user.value.uid);
-		await setDoc(q, profile.value, { merge: true });
-		console.log('Profile updated:', profile.value);
-		successMessage.value = 'Profile has been updated successfully!'; // Set success message
-		emit('save', profile.value);  
-		router.push('/AdminProfileView'); 
-	} catch (error) {
-		console.error('Error saving changes:', error);
-	}
+    try {
+        const q = doc(db, 'users', user.value.uid);
+
+        const docSnap = await getDoc(q);
+        if (docSnap.exists()) {
+            profile.value = { ...docSnap.data(), ...profile.value }; 
+        } else {
+            console.error("No such document!");
+            return;
+        }
+
+        await setDoc(q, profile.value, { merge: true });
+        console.log('Profile updated:', profile.value);
+        successMessage.value = 'Profile has been updated successfully!';
+        emit('save', profile.value);
+
+        if (profile.value.role === 'volunteer') {
+            router.push('/UserProfile');
+        } else {
+            router.push('/AdminProfile');
+        }
+    } catch (error) {
+        console.error('Error saving changes:', error);
+    }
 }
 
 async function reAuth() {
