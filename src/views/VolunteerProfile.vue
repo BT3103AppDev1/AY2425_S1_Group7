@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import ProfileView from '@/components/ProfileView.vue';
+import ProfileDetails from '@/components/ProfileDetails.vue';
 import { useRouter } from 'vue-router';
 import { getAuth } from 'firebase/auth';
 import VolunteerTaskbar from '@/components/VolunteerTaskbar.vue';
@@ -15,10 +15,6 @@ const profile = ref({
     organisation: '',
     skills: null,
 });
-
-function editProfile() {
-    showConfirmation.value = false;
-}
 
 function handleSave(updatedData) {
     console.log("Received save event with updated data:", updatedData);
@@ -42,20 +38,7 @@ onMounted(() => {
 <div>
     <VolunteerTaskbar></VolunteerTaskbar>
     <h1>Your Profile</h1>
-    <ProfileView v-if="!showConfirmation" @save="handleSave" />
-    
-    <!-- Confirmation Page -->
-    <div v-if="showConfirmation">
-        <h2>Profile Saved</h2>
-        <table>
-            <tr><td>Full Name:</td><td>{{ profile.fullName }}</td></tr>
-            <tr><td>Date of Birth:</td><td>{{ profile.dateOfBirth }}</td></tr>
-            <tr><td>Residential Address:</td><td>{{ profile.residentialAddress }}</td></tr>
-            <tr><td>Organisation:</td><td>{{ profile.organisation }}</td></tr>
-            <tr><td>Skills:</td><td>{{ profile.skills }}</td></tr>
-        </table>
-        <button @click="editProfile">Edit Again</button>
-    </div>
+    <ProfileDetails @save="handleSave" />
 </div>
 </template>
 
