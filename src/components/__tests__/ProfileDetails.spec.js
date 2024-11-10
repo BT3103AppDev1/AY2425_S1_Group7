@@ -1,27 +1,16 @@
 import { mount } from '@vue/test-utils';
 import { describe, it, expect, vi } from 'vitest';
-import AdminProfileView from '../AdminProfileView.vue';
-import { getDoc } from 'firebase/firestore';
+import ProfileView from '../ProfileDetails.vue';
+import { getDoc, setDoc } from 'firebase/firestore';
 import { reauthenticateWithCredential } from 'firebase/auth';
 
 vi.mock('firebase/firestore', async () => {
     const original = await vi.importActual('firebase/firestore');
     return {
         ...original,
-        getFirestore: vi.fn(() => ({
-            collection: vi.fn(() => ({
-                doc: vi.fn().mockReturnValue({ id: 'mockDocId' }),
-                getDoc: vi.fn(),
-                setDoc: vi.fn(),
-                addDoc: vi.fn(),
-            })),
-        })),
         getDoc: vi.fn(),
         setDoc: vi.fn(),
         doc: vi.fn(),
-        Timestamp: {
-            fromDate: vi.fn((date) => date),
-        },
     };
 });
 
@@ -42,9 +31,9 @@ vi.mock('vue-router', () => ({
     }),
 }));
 
-describe('AdminProfileView', () => {
+describe('ProfileView.vue', () => {
     it('Renders the component', () => {
-        const wrapper = mount(AdminProfileView, {
+        const wrapper = mount(ProfileView, {
             global: {
                 mocks: {
                     $router: { push: vi.fn() },
@@ -56,18 +45,18 @@ describe('AdminProfileView', () => {
 
     it('Fetches user data on mount', async () => {
         const mockData = {
-            role: 'Admin',
+            role: 'User',
             username: 'testUser',
             email: 'test@example.com',
             fullName: 'Test User',
             dob: '2000-01-01',
             residential_address: '123 Test St',
             organisation: 'Test Org',
-            department: 'Test Dept',
+            skills: 'Vue, Firebase',
         };
         getDoc.mockResolvedValue({ data: () => mockData });
 
-        const wrapper = mount(AdminProfileView, {
+        const wrapper = mount(ProfileView, {
             global: {
                 mocks: {
                     $router: { push: vi.fn() },
@@ -80,11 +69,11 @@ describe('AdminProfileView', () => {
         expect(wrapper.vm.dateOfBirth).toBe(mockData.dob);
         expect(wrapper.vm.residentialAddress).toBe(mockData.residential_address);
         expect(wrapper.vm.organisation).toBe(mockData.organisation);
-        expect(wrapper.vm.department).toBe(mockData.department);
+        expect(wrapper.vm.skills).toBe(mockData.skills);
     });
 
-    it('Opens password modal when update button is clicked', async () => {
-        const wrapper = mount(AdminProfileView, {
+    it('Opens password when update button is clicked', async () => {
+        const wrapper = mount(ProfileView, {
             global: {
                 mocks: {
                     $router: { push: vi.fn() },
@@ -99,7 +88,7 @@ describe('AdminProfileView', () => {
     });
 
     it('Reauthenticates user and enables editing mode', async () => {
-        const wrapper = mount(AdminProfileView, {
+        const wrapper = mount(ProfileView, {
             global: {
                 mocks: {
                     $router: { push: vi.fn() },

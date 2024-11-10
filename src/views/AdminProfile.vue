@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import AdminProfileView from '@/components/AdminProfileView.vue';
+import ProfileDetails from '@/components/ProfileDetails.vue';
 import AdministratorTaskbar from "../components/AdminTaskbar.vue"
 import { useRouter } from 'vue-router';
 import { getAuth } from 'firebase/auth';
@@ -15,10 +15,6 @@ const profile = ref({
     organisation: '',
     department: '',
 });
-
-function editProfile() {
-    showConfirmation.value = false;
-}
 
 function handleSave(updatedData) {
     console.log("Received save event with updated data:", updatedData);
@@ -42,20 +38,7 @@ onMounted(() => {
 <div>
     <AdministratorTaskbar></AdministratorTaskbar>
 
-    <AdminProfileView v-if="!showConfirmation" @save="handleSave" />
-    
-    <!-- Confirmation Page -->
-    <div v-if="showConfirmation">
-        <h2>Profile Saved</h2>
-        <table>
-            <tr><td>Full Name:</td><td>{{ profile.fullName }}</td></tr>
-            <tr><td>Date of Birth:</td><td>{{ profile.dateOfBirth }}</td></tr>
-            <tr><td>Residential Address:</td><td>{{ profile.residentialAddress }}</td></tr>
-            <tr><td>Organisation:</td><td>{{ profile.organisation }}</td></tr>
-            <tr><td>Department:</td><td>{{ profile.department }}</td></tr>
-        </table>
-        <button @click="editProfile">Edit Again</button>
-    </div>
+    <ProfileDetails @save="handleSave" />
 </div>
 </template>
 

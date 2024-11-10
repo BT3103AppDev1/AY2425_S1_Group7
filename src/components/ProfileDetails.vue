@@ -10,6 +10,7 @@ const profile = ref({
     dateOfBirth: '',
     residentialAddress: '',
     organisation: '',
+    department: '',
     skills: null,
 });
 
@@ -38,6 +39,7 @@ async function getData() {
         dateOfBirth: data?.dateOfBirth || '',
         residentialAddress: data?.residentialAddress || '',
         organisation: data?.organisation || '',
+        department: data?.department || '',
         skills: data?.skills || null,
     }
 }
@@ -58,11 +60,25 @@ onMounted(() => {
 async function saveChanges() {
     try {
         const q = doc(db, 'users', user.value.uid);
+
+        const docSnap = await getDoc(q);
+        if (docSnap.exists()) {
+            profile.value = { ...docSnap.data(), ...profile.value }; 
+        } else {
+            console.error("No such document!");
+            return;
+        }
+
         await setDoc(q, profile.value, { merge: true });
         console.log('Profile updated:', profile.value);
-        successMessage.value = 'Profile has been updated successfully!'; // Set success message
-        emit('save', profile.value);  
-        router.push('/UserProfile'); 
+        successMessage.value = 'Profile has been updated successfully!';
+        emit('save', profile.value);
+
+        if (profile.value.role === 'volunteer') {
+            router.push('/UserProfile');
+        } else {
+            router.push('/AdminProfile');
+        }
     } catch (error) {
         console.error('Error saving changes:', error);
     }
@@ -113,7 +129,6 @@ async function reAuth() {
         </div>
     </div>
     
-    
     <!-- Profile Editing Section (after re-authentication) -->
     <div v-if="profileEditingEnabled" class="center-wrapper">
         <div class="edit-profile-container">
@@ -136,15 +151,17 @@ async function reAuth() {
                 <th><label for="organisation">Your Organisation:</label></th>
                 <td><input type="text" id="organisation" v-model="profile.organisation" required></td>
             </tr>
-            <tr>
+            <tr v-if="role !== 'volunteer'">
+                <th><label for="department">Department:</label></th>
+                <td><input type="text" id="department" v-model="profile.department" required></td>
+            </tr>
+            <tr v-if="role === 'volunteer'">
                 <th><label for="skills">Your Skills:</label></th>
-                <td>
-                <input type="text" id="skills" v-model="profile.skills" placeholder="Separate by commas" required>
-                </td>
+                <td><input type="text" id="skills" v-model="profile.skills" placeholder="Separate by commas" required></td>
             </tr>
             </table>
             <div class="submit-button-container">
-            <button type="submit" class="save-button">Save Changes</button>
+            <button type="submit" class="save-button" @click="profileEditingEnabled = false">Save Changes</button>
             </div>
         </form>
         <div class="go-back-container">
@@ -157,7 +174,7 @@ async function reAuth() {
     <div v-if="!profileEditingEnabled">
         <div class="profile-table-container">
         <h2>Your Profile Information</h2>
-        <table class = "profile-table">
+        <table class="profile-table">
             <tr>
                 <td>Full Name:</td>
                 <td>{{ profile.fullName }}</td>
@@ -174,7 +191,11 @@ async function reAuth() {
                 <td>Organisation:</td>
                 <td>{{ profile.organisation }}</td>
             </tr>
-            <tr>
+            <tr v-if="role !== 'volunteer'">
+                <td>Department:</td>
+                <td>{{ profile.department }}</td>
+            </tr>
+            <tr v-if="role === 'volunteer'">
                 <td>Skills:</td>
                 <td>{{ profile.skills }}</td>
             </tr>
