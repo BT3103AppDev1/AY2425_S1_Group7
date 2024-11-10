@@ -30,12 +30,13 @@ const q = doc(db, 'users', uid);
 
 async function getData() {
     let data = (await getDoc(q)).data();
+    console.log(data);
     role.value = data?.role || '';
     profile.value = {
         name: data?.username,
         fullName: data?.fullName || '',
-        dateOfBirth: data?.dob || '',
-        residentialAddress: data?.residential_address || '',
+        dateOfBirth: data?.dateOfBirth || '',
+        residentialAddress: data?.residentialAddress || '',
         organisation: data?.organisation || '',
         skills: data?.skills || null,
     }

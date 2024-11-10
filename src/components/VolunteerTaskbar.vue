@@ -19,7 +19,7 @@ async function logOut() {
         <div class="navbar-links">
             <RouterLink to="/ViewTasks">VIEW MY TASKS</RouterLink>
             <RouterLink to="/SearchTasks">SEARCH OPPORTUNITIES</RouterLink>
-            <RouterLink to="/Profile">MY PROFILE ▼</RouterLink>
+            <RouterLink to="/UserProfile">MY PROFILE ▼</RouterLink>
             <RouterLink to="/" @click.prevent="logOut">LOG OUT</RouterLink>
         </div>
     </nav>

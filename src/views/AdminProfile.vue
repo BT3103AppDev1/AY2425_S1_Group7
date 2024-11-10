@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import AdminProfileView from '@/components/AdminProfileView.vue';
+import AdministratorTaskbar from "../components/AdminTaskbar.vue"
 import { useRouter } from 'vue-router';
 import { getAuth } from 'firebase/auth';
 
@@ -39,6 +40,7 @@ onMounted(() => {
 
 <template>
 <div>
+    <AdministratorTaskbar></AdministratorTaskbar>
 
     <AdminProfileView v-if="!showConfirmation" @save="handleSave" />
     
