@@ -11,6 +11,7 @@ const username = ref('');
 const email = ref('');
 const password = ref('');
 const role = ref('admin');
+const dateOfBirth = ref('');
 const message = ref('');
 const router = useRouter();
 
@@ -22,6 +23,7 @@ const register = async () => {
         await setDoc(doc(db, 'users', user.uid), {
             username: username.value,
             email: email.value,
+            dateOfBirth: dateOfBirth,
             role: role.value,
         });
     
@@ -45,6 +47,17 @@ const register = async () => {
             <div class="input-group">
                 <input v-model="username" type="text" placeholder="Username" required />
                 <span class="icon">👤</span>
+            </div>
+            <div class="input-group">
+                <input 
+                    type="text" 
+                    v-model="dateOfBirth"
+                    placeholder="Date of Birth"
+                    onfocus="(this.type='date')"
+                    onblur="if(!this.value)this.type='text'"
+                    required
+                />
+                <span class="icon">📅</span>
             </div>
             <div class="input-group">
                 <input v-model="email" type="email" placeholder="Email" required />

@@ -13,6 +13,7 @@ const phone = ref('');
 const username = ref('');
 const email = ref('');
 const password = ref('');
+const dateOfBirth = ref('');
 const role = ref('volunteer');
 const message = ref('');
 const router = useRouter();
@@ -28,6 +29,7 @@ const register = async () => {
             fullName: firstName.value + ' ' + lastName.value,
             phone: phone.value,
             username: username.value,
+            dateOfBirth: dateOfBirth.value,
             email: email.value,
             role: role.value,
         });
@@ -56,6 +58,17 @@ const register = async () => {
         <div class="input-group">
             <input v-model="lastName" type="text" placeholder="Last Name" required />
             <span class="icon">👤</span>
+        </div>
+        <div class="input-group">
+            <input 
+                type="text" 
+                v-model="dateOfBirth"
+                placeholder="Date of Birth"
+                onfocus="(this.type='date')"
+                onblur="if(!this.value)this.type='text'"
+                required
+            />
+            <span class="icon">📅</span>
         </div>
         <div class="input-group">
             <input v-model="phone" type="tel" placeholder="Phone Number" required />

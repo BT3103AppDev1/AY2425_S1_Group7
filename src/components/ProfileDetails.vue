@@ -1,11 +1,12 @@
 <script setup>
-import { getDoc, setDoc, doc } from 'firebase/firestore';
+import { getDoc, updateDoc, doc } from 'firebase/firestore';
 import { db } from '@/firebase_setup';
 import { EmailAuthProvider, getAuth, reauthenticateWithCredential } from 'firebase/auth';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, onUnmounted } from 'vue';
 import { useRouter } from 'vue-router';
 
 const profile = ref({
+    name: '',
     fullName: '',
     dateOfBirth: '',
     residentialAddress: '',
@@ -18,81 +19,106 @@ const successMessage = ref('');
 const emit = defineEmits(['save']);
 
 const auth = getAuth();
-const user = auth.currentUser;
-const uid = user.uid;
-const email = ref(user.email);
-const password1 = ref();
+const user = ref(null);
+const email = ref('');
+const password1 = ref('');
 const profileEditingEnabled = ref(false);
 const showPasswordModal = ref(false);
-const role = ref();
+const role = ref('');
 const router = useRouter();
 
-const q = doc(db, 'users', uid);
-
 async function getData() {
-    let data = (await getDoc(q)).data();
-    console.log(data);
-    role.value = data?.role || '';
-    profile.value = {
-        name: data?.username,
-        fullName: data?.fullName || '',
-        dateOfBirth: data?.dateOfBirth || '',
-        residentialAddress: data?.residentialAddress || '',
-        organisation: data?.organisation || '',
-        department: data?.department || '',
-        skills: data?.skills || null,
+    try {
+        if (!user.value?.uid) return;
+        
+        const userDoc = doc(db, 'users', user.value.uid);
+        const docSnap = await getDoc(userDoc);
+        
+        if (docSnap.exists()) {
+            const data = docSnap.data();
+            role.value = data?.role || '';
+            profile.value = {
+                name: data?.username || '',
+                fullName: data?.fullName || '',
+                dateOfBirth: data?.dateOfBirth || '',
+                residentialAddress: data?.residentialAddress || '',
+                organisation: data?.organisation || '',
+                department: data?.department || '',
+                skills: data?.skills || null,
+            };
+        }
+    } catch (error) {
+        console.error('Error fetching user data:', error);
     }
 }
 
 onMounted(() => {
-    auth.onAuthStateChanged((currentUser) => {
+    const unsubscribe = auth.onAuthStateChanged(async (currentUser) => {
         if (currentUser) {
             user.value = currentUser;
             email.value = currentUser.email;
-            getData();  
+            await getData();
         } else {
             console.error('No user is currently signed in.');
             router.push('/login');
         }
     });
+
+    onUnmounted(() => unsubscribe());
 });
 
 async function saveChanges() {
     try {
-        const q = doc(db, 'users', user.value.uid);
-
-        const docSnap = await getDoc(q);
-        if (docSnap.exists()) {
-            profile.value = { ...docSnap.data(), ...profile.value }; 
-        } else {
-            console.error("No such document!");
+        if (!user.value?.uid) {
+            console.error('No user ID available');
             return;
         }
 
-        await setDoc(q, profile.value, { merge: true });
-        console.log('Profile updated:', profile.value);
-        successMessage.value = 'Profile has been updated successfully!';
-        emit('save', profile.value);
+        const userDoc = doc(db, 'users', user.value.uid);
+        
+        const updateData = {
+            fullName: profile.value.fullName,
+            dateOfBirth: profile.value.dateOfBirth,
+            residentialAddress: profile.value.residentialAddress,
+            organisation: profile.value.organisation,
+            department: profile.value.department,
+            skills: profile.value.skills,
+            username: profile.value.name,
+            role: role.value
+        };
+        console.log(updateData)
 
-        if (profile.value.role === 'volunteer') {
-            router.push('/UserProfile');
-        } else {
-            router.push('/AdminProfile');
-        }
+        await updateDoc(userDoc, updateData);
+        console.log('Profile updated:', updateData);
+        successMessage.value = 'Profile has been updated successfully!';
+        emit('save', updateData);
+
+        profileEditingEnabled.value = false;
+
+        setTimeout(() => {
+            if (role.value === 'volunteer') {
+                router.push('/UserProfile');
+            } else {
+                router.push('/AdminProfile');
+            }
+        }, 100);
+
     } catch (error) {
         console.error('Error saving changes:', error);
+        alert('Error updating profile. Please try again.');
     }
 }
 
-async function reAuth() {
+async function reAuth(e) {
+    e.preventDefault();  
     try {
-        if (!user) {
+        if (!user.value) {
             console.error('No user is logged in');
             alert('No user is logged in. Please sign in.');
             return;
         }
-        const creds = EmailAuthProvider.credential(user.email, password1.value);
-        await reauthenticateWithCredential(user, creds);
+        const creds = EmailAuthProvider.credential(user.value.email, password1.value);
+        await reauthenticateWithCredential(user.value, creds);
         console.log('Re-authentication successful!');
 
         showPasswordModal.value = false;
@@ -103,6 +129,11 @@ async function reAuth() {
         alert('Invalid password, please try again.');
     }
 }
+
+const handleSave = async () => {
+    await saveChanges();
+    profileEditingEnabled.value = false;
+};
 </script>
 
 <template>
@@ -161,7 +192,7 @@ async function reAuth() {
             </tr>
             </table>
             <div class="submit-button-container">
-            <button type="submit" class="save-button" @click="profileEditingEnabled = false">Save Changes</button>
+                <button type="button" class="save-button" @click="handleSave">Save Changes</button>
             </div>
         </form>
         <div class="go-back-container">
