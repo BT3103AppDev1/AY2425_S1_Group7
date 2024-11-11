@@ -93,12 +93,18 @@ async function cancelPendingTask(taskID) {
                 where('task_id', '==', taskID),
                 where('volunteer_id', '==', currentUser.uid)
             );
+            const assignmentQuery =  query(
+                collection(db, 'task_assignment'),
+                where('task_id', '==', taskID),
+                where('volunteer_id', '==', currentUser.uid)
+            );
 
-            const querySnapshot = await getDocs(resvQuery);
+            const querySnapshot = await getDocs(resvQuery, assignmentQuery);
 
             if (!querySnapshot.empty) {
                 querySnapshot.forEach(async (docSnap) => {
                     await deleteDoc(doc(db, 'task_reservations', docSnap.id));
+                    await deleteDoc(doc(db, 'task_assignment', docSnap.id))
                 });
 
                 alert('Pending task successfully cancelled!');
