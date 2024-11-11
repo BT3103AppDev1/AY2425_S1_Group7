@@ -1,78 +1,4 @@
-<template>
-    <AdministratorTaskbar />
-    <div>
-        <div id="task-management-header">
-            <h1>Manage attendance here</h1>
-            <p class="task-description">{{ taskDescription }} {{ activeTaskName }}</p>
-        </div>
-    </div>
-    
-    <div class="main-content">
-        <div class="content-container">
-            <div class="action-buttons">
-                <button @click="markAll('present')" class="action-button present">
-                    Mark all as present
-                </button>
-                <button @click="markAll('absent')" class="action-button absent">
-                    Mark all as absent
-                </button>
-            </div>
-    
-            <div class="task-table-container">
-                <table class="task-table">
-                    <thead>
-                        <tr>
-                            <th>User Name</th>
-                            <th>Attendance</th>
-                            <th>Remarks</th>
-                        </tr>
-                    </thead>
-                    <tbody v-if="taskResv.length > 0">
-                        <tr v-for="(resv, index) in taskResv" :key="index">
-                            <td>{{ resv.username }}</td>
-                            <td class="attendance-cell">
-                                <div class="attendance-buttons">
-                                    <button 
-                                        class="attendance-button"
-                                        :class="{ active: attendance[resv.volunteer_id] === 'present' }"
-                                        @click="confirmIndividual(resv.volunteer_id, 'present')">
-                                        Present
-                                    </button>
-                                    <button 
-                                        class="attendance-button"
-                                        :class="{ active: attendance[resv.volunteer_id] === 'absent' }"
-                                        @click="confirmIndividual(resv.volunteer_id, 'absent')">
-                                        Absent
-                                    </button>
-                                </div>
-                            </td>
-                            <td>
-                                <textarea 
-                                    v-model="remarks[resv.volunteer_id]"
-                                    class="remarks-input"
-                                    placeholder="Enter remarks here..."
-                                ></textarea>
-                            </td>
-                        </tr>
-                    </tbody>
-                    <tbody v-else>
-                        <tr>
-                            <td colspan="3" class="no-tasks">No approved volunteers found</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-    
-            <div class="footer-section">
-                <button @click="finalizeAttendance" class="finalize-button">
-                    Finalise ({{ taskResv.length }} records)
-                </button>
-            </div>
-        </div>
-    </div>
-    </template>
-    
-    <script setup>
+<script setup>
 import AdministratorTaskbar from '@/components/AdminTaskbar.vue';
 import { ref, onMounted } from 'vue';
 import { db } from "../firebase_setup.js";
@@ -214,204 +140,278 @@ onMounted(async () => {
    await fetchApprovedVolunteers();
 });
 </script>
+
+<template>
+    <AdministratorTaskbar />
+    <div>
+        <div id="task-management-header">
+            <h1>Manage attendance here</h1>
+            <p class="task-description">{{ taskDescription }} {{ activeTaskName }}</p>
+        </div>
+    </div>
     
-    <style scoped>
-    #task-management-header {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 1rem;
-        margin-bottom: 0.2rem;
-    }
+    <div class="main-content">
+        <div class="content-container">
+            <div class="action-buttons">
+                <button @click="markAll('present')" class="action-button present">
+                    Mark all as present
+                </button>
+                <button @click="markAll('absent')" class="action-button absent">
+                    Mark all as absent
+                </button>
+            </div>
     
-    .admin-container {
-        min-height: 100vh;
-        background-color: #ffffff;
-    }
+            <div class="task-table-container">
+                <table class="task-table">
+                    <thead>
+                        <tr>
+                            <th>User Name</th>
+                            <th>Attendance</th>
+                            <th>Remarks</th>
+                        </tr>
+                    </thead>
+                    <tbody v-if="taskResv.length > 0">
+                        <tr v-for="(resv, index) in taskResv" :key="index">
+                            <td>{{ resv.username }}</td>
+                            <td class="attendance-cell">
+                                <div class="attendance-buttons">
+                                    <button 
+                                        class="attendance-button"
+                                        :class="{ active: attendance[resv.volunteer_id] === 'present' }"
+                                        @click="confirmIndividual(resv.volunteer_id, 'present')">
+                                        Present
+                                    </button>
+                                    <button 
+                                        class="attendance-button"
+                                        :class="{ active: attendance[resv.volunteer_id] === 'absent' }"
+                                        @click="confirmIndividual(resv.volunteer_id, 'absent')">
+                                        Absent
+                                    </button>
+                                </div>
+                            </td>
+                            <td>
+                                <textarea 
+                                    v-model="remarks[resv.volunteer_id]"
+                                    class="remarks-input"
+                                    placeholder="Enter remarks here..."
+                                ></textarea>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tbody v-else>
+                        <tr>
+                            <td colspan="3" class="no-tasks">No approved volunteers found</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
     
+            <div class="footer-section">
+                <button @click="finalizeAttendance" class="finalize-button">
+                    Finalise ({{ taskResv.length }} records)
+                </button>
+            </div>
+        </div>
+    </div>
+</template>
+    
+<style scoped>
+#task-management-header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1rem;
+    margin-bottom: 0.2rem;
+}
+
+.admin-container {
+    min-height: 100vh;
+    background-color: #ffffff;
+}
+
+.main-content {
+    padding: 0 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.page-title {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #000;
+    display: flex;
+    justify-content: flex-start;
+    padding: 1rem;
+}
+
+.task-description {
+    font-size: 1.2rem;
+    color: #333;
+    margin-top: 0.1rem;
+}
+
+.content-container {
+    margin-top: 0.5rem;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    margin-bottom: 1rem;
+}
+
+.action-button {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.action-button.present {
+    background-color: #b3d9df;
+    color: #000;
+}
+
+.action-button.absent {
+    background-color: #f1b3b3;
+    color: #000;
+}
+
+.task-table-container {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.task-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.task-table th,
+.task-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+.task-table th {
+    background-color: #f8f9fa;
+    font-weight: bold;
+    font-size: 1rem;
+    width: 33.33%;
+}
+
+.attendance-cell {
+    width: auto;
+}
+
+.attendance-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.attendance-button {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    background-color: #f5f5f5;
+    transition: all 0.2s;
+}
+
+.attendance-button.active {
+    background-color: #97bdc4;
+    color: white;
+}
+
+.remarks-input {
+    width: 100%;
+    height: 80px;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    resize: none;
+}
+
+.remarks-input:focus {
+    border-color: #97bdc4;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(151, 189, 196, 0.2);
+}
+
+.remarks-input::placeholder {
+    color: #999;
+}
+
+.footer-section {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.finalize-button {
+    padding: 0.75rem 2rem;
+    border: none;
+    border-radius: 25px;
+    font-size: 1rem;
+    font-weight: 500;
+    background-color: #fdd835;
+    color: #000;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.finalize-button:hover {
+    background-color: #fbc02d;
+}
+
+.no-tasks {
+    text-align: center;
+    color: #666;
+    padding: 2rem;
+}
+
+@media (max-width: 768px) {
     .main-content {
-        padding: 0 2rem;
-        max-width: 1200px;
-        margin: 0 auto;
-    }
-    
-    .page-title {
-        font-size: 2rem;
-        font-weight: bold;
-        color: #000;
-        display: flex;
-        justify-content: flex-start;
         padding: 1rem;
     }
-    
-    .task-description {
-        font-size: 1.2rem;
-        color: #333;
-        margin-top: 0.1rem;
-    }
-    
-    .content-container {
-        margin-top: 0.5rem;
-    }
-    
+
     .action-buttons {
-        display: flex;
-        gap: 1rem;
-        justify-content: flex-end;
-        margin-bottom: 1rem;
+        flex-direction: column;
     }
-    
+
     .action-button {
-        padding: 0.75rem 1.5rem;
-        border: none;
-        border-radius: 5px;
-        font-size: 1rem;
-        cursor: pointer;
-        transition: background-color 0.2s;
-    }
-    
-    .action-button.present {
-        background-color: #b3d9df;
-        color: #000;
-    }
-    
-    .action-button.absent {
-        background-color: #f1b3b3;
-        color: #000;
-    }
-    
-    .task-table-container {
-        background: white;
-        border-radius: 10px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        padding: 1.5rem;
-        margin-bottom: 2rem;
-    }
-    
-    .task-table {
         width: 100%;
-        border-collapse: collapse;
-        table-layout: fixed;
     }
-    
+
+    .task-table-container {
+        padding: 1rem;
+    }
+
     .task-table th,
     .task-table td {
-        padding: 1rem;
-        text-align: left;
-        border-bottom: 1px solid #eee;
+        padding: 0.75rem;
     }
-    
-    .task-table th {
-        background-color: #f8f9fa;
-        font-weight: bold;
-        font-size: 1rem;
-        width: 33.33%;
-    }
-    
-    .attendance-cell {
-        width: auto;
-    }
-    
+
     .attendance-buttons {
-        display: flex;
-        gap: 0.5rem;
+        flex-direction: column;
     }
-    
+
     .attendance-button {
-        padding: 0.5rem 1rem;
-        border: none;
-        border-radius: 4px;
-        font-size: 0.9rem;
-        cursor: pointer;
-        background-color: #f5f5f5;
-        transition: all 0.2s;
-    }
-    
-    .attendance-button.active {
-        background-color: #97bdc4;
-        color: white;
-    }
-    
-    .remarks-input {
         width: 100%;
-        height: 80px;
-        padding: 0.5rem;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        font-size: 0.9rem;
-        line-height: 1.4;
-        resize: none;
     }
-    
-    .remarks-input:focus {
-        border-color: #97bdc4;
-        outline: none;
-        box-shadow: 0 0 0 2px rgba(151, 189, 196, 0.2);
-    }
-    
-    .remarks-input::placeholder {
-        color: #999;
-    }
-    
-    .footer-section {
-        display: flex;
-        justify-content: flex-end;
-    }
-    
+
     .finalize-button {
-        padding: 0.75rem 2rem;
-        border: none;
-        border-radius: 25px;
-        font-size: 1rem;
-        font-weight: 500;
-        background-color: #fdd835;
-        color: #000;
-        cursor: pointer;
-        transition: background-color 0.2s;
+        width: 100%;
     }
-    
-    .finalize-button:hover {
-        background-color: #fbc02d;
-    }
-    
-    .no-tasks {
-        text-align: center;
-        color: #666;
-        padding: 2rem;
-    }
-    
-    @media (max-width: 768px) {
-        .main-content {
-            padding: 1rem;
-        }
-    
-        .action-buttons {
-            flex-direction: column;
-        }
-    
-        .action-button {
-            width: 100%;
-        }
-    
-        .task-table-container {
-            padding: 1rem;
-        }
-    
-        .task-table th,
-        .task-table td {
-            padding: 0.75rem;
-        }
-    
-        .attendance-buttons {
-            flex-direction: column;
-        }
-    
-        .attendance-button {
-            width: 100%;
-        }
-    
-        .finalize-button {
-            width: 100%;
-        }
-    }
-    </style>
+}
+</style>
