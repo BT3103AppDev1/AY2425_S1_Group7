@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { getFirestore, doc, setDoc } from 'firebase/firestore';
+import { getFirestore, collection, addDoc } from 'firebase/firestore';
 import { auth } from '../firebase_setup';
 import { useRouter } from 'vue-router';
 
@@ -19,19 +19,19 @@ const register = async () => {
     try {
         const userCredential = await createUserWithEmailAndPassword(auth, email.value, password.value);
         const user = userCredential.user;
-    
-        await setDoc(doc(db, 'users', user.uid), {
+        
+        await addDoc(collection(db, 'users'), {
             username: username.value,
+            dateOfBirth: dateOfBirth.value,
             email: email.value,
-            dateOfBirth: dateOfBirth,
             role: role.value,
         });
-    
+
         message.value = `User Registered: ${user.email}`;
         alert('Account created, please log in.');
         router.push('/adminLogin');
     } catch (error) {
-        message.value = `Error: ${error.message}`;
+        console.log(`Error: ${error.message}`);
     }
 };
 </script>
@@ -45,31 +45,31 @@ const register = async () => {
         <h2>Register</h2>
         <form @submit.prevent="register">
             <div class="input-group">
-                <input v-model="username" type="text" placeholder="Username" required />
-                <span class="icon">👤</span>
-            </div>
-            <div class="input-group">
-                <input 
-                    type="text" 
-                    v-model="dateOfBirth"
-                    placeholder="Date of Birth"
-                    onfocus="(this.type='date')"
-                    onblur="if(!this.value)this.type='text'"
-                    required
-                />
-                <span class="icon">📅</span>
-            </div>
-            <div class="input-group">
-                <input v-model="email" type="email" placeholder="Email" required />
-                <span class="icon">✉️</span>
-            </div>
-            <div class="input-group">
-                <input v-model="password" type="password" placeholder="Password" required />
-                <span class="icon">🔒</span>
-            </div>
-            <button type="submit" class="register-button">Register</button>
+            <input v-model="username" type="text" placeholder="Username" required />
+            <span class="icon">👤</span>
+        </div>
+        <div class="input-group">
+            <input 
+                type="text" 
+                v-model="dateOfBirth"
+                placeholder="Date of Birth"
+                onfocus="(this.type='date')"
+                onblur="if(!this.value)this.type='text'"
+                required
+            />
+            <span class="icon">📅</span>
+        </div>
+        <div class="input-group">
+            <input v-model="email" type="email" placeholder="Email" required />
+            <span class="icon">✉️</span>
+        </div>
+        <div class="input-group">
+            <input v-model="password" type="password" placeholder="Password" required />
+            <span class="icon">🔒</span>
+        </div>
+        <button type="submit" class="register-button">Register</button>
         </form>
-        <p>Already have an account? <RouterLink to="/adminLogin">Login</RouterLink></p>
+        <p>Already have an account? <RouterLink to="/volunteerLogin">Login</RouterLink></p>
         <p>{{ message }}</p>
     </div>
 </div>
