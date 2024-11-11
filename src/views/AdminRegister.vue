@@ -3,6 +3,7 @@ import { ref } from 'vue';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { getFirestore, doc, setDoc } from 'firebase/firestore';
 import { auth } from '../firebase_setup';
+import { useRouter } from 'vue-router';
 
 const db = getFirestore();
 
@@ -11,6 +12,7 @@ const email = ref('');
 const password = ref('');
 const role = ref('admin');
 const message = ref('');
+const router = useRouter();
 
 const register = async () => {
     try {
@@ -20,11 +22,12 @@ const register = async () => {
         await setDoc(doc(db, 'users', user.uid), {
             username: username.value,
             email: email.value,
-            password: password.value,
-            role: role.value
+            role: role.value,
         });
     
         message.value = `User Registered: ${user.email}`;
+        alert('Account created, please log in.');
+        router.push('/adminLogin');
     } catch (error) {
         message.value = `Error: ${error.message}`;
     }

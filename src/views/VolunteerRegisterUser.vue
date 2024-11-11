@@ -3,6 +3,7 @@ import { ref } from 'vue';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { getFirestore, doc, setDoc } from 'firebase/firestore';
 import { auth } from '../firebase_setup';
+import { useRouter } from 'vue-router';
 
 const db = getFirestore();
 
@@ -14,6 +15,7 @@ const email = ref('');
 const password = ref('');
 const role = ref('volunteer');
 const message = ref('');
+const router = useRouter();
 
 const register = async () => {
     try {
@@ -26,11 +28,13 @@ const register = async () => {
             phone: phone.value,
             username: username.value,
             email: email.value,
-            password: password.value,  // Consider storing the hashed password.
-            role: role.value
+            role: role.value,
+            createdAt: new Date().toISOString()
         });
 
         message.value = `User Registered: ${user.email}`;
+        alert('Account created, please log in.');
+        router.push('/volunteerLogin');
     } catch (error) {
         message.value = `Error: ${error.message}`;
     }
