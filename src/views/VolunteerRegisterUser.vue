@@ -25,11 +25,11 @@ const register = async () => {
         await setDoc(doc(db, 'users', user.uid), {
             firstName: firstName.value,
             lastName: lastName.value,
+            fullName: firstName.value + ' ' + lastName.value,
             phone: phone.value,
             username: username.value,
             email: email.value,
             role: role.value,
-            createdAt: new Date().toISOString()
         });
 
         message.value = `User Registered: ${user.email}`;
