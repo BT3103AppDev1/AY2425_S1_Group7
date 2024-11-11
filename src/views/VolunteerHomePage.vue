@@ -15,7 +15,6 @@ async function fetchTasks() {
   const currentUser = auth.currentUser;
   if (currentUser) {
         try {
-            // query task_reservations to get tasks the user has signed up for
             const resvQuery = query(
                 collection(db, 'task_reservations'),
                 where('volunteer_id', '==', currentUser.uid)
@@ -25,10 +24,8 @@ async function fetchTasks() {
             const tasksPromises = reservationSnapshot.docs.map(async (resvDoc) => {
                 const taskID = resvDoc.data().task_id;
 
-                // get task details from the 'task' collection
                 const taskDoc = await getDoc(doc(db, 'task', taskID));
 
-                // query task_assignment to check task status
                 const assignmentQuery = query(
                     collection(db, 'task_assignment'),
                     where('task_id', '==', taskID),
@@ -37,21 +34,26 @@ async function fetchTasks() {
                 const assignmentSnapshot = await getDocs(assignmentQuery);
 
                 let status = 'pending';
+                let assignmentId = null;
 
-                // if task exists in task_assignment, use the status from there
                 if (!assignmentSnapshot.empty) {
                     const assignmentDoc = assignmentSnapshot.docs[0];
                     status = assignmentDoc.data().status;
+                    assignmentId = assignmentDoc.id;
                 }
 
                 return taskDoc.exists()
-                    ? { id: resvDoc.id, task_id: taskID, status: status, ...taskDoc.data() }
+                    ? { 
+                        reservation_id: resvDoc.id,
+                        assignment_id: assignmentId,
+                        task_id: taskID, 
+                        status: status, 
+                        ...taskDoc.data() 
+                      }
                     : null;
             });
 
-            tasks.value = await Promise.all(tasksPromises);
-            tasks.value = tasks.value.filter(task => task !== null); // Filter out null values (tasks that don't exist)
-
+            tasks.value = (await Promise.all(tasksPromises)).filter(task => task !== null);
             console.log(tasks.value);
         } catch (error) {
             console.error("Error fetching tasks:", error);
@@ -59,23 +61,15 @@ async function fetchTasks() {
   }
 }
 
-// for cancelling tasks that have been assigned
-async function cancelTask(taskID, reservationID) {
-    if (confirm('Are you sure you want to cancel this task?')) {
+async function cancelPendingTask(taskID, reservationID) {
+    const currentUser = auth.currentUser;
+    if (currentUser && confirm('Are you sure you want to cancel this pending task?')) {
         try {
-            const resvQuery = query(
-                collection(db, 'task_reservations'),
-                where('task_id', '==', taskID)
-            );
-            const querySnapshot = await getDocs(resvQuery);
-            querySnapshot.forEach(async (docSnap) => {
-                await deleteDoc(doc(db, 'task_reservations', docSnap.id));
-            });
-
-            await deleteDoc(doc(db, 'task_assignment', reservationID));
-
-            alert('Task successfully cancelled!');
-            await fetchTasks(); 
+            // Delete the reservation document
+            await deleteDoc(doc(db, 'task_reservations', reservationID));
+            
+            alert('Pending task successfully cancelled!');
+            await fetchTasks();
         } catch (error) {
             console.error('Error deleting task:', error);
             alert('There was an error cancelling the task. Please try again.');
@@ -83,37 +77,21 @@ async function cancelTask(taskID, reservationID) {
     }
 }
 
-// for cancelling tasks that reservation has been made but no assignment
-async function cancelPendingTask(taskID) {
+async function cancelTask(taskID, reservationID, assignmentID) {
     const currentUser = auth.currentUser;
-    if (currentUser && confirm('Are you sure you want to cancel this pending task?')) {
+    if (currentUser && confirm('Are you sure you want to cancel this task?')) {
         try {
-            const resvQuery = query(
-                collection(db, 'task_reservations'),
-                where('task_id', '==', taskID),
-                where('volunteer_id', '==', currentUser.uid)
-            );
-            const assignmentQuery =  query(
-                collection(db, 'task_assignment'),
-                where('task_id', '==', taskID),
-                where('volunteer_id', '==', currentUser.uid)
-            );
-
-            const querySnapshot = await getDocs(resvQuery, assignmentQuery);
-
-            if (!querySnapshot.empty) {
-                querySnapshot.forEach(async (docSnap) => {
-                    await deleteDoc(doc(db, 'task_reservations', docSnap.id));
-                    await deleteDoc(doc(db, 'task_assignment', docSnap.id))
-                });
-
-                alert('Pending task successfully cancelled!');
-                await fetchTasks();
-            } else {
-                alert('No pending task found.');
+            // Delete both reservation and assignment documents
+            await deleteDoc(doc(db, 'task_reservations', reservationID));
+            
+            if (assignmentID) {
+                await deleteDoc(doc(db, 'task_assignment', assignmentID));
             }
+
+            alert('Task successfully cancelled!');
+            await fetchTasks();
         } catch (error) {
-            console.error('Error cancelling the pending task:', error);
+            console.error('Error cancelling the task:', error);
             alert('There was an error cancelling the task. Please try again.');
         }
     }
@@ -131,8 +109,8 @@ function viewTaskDetails(taskID) {
     <VolunteerTaskbar></VolunteerTaskbar>
 
     <div class="volunteer-homepage">
-        <HomePageUsername /> <!-- Renders the username -->
-        <LastLoginDate /> <!-- Renders the last login date -->
+        <HomePageUsername />
+        <LastLoginDate />
     </div>
 
     <div class="task-table-container">
@@ -148,15 +126,21 @@ function viewTaskDetails(taskID) {
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="task in tasks" :key="task.id">
+                <tr v-for="task in tasks" :key="task.reservation_id">
                     <td @click="viewTaskDetails(task.task_id)">{{ task.task_name }}</td>
                     <td>{{ task.start_date_time.toDate().toLocaleString() }}</td>
                     <td>{{ task.location }}</td>
                     <td>{{ task.status }}</td>
                     <td>
-                        <button v-if="task.status === 'accepted'" @click="cancelTask(task.task_id, task.id)" class="action-button">Cancel</button>
-                        <button v-else-if="task.status === 'rejected'" @click="cancelTask(task.task_id, task.id)" class="action-button">Delete</button>
-                        <button v-else @click="cancelPendingTask(task.task_id)" class="action-button">Cancel</button>
+                        <button v-if="task.status === 'accepted'" 
+                                @click="cancelTask(task.task_id, task.reservation_id, task.assignment_id)" 
+                                class="action-button">Cancel</button>
+                        <button v-else-if="task.status === 'rejected'" 
+                                @click="cancelTask(task.task_id, task.reservation_id, task.assignment_id)" 
+                                class="action-button">Delete</button>
+                        <button v-else 
+                                @click="cancelPendingTask(task.task_id, task.reservation_id)" 
+                                class="action-button">Cancel</button>
                     </td>
                 </tr>
                 <tr v-if="tasks.length === 0">
